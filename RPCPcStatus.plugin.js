@@ -1,6 +1,6 @@
 /**
  * @name RPC-Pc-Status
- * @version 0.1.1
+ * @version 0.1.2
  * @author Faelayis
  * @authorId 328731868096888833
  * @description Rich Presence Pc Status for your Discord
@@ -13,6 +13,20 @@
 
 let RPClient,
 	Interval = Number;
+
+const changelog = {
+	title: "RPC Pc Status Updated",
+	version: "0.1.2",
+	changelog: [
+		{
+			title: `v0.1.2: Support Auto Update`,
+			type: "fixed",
+			items: [
+				"",
+			]
+		}
+	]
+};
 
 (() => {
 	const path = require("path");
@@ -3687,6 +3701,7 @@ class RPCPcStatus {
 		}
 	}
 	initialize() {
+		window.ZeresPluginLibrary?.PluginUpdater?.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js");
 		BdApi.showToast("RPC Pc Status has started!");
 		this.startTime = Date.now();
 		this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
@@ -3694,6 +3709,11 @@ class RPCPcStatus {
 		this.rpcClientInfo = {};
 		this.discordSetActivityHandler = null;
 		this.startRichPresence();
+		if (!this.settings.lastChangelogVersionSeen || versionCompare(changelog.version, this.settings.lastChangelogVersionSeen) === 1) {
+			window.ZeresPluginLibrary.Modals.showChangelogModal(changelog.title, changelog.version, changelog.changelog);
+			this.settings.lastChangelogVersionSeen = changelog.version;
+			this.updateSettings();
+		}
 		this.initialized = true;
 	}
 	async stop() {
