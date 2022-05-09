@@ -1,4 +1,4 @@
-**Rich Presence Pc Status for your BetterDiscord Plugin**
+## **Rich Presence Pc Status for your BetterDiscord Plugin**
 
 **BetterDiscord**
 - [Download](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord/blob/main/RPCPcStatus.plugin.js)
