@@ -1,6 +1,6 @@
 /**
  * @name RPC-Pc-Status
- * @version 0.1.2
+ * @version 0.1.3
  * @author Faelayis
  * @authorId 328731868096888833
  * @description Rich Presence Pc Status for your Discord
@@ -16,13 +16,13 @@ let RPClient,
 
 const changelog = {
 	title: "RPC Pc Status Updated",
-	version: "0.1.2",
+	version: "0.1.3",
 	changelog: [
 		{
-			title: `v0.1.2: Support Auto Update`,
+			title: `v0.1.3: Patch Hotfix`,
 			type: "fixed",
 			items: [
-				"",
+				"RPC-Pc-Status could not be started.",
 			]
 		}
 	]
@@ -3691,6 +3691,12 @@ const changelog = {
 	RPClient = makeClient;
 })();
 
+function versionCompare(a, b) {
+	a = a.toLowerCase().split(/[.-]/).map(x => /\d/.test(x[0]) ? x.padStart(10, "0") : x.padEnd(10, "0")).join("");
+	b = b.toLowerCase().split(/[.-]/).map(x => /\d/.test(x[0]) ? x.padStart(10, "0") : x.padEnd(10, "0")).join("");
+	if (a === b) return 0;
+	return (a < b) ? -1 : 1;
+}
 class RPCPcStatus {
 	start() {
 		console.log("[RPC Pc Status] Starting");
