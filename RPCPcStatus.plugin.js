@@ -1,6 +1,6 @@
 /**
  * @name RPC-Pc-Status
- * @version 0.1.3
+ * @version 1.0.0
  * @author Faelayis
  * @authorId 328731868096888833
  * @description Rich Presence Pc Status for your Discord
@@ -14,17 +14,18 @@
 let RPClient,
 	Interval = Number;
 
+//added, improved, fixed, progress
 const changelog = {
 	title: "RPC Pc Status Updated",
-	version: "0.1.3",
+	version: "1.0.0",
 	changelog: [
 		{
-			title: `v0.1.3: Patch Hotfix`,
-			type: "fixed",
+			title: `Minor Releases New Stable`,
+			type: "added",
 			items: [
-				"RPC-Pc-Status could not be started.",
+				"New Color and Notification settings",
 			]
-		}
+		},
 	]
 };
 
@@ -3766,7 +3767,6 @@ class RPCPcStatus {
 				this.currentClientID = this.settings.clientID;
 				return this.startRichPresence();
 			}
-			BdApi.showToast("RPC Pc Status update config!");
 			clearInterval(Interval);
 			this.updatePresence();
 		}, 3000);
@@ -3803,7 +3803,7 @@ class RPCPcStatus {
 				url: this.settings.button2URL
 			});
 		}
-		BdApi.showToast("RPC Pc Status Start in 3s");
+		if (this.settings.ShowToast_ReadyStartup ?? true) BdApi.showToast("RPC Pc Status Start in 3s");
 		let cpuresult;
 		Interval = setInterval(() => {
 			// console.log("[RPC Pc Status] Update tick");
@@ -3843,7 +3843,7 @@ class RPCPcStatus {
 				details: `CPU ${cpuresult ? cpuresult.toFixed() : "0"}%`,
 				state: `RAM ${formatBytes(os.freemem(), os.totalmem())}`,
 				startTimestamp: this.settings.enableStartTime ? this.startTime / 1000 : undefined,
-				largeImageKey: this.settings.largeImageKey || "icon_white" || undefined,
+				largeImageKey: this.settings.largeImageKey || this.settings.LargeImageKeyColor || "icon_white",
 				smallImageKey: this.settings.smallImageKey || this.oslogo || undefined,
 				largeImageText: this.settings.largeImageText || os.cpus()[0].model,
 				smallImageText: this.settings.smallImageText || `${os.version()} ${os.release()}`,
@@ -3970,23 +3970,56 @@ class RPCPcStatus {
 		return activityObject;
 	}
 	updateSettings() {
+		BdApi.showToast("RPC Pc Status update config!");
 		BdApi.saveData("RPCPcStatus", "settings", this.settings);
 	}
 	generateSettings(panel) {
-		new window.ZeresPluginLibrary.Settings.SettingGroup("Rich Presence Configuration", { collapsible: true, shown: false, callback: () => { this.updateSettings(); this.updateRichPresence(); } }).appendTo(panel).append(
+		new window.ZeresPluginLibrary.Settings.SettingGroup("General", { collapsible: true, shown: true, callback: () => { this.updateSettings(); } }).appendTo(panel).append(
+			new window.ZeresPluginLibrary.Settings.Dropdown("Color", null, this.settings.LargeImageKeyColor ?? "icon_white", [
+				{
+					label: "White",
+					value: "icon_white",
+				}, {
+					label: "Dark",
+					value: "icon_dark",
+				}, {
+					label: "Red",
+					value: "icon_red",
+				}, {
+					label: "Yellow",
+					value: "icon_yellow",
+				}, {
+					label: "Lime",
+					value: "icon_lime",
+				}, {
+					label: "Aqua",
+					value: "icon_aqua",
+				}, {
+					label: "Blue",
+					value: "icon_blue",
+				}, {
+					label: "Orange",
+					value: "icon_orange",
+				}
+			], val => { this.settings.LargeImageKeyColor = val }),
+			new window.ZeresPluginLibrary.Settings.Switch("Enable Start Time", "Displays the amount of time your Rich Presence is enabled.", this.settings.enableStartTime, val => { this.settings.enableStartTime = val; }),
+		);
+		new window.ZeresPluginLibrary.Settings.SettingGroup("Button", { collapsible: true, shown: false, callback: () => { this.updateSettings(); this.updateRichPresence(); } }).appendTo(panel).append(
+			new window.ZeresPluginLibrary.Settings.Textbox("Button 1 Label", "Label for button.", this.settings.button1Label || "", val => { this.settings.button1Label = val; }),
+			new window.ZeresPluginLibrary.Settings.Textbox("Button 1 URL", "URL for button.", this.settings.button1URL || "", val => { this.settings.button1URL = val; }),
+			new window.ZeresPluginLibrary.Settings.Textbox("Button 2 Label", "Label for button.", this.settings.button2Label || "", val => { this.settings.button2Label = val; }),
+			new window.ZeresPluginLibrary.Settings.Textbox("Button 2 URL", "URL for button.", this.settings.button2URL || "", val => { this.settings.button2URL = val; }),
+		);
+		new window.ZeresPluginLibrary.Settings.SettingGroup("Notification", { collapsible: true, shown: false, callback: () => { this.updateSettings(); } }).appendTo(panel).append(
+			new window.ZeresPluginLibrary.Settings.Switch("ShowToast", `"RPC Pc Status Start in 3s"`, this.settings.ShowToast_ReadyStartup ?? true, val => { this.settings.ShowToast_ReadyStartup = val; }),
+		);
+		new window.ZeresPluginLibrary.Settings.SettingGroup("Rich Presence (advanced)", { collapsible: true, shown: false, callback: () => { this.updateSettings(); this.updateRichPresence(); } }).appendTo(panel).append(
 			new window.ZeresPluginLibrary.Settings.Textbox("Client ID", "The client ID of your Discord Rich Presence application.", this.settings.clientID || "", val => { this.settings.clientID = val; }),
 			new window.ZeresPluginLibrary.Settings.Textbox("Large Image Key", "The name of the asset or url (.png or .jpg) for your large image.", this.settings.largeImageKey || "", val => { this.settings.largeImageKey = val; }),
 			new window.ZeresPluginLibrary.Settings.Textbox("Large Image Text", "The text that appears when your large image is hovered over.", this.settings.largeImageText || "", val => { this.settings.largeImageText = val; }),
 			new window.ZeresPluginLibrary.Settings.Textbox("Small Image Key", "The name of the asset or url (.png or .jpg) for your small image.", this.settings.smallImageKey || "", val => { this.settings.smallImageKey = val; }),
 			new window.ZeresPluginLibrary.Settings.Textbox("Small Image Text", "The text that appears when your small image is hovered over.", this.settings.smallImageText || "", val => { this.settings.smallImageText = val; }),
-			new window.ZeresPluginLibrary.Settings.Switch("Enable Start Time", "Displays the amount of time your Rich Presence is enabled.", this.settings.enableStartTime, val => { this.settings.enableStartTime = val; }),
 			new window.ZeresPluginLibrary.Settings.Switch("Experimental: RPC Event Injection", "Bypasses the use of IPC and hopefully prevents other programs from using their own Rich Presences. Some errors may silently fail, so if something is not working, turn this switch off.", this.settings.experimentalRPCEventInjection, async val => { this.settings.experimentalRPCEventInjection = val; if (val) { await this.stopRichPresence(); await this.experimental_startRichPresence(); } else { await this.experimental_stopRichPresence(); await this.startRichPresence(); } })
-		);
-		new window.ZeresPluginLibrary.Settings.SettingGroup("Button Configuration", { collapsible: true, shown: false, callback: () => { this.updateSettings(); this.updateRichPresence(); } }).appendTo(panel).append(
-			new window.ZeresPluginLibrary.Settings.Textbox("Button 1 Label", "Label for button.", this.settings.button1Label || "", val => { this.settings.button1Label = val; }),
-			new window.ZeresPluginLibrary.Settings.Textbox("Button 1 URL", "URL for button.", this.settings.button1URL || "", val => { this.settings.button1URL = val; }),
-			new window.ZeresPluginLibrary.Settings.Textbox("Button 2 Label", "Label for button.", this.settings.button2Label || "", val => { this.settings.button2Label = val; }),
-			new window.ZeresPluginLibrary.Settings.Textbox("Button 2 URL", "URL for button.", this.settings.button2URL || "", val => { this.settings.button2URL = val; }),
 		);
 	}
 }
