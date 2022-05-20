@@ -6,6 +6,7 @@ on:
             - main
         paths-ignore:
             - "**.yml"
+            - "RPCPcStatus.devlop.js"
 
 jobs:
     main:
