@@ -30,7 +30,13 @@ const changelog = {
 			github_username: "Tharki-God",
 		},
 	],
-	changelog: [],
+	changelog: [
+		{
+			title: `Fixed bug`,
+			type: "fixed",
+			items: ["new feature not work in short"],
+		},
+	],
 };
 
 (() => {
@@ -3804,7 +3810,6 @@ class RPCPcStatus {
 		} else if (this.settings.timestamps == 2) {
 			this.startTime = Date.now() / 100;
 		}
-		this.startTime = Date.now();
 		this.initialized = true;
 	}
 	async stop() {
