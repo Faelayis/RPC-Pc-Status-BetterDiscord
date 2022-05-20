@@ -4,6 +4,7 @@
 	"description": "",
 	"main": "RPCPcStatus.plugin.js",
 	"scripts": {
+		"build": "node ./script/releases.js",
 		"prettier": "prettier --config .prettierrc --write ."
 	},
 	"repository": {
