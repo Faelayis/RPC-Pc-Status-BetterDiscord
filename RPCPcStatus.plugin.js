@@ -1,6 +1,6 @@
 /**
  * @name RPC-Pc-Status
- * @version 1.1.0
+ * @version 1.1.1
  * @author Faelayis
  * @authorId 328731868096888833
  * @description Rich Presence Pc Status for your Discord
@@ -17,7 +17,7 @@ let RPClient,
 //added, improved, fixed, progress
 const changelog = {
 	title: "RPC Pc Status Updated",
-	version: "1.1.0",
+	version: "1.1.1",
 	authors: [
 		{
 			name: "Faelayis",
@@ -32,9 +32,9 @@ const changelog = {
 	],
 	changelog: [
 		{
-			title: `Added System Uptime`,
-			type: "added",
-			items: ["Added option to show system uptime istead of RPC"],
+			title: `Fixed bug`,
+			type: "fixed",
+			items: ["new feature not work in short"],
 		},
 	],
 };
@@ -3810,7 +3810,6 @@ class RPCPcStatus {
 		} else if (this.settings.timestamps == 2) {
 			this.startTime = Date.now() / 100;
 		}
-		this.startTime = Date.now();
 		this.initialized = true;
 	}
 	async stop() {

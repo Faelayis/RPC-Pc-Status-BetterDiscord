@@ -2,7 +2,7 @@
 
 **BetterDiscord**
 - PluginRepo *Coming soon*
-- [Download latest](https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord/releases/download/1.1.0/RPCPcStatus.plugin.js)
+- [Download latest](https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord/releases/download/1.1.1/RPCPcStatus.plugin.js)
 
 Original [RPC-Pc-Status](https://github.com/Faelayis/RPC-Pc-Status#readme)<br>
 Modifier from [AutoStartRichPresence](https://github.com/Mega-Mewthree/BetterDiscordPlugins/tree/master/Plugins/AutoStartRichPresence)<br>
