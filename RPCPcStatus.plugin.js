@@ -1,6 +1,6 @@
 /**
 	* @name RPC-Pc-Status
-	* @version 1.0.2
+	* @version 1.1.0
 	* @author Faelayis
 	* @authorId 328731868096888833
 	* @description Rich Presence Pc Status for your Discord
@@ -17,7 +17,7 @@ Interval = Number;
 //added, improved, fixed, progress
 const changelog = {
 	title: "RPC Pc Status Updated",
-	version: "1.0.2",
+	version: "1.1.0",
 	authors: [ 
 		{
 			name: "Faelayis",
@@ -31,11 +31,6 @@ const changelog = {
 		},
 	],
 	changelog: [
-		{
-			title: `Minor Releases New Stable`,
-			type: "added",
-			items: ["New Color and Notification settings"],
-		},
 		{
 			title: `Added System Uptime`,
 			type: "added",
