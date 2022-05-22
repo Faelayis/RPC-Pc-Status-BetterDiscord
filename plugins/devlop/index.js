@@ -39,7 +39,10 @@ const changelog = {
 		{
 			title: `Fixed`,
 			type: "fixed",
-			items: ["if update from v1.x.x and above, changelog will not be displayed",],
+			items: [
+				"if update from v1.x.x and above, changelog will not be displayed",
+				"uptime timestamp defaults optional not found for first time install"
+			],
 		},
 		{
 			title: `Added`,
@@ -65,9 +68,9 @@ export default class Plugin {
 			return BdApi.showToast('RPC Pc Status: Please install "ZeresPluginLibrary" and restart this plugin.', { type: "error" });
 		}
 		this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
-		if (this.settings.timestamps == 1) {
+		if (this.settings.timestamps === 1) {
 			this.startTime = Date.now() / 1000 - os.uptime;
-		} else if (this.settings.timestamps == 2) {
+		} else if (this.settings.timestamps === 2) {
 			this.startTime = Date.now() / 100;
 		}
 		this.connected();
@@ -294,19 +297,19 @@ export default class Plugin {
 				new window.ZeresPluginLibrary.Settings.Dropdown(
 					"Uptime Timestamp",
 					"Weather you want to displays the amount of time your Rich Presence / System was up.",
-					this.settings.timestamps ?? "none",
+					this.settings.timestamps ?? 0,
 					[
 						{
 							label: "Off",
-							value: "0",
+							value: 0,
 						},
 						{
 							label: "Show System uptime",
-							value: "1",
+							value: 1,
 						},
 						{
 							label: "Show RPC uptime",
-							value: "2",
+							value: 2,
 						},
 					],
 					(val) => {
