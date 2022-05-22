@@ -1,0 +1,7 @@
+{
+	"build": {
+		"watch": false,
+		"output": "./",
+		"debug": true
+	}
+}
