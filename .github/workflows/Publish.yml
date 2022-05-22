@@ -1,6 +1,7 @@
 name: Publish
 
 on:
+    workflow_dispatch:
     push:
         tags:
             - "v*"
@@ -53,8 +54,8 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
-                  tag_name: ${{ github.ref }}
-                  release_name: ${{ github.ref }} # ${{ steps.extract_version.outputs.version }}
+                  tag_name: v${{ steps.extract_version.outputs.version }}
+                  release_name: ${{ steps.extract_version.outputs.version }}
                   draft: false
                   prerelease: false
 
