@@ -99,6 +99,7 @@ export default class Plugin {
 		if (!this.settings.lastVersionSeen || versionCompare(changelog.version, this.settings.lastChangelogVersionSeen || this.settings.lastVersionSeen) === 1) {
 			window.ZeresPluginLibrary.Modals.showChangelogModal(changelog.title, changelog.version, changelog.changelog);
 			this.settings.lastVersionSeen = changelog.version;
+			delete this.settings.lastChangelogVersionSeen;
 			this.updateSettings();
 		}
 		window.ZeresPluginLibrary?.PluginUpdater?.checkForUpdate?.(
