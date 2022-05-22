@@ -3,7 +3,7 @@ name: Publish
 on:
     push:
         tags:
-            - "*"
+            - "v*"
 env:
     NPM_USER: ${{ secrets.NPM_USER }}
     NPM_PASS: ${{ secrets.NPM_PASS }}
