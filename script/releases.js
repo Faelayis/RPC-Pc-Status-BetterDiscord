@@ -11,7 +11,7 @@ try {
 				console.log(`${version} -> ${package.version}`);
 				fs.readFile("README.md", "utf8", async (err, data) => {
 					if (err) throw err;
-					data = data.replace(`/v${version}/`, `/v${package.version}/`);
+					data = data.replace(/\d{1,2}\.\d{1,2}\.\d{1,3}/g, `${package.version}`);
 					console.log(data);
 					fs.writeFile("README.md", data, function (err) {
 						if (err) throw err;
