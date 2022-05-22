@@ -1,0 +1,47 @@
+name: Code Formatter
+
+on:
+    push:
+        branches:
+            - main
+        paths-ignore:
+            - "**.yml"
+
+env:
+    NPM_USER: ${{ secrets.NPM_USER }}
+    NPM_PASS: ${{ secrets.NPM_PASS }}
+    NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
+
+jobs:
+    main:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Setup Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "16"
+
+            - name: Login to GitHub Private NPM Registry
+              shell: bash
+              run: |
+                  npm install -g npm-cli-login
+                  npm-cli-login -u $NPM_USER -p $NPM_PASS -e "$NPM_EMAIL" -r "https://npm.pkg.github.com" -s "@betterdiscordbuilder"
+
+            - name: Install Dependencies
+              run: npm install
+            - name: Run Prettier
+              run: npm run prettier
+
+            - name: Automatically Commit Changed
+              uses: stefanzweifel/git-auto-commit-action@v4
+              with:
+                  push_options: "--force"
+                  commit_options: "--no-verify"
+                  commit_message: "Prettified Code!"
+                  commit_user_name: GitHub Actions
+                  commit_user_email: actions@github.com
+                  commit_author: GitHub Actions <actions@github.com>
+                  skip_checkout: true
