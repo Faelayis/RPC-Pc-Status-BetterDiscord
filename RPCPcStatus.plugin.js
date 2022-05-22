@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.0.0
+ * @version 2.0.1
  * @description Rich Presence Pc Status for your Discord
  * @author Faelayis
  * @source https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord
@@ -33,7 +33,7 @@
 const config = {
 	info: {
 		name: "RPCPcStatus",
-		version: "2.0.0",
+		version: "2.0.1",
 		description: "Rich Presence Pc Status for your Discord",
 		authors: [
 			{
@@ -13584,6 +13584,11 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				],
 				changelog: [
 					{
+						title: `Fixed`,
+						type: "fixed",
+						items: ["if update from v1.x.x and above, changelog will not be displayed"],
+					},
+					{
 						title: `Added`,
 						type: "added",
 						items: ["Features hide icon", "Features update channel stable and devlop", "Features presence update interval custom (1, 3, 10, 30) sec", "Support all os"],
@@ -13646,10 +13651,11 @@ function buildPlugin([BasePlugin, PluginApi]) {
 									.join("");
 								if (a === b) return 0;
 								return a < b ? -1 : 1;
-							})(changelog.version, this.settings.lastVersionSeen)
+							})(changelog.version, this.settings.lastChangelogVersionSeen || this.settings.lastVersionSeen)
 					) {
 						window.ZeresPluginLibrary.Modals.showChangelogModal(changelog.title, changelog.version, changelog.changelog);
 						this.settings.lastVersionSeen = changelog.version;
+						delete this.settings.lastChangelogVersionSeen;
 						this.updateSettings();
 					}
 					window.ZeresPluginLibrary?.PluginUpdater?.checkForUpdate?.(
