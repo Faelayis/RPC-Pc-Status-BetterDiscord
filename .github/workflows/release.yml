@@ -1,0 +1,70 @@
+name: Create Release
+
+on:
+    push:
+        tags:
+            - "*"
+env:
+    NPM_USER: ${{ secrets.NPM_USER }}
+    NPM_PASS: ${{ secrets.NPM_PASS }}
+    NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
+
+jobs:
+    main:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Setup Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "16"
+
+            - name: Extract version
+              id: extract_version
+              uses: Saionaro/extract-package-version@v1.0.6
+
+            - name: Login to GitHub Private NPM Registry
+              shell: bash
+              run: |
+                  npm install -g npm-cli-login
+                  npm-cli-login -u $NPM_USER -p $NPM_PASS -e "$NPM_EMAIL" -r "https://npm.pkg.github.com" -s "@betterdiscordbuilder"
+
+            - name: Install Dependencies
+              run: npm install
+            - name: Run Publish
+              run: npm run publish
+
+            - name: Automatically Commit Changed
+              uses: stefanzweifel/git-auto-commit-action@v4
+              with:
+                  push_options: "--force"
+                  commit_options: "--no-verify"
+                  commit_message: "New Releases ${{ steps.extract_version.outputs.version }}"
+                  commit_user_name: GitHub Actions
+                  commit_user_email: actions@github.com
+                  commit_author: GitHub Actions <actions@github.com>
+                  skip_checkout: true
+
+            - name: Create Release
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: ${{ github.ref }}
+                  release_name: ${{ github.ref }} # ${{ steps.extract_version.outputs.version }}
+                  draft: false
+                  prerelease: false
+
+            - name: Upload Release Asset
+              id: upload-release-asset
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ./RPCPcStatus.plugin.js
+                  asset_name: RPCPcStatus.plugin.js
+                  asset_content_type: text/javascript
