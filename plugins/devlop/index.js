@@ -37,6 +37,11 @@ const changelog = {
 	],
 	changelog: [
 		{
+			title: `Fixed`,
+			type: "fixed",
+			items: ["if update from v1.x.x and above, changelog will not be displayed",],
+		},
+		{
 			title: `Added`,
 			type: "added",
 			items: [
@@ -91,7 +96,7 @@ export default class Plugin {
 		}
 	}
 	async checkForUpdate() {
-		if (!this.settings.lastVersionSeen || versionCompare(changelog.version, this.settings.lastVersionSeen) === 1) {
+		if (!this.settings.lastVersionSeen || versionCompare(changelog.version, this.settings.lastChangelogVersionSeen || this.settings.lastVersionSeen) === 1) {
 			window.ZeresPluginLibrary.Modals.showChangelogModal(changelog.title, changelog.version, changelog.changelog);
 			this.settings.lastVersionSeen = changelog.version;
 			this.updateSettings();
@@ -225,11 +230,6 @@ export default class Plugin {
 				url: this.settings.button2URL,
 			});
 		}
-		// if (!this.settings.clientID && !(this.settings.clientID !== this.client.clientId)) {
-		// 	BdApi.showToast("RPC Pc Status use default Client ID")
-		// 	await this.stopPresence();
-		// 	this.connected();
-		// }
 		BdApi.saveData("RPCPcStatus", "settings", this.settings);
 	}
 	getSettingsPanel() {
