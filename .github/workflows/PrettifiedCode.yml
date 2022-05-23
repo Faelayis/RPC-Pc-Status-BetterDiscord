@@ -8,6 +8,8 @@ on:
         paths-ignore:
             - "**.yml"
             - "**.md"
+            - "**.json"
+            
 
 env:
     NPM_USER: ${{ secrets.NPM_USER }}
