@@ -9,12 +9,6 @@ on:
             - "**.yml"
             - "**.md"
             - "**.json"
-            
-
-env:
-    NPM_USER: ${{ secrets.NPM_USER }}
-    NPM_PASS: ${{ secrets.NPM_PASS }}
-    NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
 
 jobs:
     main:
@@ -30,14 +24,8 @@ jobs:
               with:
                   node-version: "16"
 
-            - name: Login to GitHub Private NPM Registry
-              shell: bash
-              run: |
-                  npm install -g npm-cli-login
-                  npm-cli-login -u $NPM_USER -p $NPM_PASS -e "$NPM_EMAIL" -r "https://npm.pkg.github.com" -s "@betterdiscordbuilder"
-
             - name: Install Dependencies
-              run: npm install
+              run: npm install -g prettier@2.6.2
             - name: Run Prettier
               run: npm run prettier
 
