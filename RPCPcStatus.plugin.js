@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.0.1
+ * @version 2.0.2
  * @description Rich Presence Pc Status for your Discord
  * @author Faelayis
  * @source https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord
@@ -33,7 +33,7 @@
 const config = {
 	info: {
 		name: "RPCPcStatus",
-		version: "2.0.1",
+		version: "2.0.2",
 		description: "Rich Presence Pc Status for your Discord",
 		authors: [
 			{
@@ -13586,7 +13586,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					{
 						title: `Fixed`,
 						type: "fixed",
-						items: ["if update from v1.x.x and above, changelog will not be displayed"],
+						items: ["if update from v1.x.x and above, changelog will not be displayed", "uptime timestamp defaults optional not found for first time install"],
 					},
 					{
 						title: `Added`,
@@ -13608,8 +13608,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 							type: "error",
 						});
 					this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
-					if (1 == this.settings.timestamps) this.startTime = Date.now() / 1e3 - os__WEBPACK_IMPORTED_MODULE_1__.uptime;
-					else if (2 == this.settings.timestamps) this.startTime = Date.now() / 100;
+					if (1 === this.settings.timestamps) this.startTime = Date.now() / 1e3 - os__WEBPACK_IMPORTED_MODULE_1__.uptime;
+					else if (2 === this.settings.timestamps) this.startTime = Date.now() / 100;
 					this.connected();
 					this.checkForUpdate();
 				}
@@ -13717,9 +13717,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 								if (0 === freemem) return "0 Bytes";
 								const k = 1024;
 								const i = Math.floor(Math.log(freemem) / Math.log(k));
-								const ramusag = `${parseFloat((totalmem / k ** i - freemem / k ** i).toFixed(2))} `;
 								const ram = `${parseFloat((totalmem / k ** i).toFixed(decimals < 0 ? 0 : decimals))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][i]}`;
-								return `${ramusag}/${ram}`;
+								return `${parseFloat((totalmem / k ** i - freemem / k ** i).toFixed(2))}/${ram}`;
 							})(os__WEBPACK_IMPORTED_MODULE_1__.freemem(), os__WEBPACK_IMPORTED_MODULE_1__.totalmem())}`,
 							assets: {
 								large_image: this.settings.hideicon ? void 0 : this.settings.largeImageKey || this.settings.LargeImageKeyColor || "icon_white",
@@ -13829,19 +13828,19 @@ function buildPlugin([BasePlugin, PluginApi]) {
 							new window.ZeresPluginLibrary.Settings.Dropdown(
 								"Uptime Timestamp",
 								"Weather you want to displays the amount of time your Rich Presence / System was up.",
-								this.settings.timestamps ?? "none",
+								this.settings.timestamps ?? 0,
 								[
 									{
 										label: "Off",
-										value: "0",
+										value: 0,
 									},
 									{
 										label: "Show System uptime",
-										value: "1",
+										value: 1,
 									},
 									{
 										label: "Show RPC uptime",
-										value: "2",
+										value: 2,
 									},
 								],
 								(val) => {
