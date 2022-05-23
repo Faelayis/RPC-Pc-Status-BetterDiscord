@@ -179,11 +179,9 @@ export default class Plugin {
 					return "0 Bytes";
 				}
 				const k = 1024;
-				const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-				const i = Math.floor(Math.log(freemem) / Math.log(k));
-				const ramusag = `${parseFloat((totalmem / k ** i - freemem / k ** i).toFixed(2 < 0 ? 0 : 2))} `;
-				const ram = `${parseFloat((totalmem / k ** i).toFixed(decimals < 0 ? 0 : decimals))} ${sizes[i]}`;
-				return `${ramusag}/${ram}`;
+				const i = Math.floor(Math.log(freemem) / Math.log(k));;
+				const ram = `${parseFloat((totalmem / k ** i).toFixed(decimals < 0 ? 0 : decimals))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][i]}`;
+				return `${parseFloat((totalmem / k ** i - freemem / k ** i).toFixed(2 < 0 ? 0 : 2))}/${ram}`;
 			}
 			this.client.setActivity({
 				details: `CPU ${this.cpuload || "0"}%`,
