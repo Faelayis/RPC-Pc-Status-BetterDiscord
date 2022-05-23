@@ -1,28 +1,19 @@
 import * as si from "systeminformation";
-import * as os from 'os';
+import * as os from "os";
 
 const timestamp = new Date(),
 	color = {
-		base: [
-			"color: #fff",
-			"background-color: #444",
-			"padding: 2px 4px",
-			"border-radius: 2px"
-		],
-		warn: [
-			"color: #eee",
-			"background-color: red"
-		],
-		succ: [
-			"background-color: green"
-		]
+		base: ["color: #fff", "background-color: #444", "padding: 2px 4px", "border-radius: 2px"],
+		warn: ["color: #eee", "background-color: red"],
+		succ: ["background-color: green"],
 	},
 	log = (text, extra = []) => {
-		let style = color.base.join(';') + ';';
-		if (extra) style += extra.join(';');
+		let style = color.base.join(";") + ";";
+		if (extra) style += extra.join(";");
 		console.log(`%c${text}`, style);
-	}
-let Interval, connecting = undefined;
+	};
+let Interval,
+	connecting = undefined;
 
 //added, improved, fixed, progress
 const changelog = {
@@ -39,20 +30,12 @@ const changelog = {
 		{
 			title: `Fixed`,
 			type: "fixed",
-			items: [
-				"if update from v1.x.x and above, changelog will not be displayed",
-				"uptime timestamp defaults optional not found for first time install"
-			],
+			items: ["if update from v1.x.x and above, changelog will not be displayed", "uptime timestamp defaults optional not found for first time install"],
 		},
 		{
 			title: `Added`,
 			type: "added",
-			items: [
-				"Features hide icon",
-				"Features update channel stable and devlop",
-				"Features presence update interval custom (1, 3, 10, 30) sec",
-				"Support all os"
-			],
+			items: ["Features hide icon", "Features update channel stable and devlop", "Features presence update interval custom (1, 3, 10, 30) sec", "Support all os"],
 		},
 		{
 			title: `Improved`,
@@ -84,16 +67,16 @@ export default class Plugin {
 				log("[RPC Pc Status] Connected!", color.succ);
 				connecting = false;
 				this.startPresence();
-				BdApi.showToast('RPC Pc Status: Connected');
+				BdApi.showToast("RPC Pc Status: Connected");
 			});
 			this.client.once("disconnected", () => {
 				this.stopPresence();
-				if (!connecting && this.settings.clientID) return connecting = true;
+				if (!connecting && this.settings.clientID) return (connecting = true);
 				log("[RPC Pc Status] Disconnected!", color.warn);
 				if (connecting) {
-					BdApi.showToast("Client ID authentication failed make sure your client ID is correct.", { type: "error" })
+					BdApi.showToast("Client ID authentication failed make sure your client ID is correct.", { type: "error" });
 				} else {
-					BdApi.showToast('RPC Pc Status: Disconnected');
+					BdApi.showToast("RPC Pc Status: Disconnected");
 				}
 			});
 		}
@@ -179,7 +162,7 @@ export default class Plugin {
 					return "0 Bytes";
 				}
 				const k = 1024;
-				const i = Math.floor(Math.log(freemem) / Math.log(k));;
+				const i = Math.floor(Math.log(freemem) / Math.log(k));
 				const ram = `${parseFloat((totalmem / k ** i).toFixed(decimals < 0 ? 0 : decimals))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][i]}`;
 				return `${parseFloat((totalmem / k ** i - freemem / k ** i).toFixed(2 < 0 ? 0 : 2))}/${ram}`;
 			}
@@ -204,7 +187,7 @@ export default class Plugin {
 			delete this.client;
 		} catch (error) {
 			if (!toast) return;
-			BdApi.showToast("RPC Pc Status stopped error", { type: "error" })
+			BdApi.showToast("RPC Pc Status stopped error", { type: "error" });
 			log(`[RPC Pc Status] ${error}`, color.warn);
 		}
 	}
@@ -248,7 +231,8 @@ export default class Plugin {
 			callback: () => {
 				this.updateSettings();
 			},
-		}).appendTo(panel)
+		})
+			.appendTo(panel)
 			.append(
 				new window.ZeresPluginLibrary.Settings.Dropdown(
 					"Color",
@@ -353,7 +337,8 @@ export default class Plugin {
 			callback: () => {
 				this.updateSettings();
 			},
-		}).appendTo(panel)
+		})
+			.appendTo(panel)
 			.append(
 				new window.ZeresPluginLibrary.Settings.Textbox("Button 1 Label", "Label for button.", this.settings.button1Label || "", (val) => {
 					this.settings.button1Label = val;
@@ -374,7 +359,8 @@ export default class Plugin {
 			callback: () => {
 				this.updateSettings();
 			},
-		}).appendTo(panel)
+		})
+			.appendTo(panel)
 			.append(
 				new window.ZeresPluginLibrary.Settings.Textbox("Client ID", "The client ID of your Discord Rich Presence application.", this.settings.clientID || "", (val) => {
 					this.settings.clientID = val;
@@ -420,7 +406,8 @@ export default class Plugin {
 			callback: () => {
 				this.updateSettings();
 			},
-		}).appendTo(panel)
+		})
+			.appendTo(panel)
 			.append(
 				new window.ZeresPluginLibrary.Settings.RadioGroup(
 					"Update Channel",
@@ -431,18 +418,18 @@ export default class Plugin {
 							name: "Stable",
 							value: 0,
 							desc: "",
-							color: "#43b581"
+							color: "#43b581",
 						},
 						{
 							name: "Devlop",
 							value: 1,
 							desc: "Come Soon",
 							color: "#d83c3e",
-							disabled: true
+							disabled: true,
 						},
 					],
 					(val) => {
-						this.checkForUpdate(val)
+						this.checkForUpdate(val);
 					},
 				),
 			);

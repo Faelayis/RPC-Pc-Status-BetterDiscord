@@ -1,8 +1,9 @@
 ## **Rich Presence Pc Status for BetterDiscord Plugin**
 
 **BetterDiscord**
-- PluginRepo *Coming soon if everything is ready*
-- [Download latest](https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord/releases/download/v2.0.2/RPCPcStatus.plugin.js)
+
+-   PluginRepo _Coming soon if everything is ready_
+-   [Download latest](https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord/releases/download/v2.0.2/RPCPcStatus.plugin.js)
 
 Original [RPC-Pc-Status](https://github.com/Faelayis/RPC-Pc-Status#readme)<br>
 
