@@ -15,7 +15,7 @@
 		"donate": "https://www.buymeacoffee.com/faelayis"
 	},
 	"build": {
-		"copy": true,
+		"copy": false,
 		"zlibrary": true,
 		"production": true,
 		"alias": {}
