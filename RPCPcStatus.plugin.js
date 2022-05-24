@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.0.2
+ * @version 2.1.0
  * @description Rich Presence Pc Status for your Discord
  * @author Faelayis
  * @source https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord
@@ -33,7 +33,7 @@
 const config = {
 	info: {
 		name: "RPCPcStatus",
-		version: "2.0.2",
+		version: "2.1.0",
 		description: "Rich Presence Pc Status for your Discord",
 		authors: [
 			{
@@ -47,7 +47,7 @@ const config = {
 		donate: "https://www.buymeacoffee.com/faelayis",
 	},
 	build: {
-		copy: true,
+		copy: false,
 		zlibrary: true,
 		production: true,
 		alias: {},
@@ -13584,6 +13584,18 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				],
 				changelog: [
 					{
+						title: `Added`,
+						type: "added",
+						items: ["Features Hide presence when listening spotify songs"],
+					},
+					{
+						title: `Improved`,
+						type: "improved",
+						items: ["Refactor code"],
+					},
+				],
+				changelog_prev: [
+					{
 						title: `Fixed`,
 						type: "fixed",
 						items: ["if update from v1.x.x and above, changelog will not be displayed", "uptime timestamp defaults optional not found for first time install"],
@@ -13603,7 +13615,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 			class Plugin {
 				start() {
 					log("[RPC Pc Status] Start!", color.succ);
-					if ("undefined" === typeof window.ZeresPluginLibrary)
+					if ("undefined" === typeof ZLibrary)
 						return BdApi.showToast('RPC Pc Status: Please install "ZeresPluginLibrary" and restart this plugin.', {
 							type: "error",
 						});
@@ -13653,12 +13665,12 @@ function buildPlugin([BasePlugin, PluginApi]) {
 								return a < b ? -1 : 1;
 							})(changelog.version, this.settings.lastChangelogVersionSeen || this.settings.lastVersionSeen)
 					) {
-						window.ZeresPluginLibrary.Modals.showChangelogModal(changelog.title, changelog.version, changelog.changelog);
+						ZLibrary.Modals.showChangelogModal(changelog.title, changelog.version, changelog.changelog);
 						this.settings.lastVersionSeen = changelog.version;
 						delete this.settings.lastChangelogVersionSeen;
 						this.updateSettings();
 					}
-					window.ZeresPluginLibrary?.PluginUpdater?.checkForUpdate?.(
+					ZLibrary?.PluginUpdater?.checkForUpdate?.(
 						"RPCPcStatus",
 						changelog.version,
 						"https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js",
@@ -13710,6 +13722,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					if (Interval) await clearInterval(Interval);
 					Interval = setInterval(async () => {
 						if (!this.client) return clearInterval(Interval);
+						if (this.settings.automatically?.hide?.spotify || (false && 0) ? true : false) return;
 						systeminformation__WEBPACK_IMPORTED_MODULE_0__.currentLoad().then((data) => (this.cpuload = data.currentLoad.toFixed(0)));
 						this.client.setActivity({
 							details: `CPU ${this.cpuload || "0"}%`,
@@ -13774,7 +13787,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					return panel;
 				}
 				generateSettings(panel) {
-					new window.ZeresPluginLibrary.Settings.SettingGroup("General", {
+					new ZLibrary.Settings.SettingGroup("General", {
 						collapsible: true,
 						shown: true,
 						callback: () => {
@@ -13783,7 +13796,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					})
 						.appendTo(panel)
 						.append(
-							new window.ZeresPluginLibrary.Settings.Dropdown(
+							new ZLibrary.Settings.Dropdown(
 								"Color",
 								null,
 								this.settings.LargeImageKeyColor ?? "icon_white",
@@ -13825,7 +13838,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 									this.settings.LargeImageKeyColor = val;
 								},
 							),
-							new window.ZeresPluginLibrary.Settings.Dropdown(
+							new ZLibrary.Settings.Dropdown(
 								"Uptime Timestamp",
 								"Weather you want to displays the amount of time your Rich Presence / System was up.",
 								this.settings.timestamps ?? 0,
@@ -13847,7 +13860,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 									this.settings.timestamps = val;
 								},
 							),
-							new window.ZeresPluginLibrary.Settings.Dropdown(
+							new ZLibrary.Settings.Dropdown(
 								"Presence update interval",
 								null,
 								this.settings.presenceUpdateInterval ?? 1e3,
@@ -13876,11 +13889,23 @@ function buildPlugin([BasePlugin, PluginApi]) {
 									this.startPresence();
 								},
 							),
-							new window.ZeresPluginLibrary.Settings.Switch("Hide Icon", "Hide all icon. show only text", this.settings.hideicon || false, (val) => {
+							new ZLibrary.Settings.Switch(
+								"Hide presence when listening spotify songs",
+								"hide presence pc status",
+								this.settings.automatically?.hide?.spotify || false,
+								(val) => {
+									this.settings.automatically = {
+										hide: {
+											spotify: val,
+										},
+									};
+								},
+							),
+							new ZLibrary.Settings.Switch("Hide Icon", "presence show only text", this.settings.hideicon || false, (val) => {
 								this.settings.hideicon = val;
 							}),
 						);
-					new window.ZeresPluginLibrary.Settings.SettingGroup("Button", {
+					new ZLibrary.Settings.SettingGroup("Button", {
 						collapsible: true,
 						shown: false,
 						callback: () => {
@@ -13892,17 +13917,17 @@ function buildPlugin([BasePlugin, PluginApi]) {
 							new window.ZeresPluginLibrary.Settings.Textbox("Button 1 Label", "Label for button.", this.settings.button1Label || "", (val) => {
 								this.settings.button1Label = val;
 							}),
-							new window.ZeresPluginLibrary.Settings.Textbox("Button 1 URL", "URL for button.", this.settings.button1URL || "", (val) => {
+							new ZLibrary.Settings.Textbox("Button 1 URL", "URL for button.", this.settings.button1URL || "", (val) => {
 								this.settings.button1URL = val;
 							}),
-							new window.ZeresPluginLibrary.Settings.Textbox("Button 2 Label", "Label for button.", this.settings.button2Label || "", (val) => {
+							new ZLibrary.Settings.Textbox("Button 2 Label", "Label for button.", this.settings.button2Label || "", (val) => {
 								this.settings.button2Label = val;
 							}),
-							new window.ZeresPluginLibrary.Settings.Textbox("Button 2 URL", "URL for button.", this.settings.button2URL || "", (val) => {
+							new ZLibrary.Settings.Textbox("Button 2 URL", "URL for button.", this.settings.button2URL || "", (val) => {
 								this.settings.button2URL = val;
 							}),
 						);
-					new window.ZeresPluginLibrary.Settings.SettingGroup("Rich Presence (advanced)", {
+					new ZLibrary.Settings.SettingGroup("Rich Presence (advanced)", {
 						collapsible: true,
 						shown: false,
 						callback: () => {
@@ -13911,17 +13936,12 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					})
 						.appendTo(panel)
 						.append(
-							new window.ZeresPluginLibrary.Settings.Textbox(
-								"Client ID",
-								"The client ID of your Discord Rich Presence application.",
-								this.settings.clientID || "",
-								(val) => {
-									this.settings.clientID = val;
-									this.stopPresence();
-									this.connected();
-								},
-							),
-							new window.ZeresPluginLibrary.Settings.Textbox(
+							new ZLibrary.Settings.Textbox("Client ID", "The client ID of your Discord Rich Presence application.", this.settings.clientID || "", (val) => {
+								this.settings.clientID = val;
+								this.stopPresence();
+								this.connected();
+							}),
+							new ZLibrary.Settings.Textbox(
 								"Large Image Key",
 								"The name of the asset or url (.png or .jpg) for your large image.",
 								this.settings.largeImageKey || "",
@@ -13929,7 +13949,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 									this.settings.largeImageKey = val;
 								},
 							),
-							new window.ZeresPluginLibrary.Settings.Textbox(
+							new ZLibrary.Settings.Textbox(
 								"Large Image Text",
 								"The text that appears when your large image is hovered over.",
 								this.settings.largeImageText || "",
@@ -13937,7 +13957,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 									this.settings.largeImageText = val;
 								},
 							),
-							new window.ZeresPluginLibrary.Settings.Textbox(
+							new ZLibrary.Settings.Textbox(
 								"Small Image Key",
 								"The name of the asset or url (.png or .jpg) for your small image.",
 								this.settings.smallImageKey || "",
@@ -13945,7 +13965,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 									this.settings.smallImageKey = val;
 								},
 							),
-							new window.ZeresPluginLibrary.Settings.Textbox(
+							new ZLibrary.Settings.Textbox(
 								"Small Image Text",
 								"The text that appears when your small image is hovered over.",
 								this.settings.smallImageText || "",
@@ -13954,7 +13974,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 								},
 							),
 						);
-					new window.ZeresPluginLibrary.Settings.SettingGroup("Other", {
+					new ZLibrary.Settings.SettingGroup("Other", {
 						collapsible: true,
 						shown: false,
 						callback: () => {
@@ -13963,7 +13983,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					})
 						.appendTo(panel)
 						.append(
-							new window.ZeresPluginLibrary.Settings.RadioGroup(
+							new ZLibrary.Settings.RadioGroup(
 								"Update Channel",
 								null,
 								this.settings.updatechannel ?? 0,
