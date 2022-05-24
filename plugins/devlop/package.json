@@ -2,6 +2,7 @@
 	"info": {
 		"name": "RPCPcStatus",
 		"version": "2.2.0",
+		"authorLink": "https://discordapp.com/users/328731868096888833",
 		"description": "Rich Presence Pc Status for your Discord",
 		"authors": [
 			{
