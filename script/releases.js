@@ -6,6 +6,7 @@ let version;
 try {
 	(async () => {
 		if (process.env.version_publish) {
+			console.log(`input version: ${process.env.version_publish}`);
 			for (const key of package_dir) {
 				await editJsonFile(`${__dirname}/${key}`, {
 					autosave: true,
@@ -21,7 +22,6 @@ try {
 				fs.readFile("README.md", "utf8", async (err, data) => {
 					if (err) throw err;
 					data = data.replace(/\d{1,2}\.\d{1,2}\.\d{1,3}/g, `${package.version}`);
-					console.log(data);
 					fs.writeFile("README.md", data, function (err) {
 						if (err) throw err;
 						console.log("Update README.md");
