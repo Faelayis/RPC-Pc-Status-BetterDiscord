@@ -17,9 +17,6 @@ on:
                 description: "This is a pre-releasee"
                 required: false
                 type: boolean
-#     push:
-#         tags:
-#             - "v*"
 
 env:
     version_publish: ${{ github.event.inputs.version }}
@@ -29,7 +26,7 @@ env:
     NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
 
 jobs:
-    Build:
+    main:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -49,15 +46,21 @@ jobs:
                   npm-cli-login -u $NPM_USER -p $NPM_PASS -e "$NPM_EMAIL" -r "https://npm.pkg.github.com" -s "@betterdiscordbuilder"
 
             - name: Install Dependencies
+              id: npm_install
               run: npm install
             - name: Run Publish
+              if: steps.npm_install.outcome == 'success'
+              id: run_publish
               run: npm run publish
 
             - name: Extract version
+              if: steps.run_publish.outcome == 'success'
               id: extract_version
               uses: Saionaro/extract-package-version@v1.0.6
 
             - name: Automatically Commit Changed
+              if: steps.extract_version.outcome == 'success'
+              id: commit_changed
               uses: stefanzweifel/git-auto-commit-action@v4
               with:
                   push_options: "--force"
@@ -68,20 +71,8 @@ jobs:
                   commit_author: GitHub Actions <actions@github.com>
                   skip_checkout: true
 
-    Release:
-        needs: Build
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v2
-              with:
-                  ref: ${{ github.head_ref }}
-
-            - name: Extract version
-              id: extract_version
-              uses: Saionaro/extract-package-version@v1.0.6
-
             - name: Create Release
+              if: steps.commit_changed.outcome == 'success'
               id: create_release
               uses: actions/create-release@v1
               env:
@@ -94,6 +85,7 @@ jobs:
                   prerelease: ${{ github.event.inputs.prerelease }}
 
             - name: Upload Release Asset
+              if: steps.create_release.outcome == 'success'
               id: upload-release-asset
               uses: actions/upload-release-asset@v1
               env:
