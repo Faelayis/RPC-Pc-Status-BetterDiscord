@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "RPCPcStatus.plugin.js",
 	"scripts": {
-		"dev": "bdbuilder --plugin=./devlop -watch --production",
+		"dev": "bdbuilder --plugin=./devlop --watch --production",
 		"fix": "eslint . --fix",
 		"lint": "eslint .",
 		"build": "node ./script/releases.js",
