@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.1.1
+ * @version 2.1.0
  * @description Rich Presence Pc Status for your Discord
  * @author Faelayis
  * @source https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord
