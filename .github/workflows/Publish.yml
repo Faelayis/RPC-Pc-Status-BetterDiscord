@@ -6,7 +6,7 @@ on:
             version:
                 type: string
                 required: false
-                description: Version bump (Replace package.json)
+                description: Version (Replace package.json) e.g. "1.0.0"
             releases:
                 type: choice
                 description: Releases
