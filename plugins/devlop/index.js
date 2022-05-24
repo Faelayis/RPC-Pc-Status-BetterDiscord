@@ -30,7 +30,7 @@ const changelog = {
 		{
 			title: `Added`,
 			type: "added",
-			items: ["Features Hide presence when listening spotify songs"],
+			items: ["1 and 3 min optional for presence update interval custom","Features Hide presence when listening spotify songs"],
 		},
 		{
 			title: `Improved`,
@@ -38,23 +38,23 @@ const changelog = {
 			items: ["Hide update channel devlop", "Refactor code"],
 		},
 	],
-	changelog_prev: [
-		{
-			title: `Fixed`,
-			type: "fixed",
-			items: ["if update from v1.x.x and above, changelog will not be displayed", "uptime timestamp defaults optional not found for first time install"],
-		},
-		{
-			title: `Added`,
-			type: "added",
-			items: ["Features hide icon", "Features update channel stable and devlop", "Features presence update interval custom (1, 3, 10, 30) sec", "Support all os"],
-		},
-		{
-			title: `Improved`,
-			type: "improved",
-			items: ["Refactor rewrite code (2.0.0)"],
-		},
-	],
+	// changelog_prev: [
+	// 	{
+	// 		title: `Fixed`,
+	// 		type: "fixed",
+	// 		items: ["if update from v1.x.x and above, changelog will not be displayed", "uptime timestamp defaults optional not found for first time install"],
+	// 	},
+	// 	{
+	// 		title: `Added`,
+	// 		type: "added",
+	// 		items: ["Features hide icon", "Features update channel stable and devlop", "Features presence update interval custom (1, 3, 10, 30) sec", "Support all os"],
+	// 	},
+	// 	{
+	// 		title: `Improved`,
+	// 		type: "improved",
+	// 		items: ["Refactor rewrite code (2.0.0)"],
+	// 	},
+	// ],
 };
 export default class Plugin {
 	start() {
@@ -328,6 +328,14 @@ export default class Plugin {
 						{
 							label: "30 Second",
 							value: 30000,
+						},
+						{
+							label: "1 min",
+							value: 60000,
+						},
+						{
+							label: "3 min",
+							value: 180000,
 						},
 					],
 					(val) => {
