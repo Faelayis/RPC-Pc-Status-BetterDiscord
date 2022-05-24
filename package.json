@@ -12,7 +12,7 @@
 		"npm-install": "cd ./plugins/devlop && npm i",
 		"prettier": "prettier --config .prettierrc --write .",
 		"script:auth": "node ./script/authentication.js",
-		"publish": "node ./script/releases.js && npm run npm-install && bdbuilder --plugin=./devlop  && npm run prettier"
+		"publish": "node ./script/releases.js && npm run npm-install && bdbuilder --plugin=./devlop --production && npm run prettier"
 	},
 	"repository": {
 		"type": "git",
