@@ -2,10 +2,24 @@ name: Publish
 
 on:
     workflow_dispatch:
+        inputs:
+            version:
+                type: string
+                required: false
+                description: Version bump
+            releases:
+                type: choice
+                description: Releases
+                options:
+                    - Stable
+                    - Devlop (Pre-release)
+
 #     push:
 #         tags:
 #             - "v*"
 env:
+    version_publish: ${{ github.event.inputs.version }}
+    releases_publish: ${{ github.event.inputs.releases }}
     NPM_USER: ${{ secrets.NPM_USER }}
     NPM_PASS: ${{ secrets.NPM_PASS }}
     NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
