@@ -7,7 +7,7 @@ try {
 	(async () => {
 		if (process.env.version_publish) {
 			for (const key of package_dir) {
-				await editJsonFile(`${__dirname}${key}`, {
+				await editJsonFile(`${__dirname}/${key}`, {
 					autosave: true,
 				}).set(["version", "info.version"][package_dir.indexOf(key)], process.env.version_publish);
 			}
