@@ -38,10 +38,6 @@ jobs:
               with:
                   node-version: "16"
 
-            - name: Extract version
-              id: extract_version
-              uses: Saionaro/extract-package-version@v1.0.6
-
             - name: Login to GitHub Private NPM Registry
               shell: bash
               run: |
@@ -52,6 +48,10 @@ jobs:
               run: npm install
             - name: Run Publish
               run: npm run publish
+
+            - name: Extract version
+              id: extract_version
+              uses: Saionaro/extract-package-version@v1.0.6
 
             - name: Automatically Commit Changed
               uses: stefanzweifel/git-auto-commit-action@v4
@@ -69,7 +69,7 @@ jobs:
               with:
                   GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
                   tag_prefix: "v"
-                  
+
             - name: Create Release
               id: create_release
               uses: actions/create-release@v1
