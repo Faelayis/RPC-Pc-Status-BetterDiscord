@@ -1,6 +1,6 @@
 {
 	"name": "rpc-pc-status-betterdiscord",
-	"version": "2.1.2",
+	"version": "2.2.0",
 	"description": "",
 	"main": "RPCPcStatus.plugin.js",
 	"scripts": {

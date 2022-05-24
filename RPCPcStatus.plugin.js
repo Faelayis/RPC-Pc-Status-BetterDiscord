@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.1.2
+ * @version 2.2.0
  * @description Rich Presence Pc Status for your Discord
  * @author Faelayis
  * @source https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord
@@ -33,7 +33,7 @@
 const config = {
 	info: {
 		name: "RPCPcStatus",
-		version: "2.1.2",
+		version: "2.2.0",
 		description: "Rich Presence Pc Status for your Discord",
 		authors: [
 			{
@@ -13586,12 +13586,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					{
 						title: `Added`,
 						type: "added",
-						items: ["1 and 3 min optional for presence update interval custom", "Features Hide presence when listening spotify songs"],
-					},
-					{
-						title: `Improved`,
-						type: "improved",
-						items: ["Hide update channel devlop", "Refactor code"],
+						items: ["Features hide when custom status (Online, Idle, DND, Invisible)"],
 					},
 				],
 			};
@@ -13603,10 +13598,15 @@ function buildPlugin([BasePlugin, PluginApi]) {
 							type: "error",
 						});
 					this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
+					this.generateconfig();
 					if (1 === this.settings.timestamps) this.startTime = Date.now() / 1e3 - os__WEBPACK_IMPORTED_MODULE_1__.uptime;
 					else if (2 === this.settings.timestamps) this.startTime = Date.now() / 100;
 					this.connected();
 					this.checkForUpdate();
+				}
+				generateconfig() {
+					if (!this.settings.customstatus_hide) this.settings.customstatus_hide = ["invisible"];
+					this.updateSettings();
 				}
 				async connected() {
 					if (!this.client) {
@@ -13705,7 +13705,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					if (Interval) await clearInterval(Interval);
 					Interval = setInterval(async () => {
 						if (!this.client) return clearInterval(Interval);
-						if (this.settings.automatically?.hide?.spotify || (false && 0) ? true : false) return;
+						if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
+						if (this.settings.automatically?.hide?.spotify || (false && 0) ? true : false) return this.client.setActivity(null);
 						systeminformation__WEBPACK_IMPORTED_MODULE_0__.currentLoad().then((data) => (this.cpuload = data.currentLoad.toFixed(0)));
 						this.client.setActivity({
 							details: `CPU ${this.cpuload || "0"}%`,
@@ -13894,6 +13895,30 @@ function buildPlugin([BasePlugin, PluginApi]) {
 							),
 							new ZLibrary.Settings.Switch("Hide Icon", "presence show only text", this.settings.hideicon || false, (val) => {
 								this.settings.hideicon = val;
+							}),
+						);
+					new ZLibrary.Settings.SettingGroup("Hide when custom status", {
+						collapsible: true,
+						shown: false,
+						callback: () => {
+							this.updateSettings();
+						},
+					})
+						.appendTo(panel)
+						.append(
+							new ZLibrary.Settings.Switch("Online", null, this.settings.customstatus_hide?.includes("online") ?? false, (val) => {
+								val ? this.settings.customstatus_hide.push("online") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => "online" !== x));
+							}),
+							new ZLibrary.Settings.Switch("Idle", null, this.settings.customstatus_hide?.includes("idle") ?? false, (val) => {
+								val ? this.settings.customstatus_hide.push("idle") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => "idle" !== x));
+							}),
+							new ZLibrary.Settings.Switch("Do Not Disturb", null, this.settings.customstatus_hide?.includes("dnd") ?? false, (val) => {
+								val ? this.settings.customstatus_hide.push("dnd") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => "dnd" !== x));
+							}),
+							new ZLibrary.Settings.Switch("Invisible", null, this.settings.customstatus_hide?.includes("invisible") ?? true, (val) => {
+								val
+									? this.settings.customstatus_hide.push("invisible")
+									: (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => "invisible" !== x));
 							}),
 						);
 					new ZLibrary.Settings.SettingGroup("Button", {
