@@ -413,13 +413,13 @@ export default class Plugin {
 							desc: "",
 							color: "#43b581",
 						},
-						{
-							name: "Devlop",
-							value: 1,
-							desc: "Come Soon",
-							color: "#d83c3e",
-							disabled: true,
-						},
+						// {
+						// 	name: "Devlop",
+						// 	value: 1,
+						// 	desc: "Come Soon",
+						// 	color: "#d83c3e",
+						// 	disabled: true,
+						// },
 					],
 					(val) => {
 						this.checkForUpdate(val);
