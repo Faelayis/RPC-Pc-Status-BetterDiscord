@@ -35,7 +35,7 @@ const changelog = {
 		{
 			title: `Improved`,
 			type: "improved",
-			items: ["Refactor code"],
+			items: ["Hide update channel devlop","Refactor code"],
 		},
 	],
 	changelog_prev: [
