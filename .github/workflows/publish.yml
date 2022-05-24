@@ -14,7 +14,7 @@ on:
                     - Stable
                     - Devlop (Pre-release)
             prerelease:
-                description: "Create Release pre-release"
+                description: "This is a pre-releasee"
                 required: false
                 type: boolean
 #     push:
