@@ -28,6 +28,18 @@ const changelog = {
 	],
 	changelog: [
 		{
+			title: `Added`,
+			type: "added",
+			items: ["Features Hide presence when listening spotify songs"],
+		},
+		{
+			title: `Improved`,
+			type: "improved",
+			items: ["Refactor code"],
+		},
+	],
+	changelog_prev: [
+		{
 			title: `Fixed`,
 			type: "fixed",
 			items: ["if update from v1.x.x and above, changelog will not be displayed", "uptime timestamp defaults optional not found for first time install"],
@@ -47,7 +59,7 @@ const changelog = {
 export default class Plugin {
 	start() {
 		log("[RPC Pc Status] Start!", color.succ);
-		if (typeof window.ZeresPluginLibrary === "undefined") {
+		if (typeof ZLibrary === "undefined") {
 			return BdApi.showToast('RPC Pc Status: Please install "ZeresPluginLibrary" and restart this plugin.', { type: "error" });
 		}
 		this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
@@ -83,16 +95,12 @@ export default class Plugin {
 	}
 	async checkForUpdate() {
 		if (!this.settings.lastVersionSeen || versionCompare(changelog.version, this.settings.lastChangelogVersionSeen || this.settings.lastVersionSeen) === 1) {
-			window.ZeresPluginLibrary.Modals.showChangelogModal(changelog.title, changelog.version, changelog.changelog);
+			ZLibrary.Modals.showChangelogModal(changelog.title, changelog.version, changelog.changelog);
 			this.settings.lastVersionSeen = changelog.version;
 			delete this.settings.lastChangelogVersionSeen;
 			this.updateSettings();
 		}
-		window.ZeresPluginLibrary?.PluginUpdater?.checkForUpdate?.(
-			"RPCPcStatus",
-			changelog.version,
-			"https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js",
-		);
+		ZLibrary?.PluginUpdater?.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js");
 
 		function versionCompare(a, b) {
 			a = a
@@ -156,6 +164,8 @@ export default class Plugin {
 		if (Interval) await clearInterval(Interval);
 		Interval = setInterval(async () => {
 			if (!this.client) return clearInterval(Interval);
+			//BDFDB.LibraryModules.SpotifyTrackUtils.getTrack()
+			if (this.settings.automatically?.hide?.spotify || (false && ZLibrary.DiscordModules.UserActivityStore.getActivity()?.name === "Spotify") ? true : false) return;
 			si.currentLoad().then((data) => (this.cpuload = data.currentLoad.toFixed(0)));
 			function formatBytes(freemem, totalmem, decimals = 0) {
 				if (freemem === 0) {
@@ -225,7 +235,7 @@ export default class Plugin {
 		return panel;
 	}
 	generateSettings(panel) {
-		new window.ZeresPluginLibrary.Settings.SettingGroup("General", {
+		new ZLibrary.Settings.SettingGroup("General", {
 			collapsible: true,
 			shown: true,
 			callback: () => {
@@ -234,7 +244,7 @@ export default class Plugin {
 		})
 			.appendTo(panel)
 			.append(
-				new window.ZeresPluginLibrary.Settings.Dropdown(
+				new ZLibrary.Settings.Dropdown(
 					"Color",
 					null,
 					this.settings.LargeImageKeyColor ?? "icon_white",
@@ -276,7 +286,7 @@ export default class Plugin {
 						this.settings.LargeImageKeyColor = val;
 					},
 				),
-				new window.ZeresPluginLibrary.Settings.Dropdown(
+				new ZLibrary.Settings.Dropdown(
 					"Uptime Timestamp",
 					"Weather you want to displays the amount of time your Rich Presence / System was up.",
 					this.settings.timestamps ?? 0,
@@ -298,7 +308,7 @@ export default class Plugin {
 						this.settings.timestamps = val;
 					},
 				),
-				new window.ZeresPluginLibrary.Settings.Dropdown(
+				new ZLibrary.Settings.Dropdown(
 					"Presence update interval",
 					null,
 					this.settings.presenceUpdateInterval ?? 1000,
@@ -327,11 +337,14 @@ export default class Plugin {
 						this.startPresence();
 					},
 				),
-				new window.ZeresPluginLibrary.Settings.Switch("Hide Icon", "Hide all icon. show only text", this.settings.hideicon || false, (val) => {
+				new ZLibrary.Settings.Switch("Hide presence when listening spotify songs", "hide presence pc status", this.settings.automatically?.hide?.spotify || false, (val) => {
+					this.settings.automatically = { hide: { spotify: val } };
+				}),
+				new ZLibrary.Settings.Switch("Hide Icon", "presence show only text", this.settings.hideicon || false, (val) => {
 					this.settings.hideicon = val;
 				}),
 			);
-		new window.ZeresPluginLibrary.Settings.SettingGroup("Button", {
+		new ZLibrary.Settings.SettingGroup("Button", {
 			collapsible: true,
 			shown: false,
 			callback: () => {
@@ -343,17 +356,17 @@ export default class Plugin {
 				new window.ZeresPluginLibrary.Settings.Textbox("Button 1 Label", "Label for button.", this.settings.button1Label || "", (val) => {
 					this.settings.button1Label = val;
 				}),
-				new window.ZeresPluginLibrary.Settings.Textbox("Button 1 URL", "URL for button.", this.settings.button1URL || "", (val) => {
+				new ZLibrary.Settings.Textbox("Button 1 URL", "URL for button.", this.settings.button1URL || "", (val) => {
 					this.settings.button1URL = val;
 				}),
-				new window.ZeresPluginLibrary.Settings.Textbox("Button 2 Label", "Label for button.", this.settings.button2Label || "", (val) => {
+				new ZLibrary.Settings.Textbox("Button 2 Label", "Label for button.", this.settings.button2Label || "", (val) => {
 					this.settings.button2Label = val;
 				}),
-				new window.ZeresPluginLibrary.Settings.Textbox("Button 2 URL", "URL for button.", this.settings.button2URL || "", (val) => {
+				new ZLibrary.Settings.Textbox("Button 2 URL", "URL for button.", this.settings.button2URL || "", (val) => {
 					this.settings.button2URL = val;
 				}),
 			);
-		new window.ZeresPluginLibrary.Settings.SettingGroup("Rich Presence (advanced)", {
+		new ZLibrary.Settings.SettingGroup("Rich Presence (advanced)", {
 			collapsible: true,
 			shown: false,
 			callback: () => {
@@ -362,45 +375,25 @@ export default class Plugin {
 		})
 			.appendTo(panel)
 			.append(
-				new window.ZeresPluginLibrary.Settings.Textbox("Client ID", "The client ID of your Discord Rich Presence application.", this.settings.clientID || "", (val) => {
+				new ZLibrary.Settings.Textbox("Client ID", "The client ID of your Discord Rich Presence application.", this.settings.clientID || "", (val) => {
 					this.settings.clientID = val;
 					this.stopPresence();
 					this.connected();
 				}),
-				new window.ZeresPluginLibrary.Settings.Textbox(
-					"Large Image Key",
-					"The name of the asset or url (.png or .jpg) for your large image.",
-					this.settings.largeImageKey || "",
-					(val) => {
-						this.settings.largeImageKey = val;
-					},
-				),
-				new window.ZeresPluginLibrary.Settings.Textbox(
-					"Large Image Text",
-					"The text that appears when your large image is hovered over.",
-					this.settings.largeImageText || "",
-					(val) => {
-						this.settings.largeImageText = val;
-					},
-				),
-				new window.ZeresPluginLibrary.Settings.Textbox(
-					"Small Image Key",
-					"The name of the asset or url (.png or .jpg) for your small image.",
-					this.settings.smallImageKey || "",
-					(val) => {
-						this.settings.smallImageKey = val;
-					},
-				),
-				new window.ZeresPluginLibrary.Settings.Textbox(
-					"Small Image Text",
-					"The text that appears when your small image is hovered over.",
-					this.settings.smallImageText || "",
-					(val) => {
-						this.settings.smallImageText = val;
-					},
-				),
+				new ZLibrary.Settings.Textbox("Large Image Key", "The name of the asset or url (.png or .jpg) for your large image.", this.settings.largeImageKey || "", (val) => {
+					this.settings.largeImageKey = val;
+				}),
+				new ZLibrary.Settings.Textbox("Large Image Text", "The text that appears when your large image is hovered over.", this.settings.largeImageText || "", (val) => {
+					this.settings.largeImageText = val;
+				}),
+				new ZLibrary.Settings.Textbox("Small Image Key", "The name of the asset or url (.png or .jpg) for your small image.", this.settings.smallImageKey || "", (val) => {
+					this.settings.smallImageKey = val;
+				}),
+				new ZLibrary.Settings.Textbox("Small Image Text", "The text that appears when your small image is hovered over.", this.settings.smallImageText || "", (val) => {
+					this.settings.smallImageText = val;
+				}),
 			);
-		new window.ZeresPluginLibrary.Settings.SettingGroup("Other", {
+		new ZLibrary.Settings.SettingGroup("Other", {
 			collapsible: true,
 			shown: false,
 			callback: () => {
@@ -409,7 +402,7 @@ export default class Plugin {
 		})
 			.appendTo(panel)
 			.append(
-				new window.ZeresPluginLibrary.Settings.RadioGroup(
+				new ZLibrary.Settings.RadioGroup(
 					"Update Channel",
 					null,
 					this.settings.updatechannel ?? 0,
