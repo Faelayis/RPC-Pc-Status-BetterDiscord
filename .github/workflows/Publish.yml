@@ -53,6 +53,17 @@ jobs:
               id: extract_version
               uses: Saionaro/extract-package-version@v1.0.6
 
+            - name: Automatically Commit Changed
+              uses: stefanzweifel/git-auto-commit-action@v4
+              with:
+                  push_options: "--force"
+                  commit_options: "--no-verify"
+                  commit_message: "New Releases ${{ steps.extract_version.outputs.version }}"
+                  commit_user_name: GitHub Actions
+                  commit_user_email: actions@github.com
+                  commit_author: GitHub Actions <actions@github.com>
+                  skip_checkout: true
+
             - name: Create Tag
               uses: Klemensas/action-autotag@stable
               with:
@@ -69,17 +80,6 @@ jobs:
                   release_name: ${{ steps.extract_version.outputs.version }}
                   draft: false
                   prerelease: false
-
-            - name: Automatically Commit Changed
-              uses: stefanzweifel/git-auto-commit-action@v4
-              with:
-                  push_options: "--force"
-                  commit_options: "--no-verify"
-                  commit_message: "New Releases ${{ steps.extract_version.outputs.version }}"
-                  commit_user_name: GitHub Actions
-                  commit_user_email: actions@github.com
-                  commit_author: GitHub Actions <actions@github.com>
-                  skip_checkout: true
 
             - name: Upload Release Asset
               id: upload-release-asset
