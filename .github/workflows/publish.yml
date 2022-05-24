@@ -25,7 +25,7 @@ env:
     NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
 
 jobs:
-    main:
+    Build:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -64,11 +64,18 @@ jobs:
                   commit_author: GitHub Actions <actions@github.com>
                   skip_checkout: true
 
-#             - name: Create Tag
-#               uses: Klemensas/action-autotag@stable
-#               with:
-#                   GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-#                   tag_prefix: "v"
+    Release:
+        needs: Build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.head_ref }}
+
+            - name: Extract version
+              id: extract_version
+              uses: Saionaro/extract-package-version@v1.0.6
 
             - name: Create Release
               id: create_release
