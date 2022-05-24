@@ -30,7 +30,7 @@ const changelog = {
 		{
 			title: `Added`,
 			type: "added",
-			items: ["1 and 3 min optional for presence update interval custom","Features Hide presence when listening spotify songs"],
+			items: ["1 and 3 min optional for presence update interval custom", "Features Hide presence when listening spotify songs"],
 		},
 		{
 			title: `Improved`,
