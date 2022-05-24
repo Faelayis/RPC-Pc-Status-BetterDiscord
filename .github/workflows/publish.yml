@@ -5,7 +5,7 @@ on:
         inputs:
             version:
                 type: string
-                required: false
+                required: true
                 description: Version (Replace package.json) e.g. "1.0.0"
             releases:
                 type: choice
