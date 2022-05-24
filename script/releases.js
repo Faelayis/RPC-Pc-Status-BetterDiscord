@@ -16,7 +16,7 @@ try {
 		const package = require("../package.json");
 		const package_dev = require("../plugins/devlop/package.json");
 		fs.readFile("RPCPcStatus.plugin.js", "utf8", async (err, data) => {
-			version = await data.split("* @author")[0].split("@version")[1].trim();
+			version = await data.split("* @version")[1].split("* @description")[0].trim();
 			if (package_dev.info.version === package.version) {
 				console.log(`${version} -> ${package.version}`);
 				fs.readFile("README.md", "utf8", async (err, data) => {
