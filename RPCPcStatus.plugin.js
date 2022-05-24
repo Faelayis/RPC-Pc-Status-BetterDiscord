@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.1.0
+ * @version 2.1.1
  * @description Rich Presence Pc Status for your Discord
  * @author Faelayis
  * @source https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord
@@ -33,7 +33,7 @@
 const config = {
 	info: {
 		name: "RPCPcStatus",
-		version: "2.1.0",
+		version: "2.1.1",
 		description: "Rich Presence Pc Status for your Discord",
 		authors: [
 			{
@@ -13591,7 +13591,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					{
 						title: `Improved`,
 						type: "improved",
-						items: ["Refactor code"],
+						items: ["Hide update channel devlop", "Refactor code"],
 					},
 				],
 				changelog_prev: [
@@ -13993,13 +13993,6 @@ function buildPlugin([BasePlugin, PluginApi]) {
 										value: 0,
 										desc: "",
 										color: "#43b581",
-									},
-									{
-										name: "Devlop",
-										value: 1,
-										desc: "Come Soon",
-										color: "#d83c3e",
-										disabled: true,
 									},
 								],
 								(val) => {
