@@ -91,7 +91,7 @@ jobs:
                   release_name: ${{ steps.extract_version.outputs.version }}
                   body: ${{ steps.build_changelog.outputs.changelog }}
                   draft: false
-                  prerelease: ${{ github.event.inputs.prerelease || false }}
+                  prerelease: ${{ github.event.inputs.prerelease }}
 
             - name: Upload Release Asset
               id: upload-release-asset
