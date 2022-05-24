@@ -30,15 +30,21 @@ const changelog = {
 		{
 			title: `Added`,
 			type: "added",
-			items: ["1 and 3 min optional for presence update interval custom", "Features Hide presence when listening spotify songs"],
-		},
-		{
-			title: `Improved`,
-			type: "improved",
-			items: ["Hide update channel devlop", "Refactor code"],
+			items: ["Features hide when custom status (Online, Idle, DND, Invisible)"],
 		},
 	],
-	// changelog_prev: [
+	// 2.1.2 ~ 2.0.0
+	// {
+	// 	title: `Added`,
+	// 	type: "added",
+	// 	items: ["1 and 3 min optional for presence update interval custom", "Features Hide presence when listening spotify songs"],
+	// },
+	// {
+	// 	title: `Improved`,
+	// 	type: "improved",
+	// 	items: ["Hide update channel devlop", "Refactor code"],
+	// },
+	//
 	// 	{
 	// 		title: `Fixed`,
 	// 		type: "fixed",
@@ -63,6 +69,7 @@ export default class Plugin {
 			return BdApi.showToast('RPC Pc Status: Please install "ZeresPluginLibrary" and restart this plugin.', { type: "error" });
 		}
 		this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
+		this.generateconfig();
 		if (this.settings.timestamps === 1) {
 			this.startTime = Date.now() / 1000 - os.uptime;
 		} else if (this.settings.timestamps === 2) {
@@ -70,6 +77,12 @@ export default class Plugin {
 		}
 		this.connected();
 		this.checkForUpdate();
+	}
+	generateconfig() {
+		if (!this.settings.customstatus_hide) {
+			this.settings.customstatus_hide = ["invisible"];
+		}
+		this.updateSettings();
 	}
 	async connected() {
 		if (!this.client) {
@@ -164,8 +177,9 @@ export default class Plugin {
 		if (Interval) await clearInterval(Interval);
 		Interval = setInterval(async () => {
 			if (!this.client) return clearInterval(Interval);
-			//BDFDB.LibraryModules.SpotifyTrackUtils.getTrack()
-			if (this.settings.automatically?.hide?.spotify || (false && ZLibrary.DiscordModules.UserActivityStore.getActivity()?.name === "Spotify") ? true : false) return;
+			if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
+			if (this.settings.automatically?.hide?.spotify || (false && ZLibrary.DiscordModules.UserActivityStore.getActivity()?.name === "Spotify") ? true : false)
+				return this.client.setActivity(null);
 			si.currentLoad().then((data) => (this.cpuload = data.currentLoad.toFixed(0)));
 			function formatBytes(freemem, totalmem, decimals = 0) {
 				if (freemem === 0) {
@@ -352,6 +366,29 @@ export default class Plugin {
 					this.settings.hideicon = val;
 				}),
 			);
+		new ZLibrary.Settings.SettingGroup("Hide when custom status", {
+			collapsible: true,
+			shown: false,
+			callback: () => {
+				this.updateSettings();
+			},
+		})
+			.appendTo(panel)
+			.append(
+				new ZLibrary.Settings.Switch("Online", null, this.settings.customstatus_hide?.includes("online") ?? false, (val) => {
+					val ? this.settings.customstatus_hide.push("online") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "online"));
+				}),
+				new ZLibrary.Settings.Switch("Idle", null, this.settings.customstatus_hide?.includes("idle") ?? false, (val) => {
+					val ? this.settings.customstatus_hide.push("idle") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "idle"));
+				}),
+				new ZLibrary.Settings.Switch("Do Not Disturb", null, this.settings.customstatus_hide?.includes("dnd") ?? false, (val) => {
+					val ? this.settings.customstatus_hide.push("dnd") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "dnd"));
+				}),
+				new ZLibrary.Settings.Switch("Invisible", null, this.settings.customstatus_hide?.includes("invisible") ?? true, (val) => {
+					val ? this.settings.customstatus_hide.push("invisible") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "invisible"));
+				}),
+			);
+
 		new ZLibrary.Settings.SettingGroup("Button", {
 			collapsible: true,
 			shown: false,
