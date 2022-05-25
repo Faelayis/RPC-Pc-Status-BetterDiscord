@@ -98,7 +98,7 @@ jobs:
                   asset_content_type: text/javascript
 
             - name: Automatically Commit Changed
-              if: ${{ github.event.inputs.prerelease != true && steps.upload_release_asset.outcome == 'success' }}
+              if: steps.upload_release_asset.outcome == 'success'
               uses: stefanzweifel/git-auto-commit-action@v4
               with:
                   push_options: "--force"
