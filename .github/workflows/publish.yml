@@ -3,23 +3,29 @@ name: Publish
 on:
     workflow_dispatch:
         inputs:
-            version:
-                type: string
+            bumpversion:
+                type: choice
+                description: Bump a package version
                 required: true
-                description: Version (example 2.x.x)
+                options:
+                    - patch
+                    - minor
+                    - major
+                    - prerelease
             releases:
                 type: choice
                 description: Releases
+                required: true
                 options:
-                    - Stable
-                    - Devlop (Pre-release)
+                    - stable
+                    # - devlop
             prerelease:
                 description: "This is a pre-releasee"
                 required: false
                 type: boolean
 
 env:
-    version_publish: ${{ github.event.inputs.version }}
+    bumpversion: ${{ github.event.inputs.bumpversion }}
     releases_publish: ${{ github.event.inputs.releases }}
     NPM_USER: ${{ secrets.NPM_USER }}
     NPM_PASS: ${{ secrets.NPM_PASS }}
@@ -39,6 +45,13 @@ jobs:
               with:
                   node-version: "16"
 
+            - name: Bump a package version
+              if: ${{ github.event.inputs.bumpversion }}
+              run: |
+                git config --local user.email "actions@github.com"
+                git config --local user.name "GitHub Actions"
+                npm version $bumpversion -m "New Releases %s"
+
             - name: Login to GitHub Private NPM Registry
               shell: bash
               run: |
@@ -51,7 +64,7 @@ jobs:
             - name: Run Publish
               if: steps.npm_install.outcome == 'success'
               id: run_publish
-              run: npm run publish
+              run: npm run script:publish_$releases_publish
 
             - name: Extract Version
               if: steps.run_publish.outcome == 'success'

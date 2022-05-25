@@ -5,12 +5,13 @@ let version;
 
 try {
 	(async () => {
-		if (process.env.version_publish) {
-			console.log(`input version: ${process.env.version_publish}`);
+		if (process.env.bumpversion) {
+			const packagebump = require("../package.json");
+			console.log(`input version: ${packagebump.version}`);
 			for (const key of package_dir) {
 				await editJsonFile(`${__dirname}/${key}`, {
 					autosave: true,
-				}).set(["version", "info.version"][package_dir.indexOf(key)], process.env.version_publish);
+				}).set(["version", "info.version"][package_dir.indexOf(key)], packagebump.version);
 			}
 		}
 		const package = require("../package.json");
