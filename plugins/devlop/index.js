@@ -119,7 +119,6 @@ export default class Plugin {
 			this.updateSettings();
 		}
 		ZLibrary?.PluginUpdater?.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js");
-
 		function versionCompare(a, b) {
 			a = a
 				.toLowerCase()
@@ -301,8 +300,8 @@ export default class Plugin {
 							value: "icon_orange",
 						},
 					],
-					(val) => {
-						this.settings.LargeImageKeyColor = val;
+					(value) => {
+						this.settings.LargeImageKeyColor = value;
 					},
 				),
 				new ZLibrary.Settings.Dropdown(
@@ -323,8 +322,8 @@ export default class Plugin {
 							value: 2,
 						},
 					],
-					(val) => {
-						this.settings.timestamps = val;
+					(value) => {
+						this.settings.timestamps = value;
 					},
 				),
 				new ZLibrary.Settings.Dropdown(
@@ -361,18 +360,18 @@ export default class Plugin {
 							value: 180000,
 						},
 					],
-					(val) => {
-						this.settings.presenceUpdateInterval = val;
+					(value) => {
+						this.settings.presenceUpdateInterval = value;
 						clearInterval(Interval);
-						setInterval(Interval, val);
+						setInterval(Interval, value);
 						this.startPresence();
 					},
 				),
-				new ZLibrary.Settings.Switch("Hide presence when listening spotify songs", "hide presence pc status", this.settings.automatically?.hide?.spotify || false, (val) => {
-					this.settings.automatically = { hide: { spotify: val } };
+				new ZLibrary.Settings.Switch("Hide presence when listening spotify songs", "hide presence pc status", this.settings.automatically?.hide?.spotify || false, (value) => {
+					this.settings.automatically = { hide: { spotify: value } };
 				}),
-				new ZLibrary.Settings.Switch("Hide Icon", "presence show only text", this.settings.hideicon || false, (val) => {
-					this.settings.hideicon = val;
+				new ZLibrary.Settings.Switch("Hide Icon", "presence show only text", this.settings.hideicon || false, (value) => {
+					this.settings.hideicon = value;
 				}),
 			);
 		new ZLibrary.Settings.SettingGroup("Hide when custom status", {
@@ -384,20 +383,19 @@ export default class Plugin {
 		})
 			.appendTo(panel)
 			.append(
-				new ZLibrary.Settings.Switch("Online", null, this.settings.customstatus_hide?.includes("online") ?? false, (val) => {
-					val ? this.settings.customstatus_hide.push("online") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "online"));
+				new ZLibrary.Settings.Switch("Online", null, this.settings.customstatus_hide?.includes("online") ?? false, (value) => {
+					value ? this.settings.customstatus_hide.push("online") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "online"));
 				}),
-				new ZLibrary.Settings.Switch("Idle", null, this.settings.customstatus_hide?.includes("idle") ?? false, (val) => {
-					val ? this.settings.customstatus_hide.push("idle") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "idle"));
+				new ZLibrary.Settings.Switch("Idle", null, this.settings.customstatus_hide?.includes("idle") ?? false, (value) => {
+					value ? this.settings.customstatus_hide.push("idle") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "idle"));
 				}),
-				new ZLibrary.Settings.Switch("Do Not Disturb", null, this.settings.customstatus_hide?.includes("dnd") ?? false, (val) => {
-					val ? this.settings.customstatus_hide.push("dnd") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "dnd"));
+				new ZLibrary.Settings.Switch("Do Not Disturb", null, this.settings.customstatus_hide?.includes("dnd") ?? false, (value) => {
+					value ? this.settings.customstatus_hide.push("dnd") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "dnd"));
 				}),
-				new ZLibrary.Settings.Switch("Invisible", null, this.settings.customstatus_hide?.includes("invisible") ?? true, (val) => {
-					val ? this.settings.customstatus_hide.push("invisible") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "invisible"));
+				new ZLibrary.Settings.Switch("Invisible", null, this.settings.customstatus_hide?.includes("invisible") ?? true, (value) => {
+					value ? this.settings.customstatus_hide.push("invisible") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "invisible"));
 				}),
 			);
-
 		new ZLibrary.Settings.SettingGroup("Button", {
 			collapsible: true,
 			shown: false,
@@ -407,17 +405,17 @@ export default class Plugin {
 		})
 			.appendTo(panel)
 			.append(
-				new window.ZeresPluginLibrary.Settings.Textbox("Button 1 Label", "Label for button.", this.settings.button1Label || "", (val) => {
-					this.settings.button1Label = val;
+				new ZLibrary.Settings.Textbox("Button 1 Label", "Label for button.", this.settings.button1Label || "", (value) => {
+					this.settings.button1Label = value;
 				}),
-				new ZLibrary.Settings.Textbox("Button 1 URL", "URL for button.", this.settings.button1URL || "", (val) => {
-					this.settings.button1URL = val;
+				new ZLibrary.Settings.Textbox("Button 1 URL", "URL for button.", this.settings.button1URL || "", (value) => {
+					this.settings.button1URL = value;
 				}),
-				new ZLibrary.Settings.Textbox("Button 2 Label", "Label for button.", this.settings.button2Label || "", (val) => {
-					this.settings.button2Label = val;
+				new ZLibrary.Settings.Textbox("Button 2 Label", "Label for button.", this.settings.button2Label || "", (value) => {
+					this.settings.button2Label = value;
 				}),
-				new ZLibrary.Settings.Textbox("Button 2 URL", "URL for button.", this.settings.button2URL || "", (val) => {
-					this.settings.button2URL = val;
+				new ZLibrary.Settings.Textbox("Button 2 URL", "URL for button.", this.settings.button2URL || "", (value) => {
+					this.settings.button2URL = value;
 				}),
 			);
 		new ZLibrary.Settings.SettingGroup("Rich Presence (advanced)", {
@@ -429,22 +427,22 @@ export default class Plugin {
 		})
 			.appendTo(panel)
 			.append(
-				new ZLibrary.Settings.Textbox("Client ID", "The client ID of your Discord Rich Presence application.", this.settings.clientID || "", (val) => {
-					this.settings.clientID = val;
+				new ZLibrary.Settings.Textbox("Client ID", "The client ID of your Discord Rich Presence application.", this.settings.clientID || "", (value) => {
+					this.settings.clientID = value;
 					this.stopPresence();
 					this.connected();
 				}),
-				new ZLibrary.Settings.Textbox("Large Image Key", "The name of the asset or url (.png or .jpg) for your large image.", this.settings.largeImageKey || "", (val) => {
-					this.settings.largeImageKey = val;
+				new ZLibrary.Settings.Textbox("Large Image Key", "The name of the asset or url (.png or .jpg) for your large image.", this.settings.largeImageKey || "", (value) => {
+					this.settings.largeImageKey = value;
 				}),
-				new ZLibrary.Settings.Textbox("Large Image Text", "The text that appears when your large image is hovered over.", this.settings.largeImageText || "", (val) => {
-					this.settings.largeImageText = val;
+				new ZLibrary.Settings.Textbox("Large Image Text", "The text that appears when your large image is hovered over.", this.settings.largeImageText || "", (value) => {
+					this.settings.largeImageText = value;
 				}),
-				new ZLibrary.Settings.Textbox("Small Image Key", "The name of the asset or url (.png or .jpg) for your small image.", this.settings.smallImageKey || "", (val) => {
-					this.settings.smallImageKey = val;
+				new ZLibrary.Settings.Textbox("Small Image Key", "The name of the asset or url (.png or .jpg) for your small image.", this.settings.smallImageKey || "", (value) => {
+					this.settings.smallImageKey = value;
 				}),
-				new ZLibrary.Settings.Textbox("Small Image Text", "The text that appears when your small image is hovered over.", this.settings.smallImageText || "", (val) => {
-					this.settings.smallImageText = val;
+				new ZLibrary.Settings.Textbox("Small Image Text", "The text that appears when your small image is hovered over.", this.settings.smallImageText || "", (value) => {
+					this.settings.smallImageText = value;
 				}),
 			);
 		new ZLibrary.Settings.SettingGroup("Other", {
@@ -475,8 +473,8 @@ export default class Plugin {
 						// 	disabled: true,
 						// },
 					],
-					(val) => {
-						this.checkForUpdate(val);
+					(value) => {
+						this.checkForUpdate(value);
 					},
 				),
 			);
