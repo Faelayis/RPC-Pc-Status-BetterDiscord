@@ -30,9 +30,11 @@
 		"prettier": "^2.6.2"
 	},
 	"devDependencies": {
-		"edit-json-file": "^1.7.0",
+		"@actions/core": "^1.8.2",
 		"@betterdiscordbuilder/bdbuilder": "^1.2.22",
+		"edit-json-file": "^1.7.0",
 		"eslint": "^8.16.0",
-		"eslint-plugin-prettier": "^4.0.0"
+		"eslint-plugin-prettier": "^4.0.0",
+		"npm-check-updates": "^13.0.3"
 	}
 }

@@ -1,36 +1,47 @@
-const fs = require("fs");
-const editJsonFile = require("edit-json-file");
-const package_dir = ["./../package.json", "./../plugins/devlop/package.json"];
-let version;
+const fs = require("fs"),
+	ncu = require("npm-check-updates"),
+	core = require("@actions/core"),
+	editJsonFile = require("edit-json-file"),
+	package_directory = ["./../package.json", "./../plugins/devlop/package.json"],
+	semVer = new RegExp(
+		/(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?/gm,
+	);
 
 try {
 	(async () => {
+		await ncu
+			.run({
+				packageFile: "./plugins/devlop/package.json",
+				upgrade: false,
+			})
+			.then((x) => {
+				core.notice(`npm check updates:\n ${JSON.stringify(x)}`);
+			});
 		if (process.env.bumpversion) {
-			const packagebump = require("../package.json");
-			console.log(`input version: ${packagebump.version}`);
-			for (const key of package_dir) {
+			const package = require("../package.json");
+			core.info(`${process.env.bumpversion} Bump package version: ${package.version}`);
+			for (const key of package_directory) {
 				await editJsonFile(`${__dirname}/${key}`, {
 					autosave: true,
-				}).set(["version", "info.version"][package_dir.indexOf(key)], packagebump.version);
+				}).set(["version", "info.version"][package_directory.indexOf(key)], package.version);
 			}
 		}
-		const package = require("../package.json");
-		const package_dev = require("../plugins/devlop/package.json");
 		fs.readFile("RPCPcStatus.plugin.js", "utf8", async (err, data) => {
-			version = await data.split("* @version")[1].split("* @description")[0].trim();
-			if (package_dev.info.version === package.version) {
-				console.log(`${version} -> ${package.version}`);
+			const version = await data.match(semVer)[0],
+				package = require("../package.json"),
+				package_plugins = require("../plugins/devlop/package.json");
+			if (package_plugins.info.version === package.version) {
+				core.notice(`RPC Pc Status Upgrade ${version} -> ${package.version}`);
 				fs.readFile("README.md", "utf8", async (err, data) => {
-					if (err) throw err;
-					data = data.replace(/\d{1,2}\.\d{1,2}\.\d{1,3}/g, `${package.version}`);
+					data = await data.replace(semVer, package.version);
 					fs.writeFile("README.md", data, function (err) {
+						core.info("Update README.md");
 						if (err) throw err;
-						console.log("Update README.md");
 					});
 				});
 			}
 		});
 	})();
 } catch (error) {
-	console.error(error);
+	core.setFailed(`Action failed with error ${error}`);
 }
