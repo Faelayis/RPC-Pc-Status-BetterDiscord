@@ -32,6 +32,11 @@ const changelog = {
 			type: "added",
 			items: ["Features hide when custom status (Online, Idle, DND, Invisible)"],
 		},
+		{
+			title: `Fixed`,
+			type: "fixed",
+			items: ["Hide presence when listening spotify songs not working"],
+		},
 	],
 	// 2.1.2 ~ 2.0.0
 	// {
@@ -178,7 +183,7 @@ export default class Plugin {
 		Interval = setInterval(async () => {
 			if (!this.client) return clearInterval(Interval);
 			if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
-			if (this.settings.automatically?.hide?.spotify || (false && ZLibrary.DiscordModules.UserActivityStore.getActivity()?.name === "Spotify") ? true : false)
+			if (this.settings.automatically?.hide?.spotify && ZLibrary.DiscordModules.UserActivityStore.getActivity()?.name === "Spotify" ? true : false)
 				return this.client.setActivity(null);
 			si.currentLoad().then((data) => (this.cpuload = data.currentLoad.toFixed(0)));
 			function formatBytes(freemem, totalmem, decimals = 0) {
