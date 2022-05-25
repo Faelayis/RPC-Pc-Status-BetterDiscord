@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.2.1
+ * @version 2.2.2
  * @authorLink https://discordapp.com/users/328731868096888833
  * @description Rich Presence Pc Status for your Discord
  * @author Faelayis
@@ -34,7 +34,7 @@
 const config = {
 	info: {
 		name: "RPCPcStatus",
-		version: "2.2.1",
+		version: "2.2.2",
 		authorLink: "https://discordapp.com/users/328731868096888833",
 		description: "Rich Presence Pc Status for your Discord",
 		authors: [
@@ -13736,7 +13736,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 								start: this.startTime,
 							},
 						});
-					}, this.settings.presenceUpdateInterval ?? 1e3);
+					}, this.settings.presenceUpdateInterval ?? 2500);
 				}
 				async stopPresence(toast) {
 					clearInterval(Interval);
@@ -13855,11 +13855,15 @@ function buildPlugin([BasePlugin, PluginApi]) {
 							new ZLibrary.Settings.Dropdown(
 								"Presence update interval",
 								null,
-								this.settings.presenceUpdateInterval ?? 1e3,
+								this.settings.presenceUpdateInterval ?? 2500,
 								[
 									{
 										label: "1 Second",
 										value: 1e3,
+									},
+									{
+										label: `2.5 Second ${2500 === this.settings.presenceUpdateInterval ? "" : "(Recommend)"}`,
+										value: 2500,
 									},
 									{
 										label: "3 Second",
