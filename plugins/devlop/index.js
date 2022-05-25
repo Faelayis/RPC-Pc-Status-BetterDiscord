@@ -30,7 +30,7 @@ const changelog = {
 		{
 			title: `Added`,
 			type: "added",
-			items: ["2.5 Sec optional & set as default","Features hide when custom status (Online, Idle, DND, Invisible)"],
+			items: ["2.5 Sec optional & set as default", "Features hide when custom status (Online, Idle, DND, Invisible)"],
 		},
 		{
 			title: `Fixed`,
