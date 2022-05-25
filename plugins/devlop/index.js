@@ -207,7 +207,7 @@ export default class Plugin {
 				buttons: this.buttons && (this.buttons[0] || this.buttons[1]) ? this.buttons : undefined,
 				timestamps: { start: this.startTime },
 			});
-		}, this.settings.presenceUpdateInterval ?? 1000);
+		}, this.settings.presenceUpdateInterval ?? 2500);
 	}
 	async stopPresence(toast) {
 		clearInterval(Interval);
@@ -330,11 +330,15 @@ export default class Plugin {
 				new ZLibrary.Settings.Dropdown(
 					"Presence update interval",
 					null,
-					this.settings.presenceUpdateInterval ?? 1000,
+					this.settings.presenceUpdateInterval ?? 2500,
 					[
 						{
 							label: "1 Second",
 							value: 1000,
+						},
+						{
+							label: `2.5 Second ${this.settings.presenceUpdateInterval === 2500 ? "" : "(Recommend)"}`,
+							value: 2500,
 						},
 						{
 							label: "3 Second",
