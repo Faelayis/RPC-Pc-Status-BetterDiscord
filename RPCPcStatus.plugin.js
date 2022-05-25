@@ -1,6 +1,7 @@
 /**
  * @name RPCPcStatus
- * @version 2.2.0
+ * @version 2.2.1
+ * @authorLink https://discordapp.com/users/328731868096888833
  * @description Rich Presence Pc Status for your Discord
  * @author Faelayis
  * @source https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord
@@ -33,7 +34,8 @@
 const config = {
 	info: {
 		name: "RPCPcStatus",
-		version: "2.2.0",
+		version: "2.2.1",
+		authorLink: "https://discordapp.com/users/328731868096888833",
 		description: "Rich Presence Pc Status for your Discord",
 		authors: [
 			{
@@ -13588,6 +13590,11 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						type: "added",
 						items: ["Features hide when custom status (Online, Idle, DND, Invisible)"],
 					},
+					{
+						title: `Fixed`,
+						type: "fixed",
+						items: ["Hide presence when listening spotify songs not working"],
+					},
 				],
 			};
 			class Plugin {
@@ -13706,7 +13713,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					Interval = setInterval(async () => {
 						if (!this.client) return clearInterval(Interval);
 						if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
-						if (this.settings.automatically?.hide?.spotify || (false && 0) ? true : false) return this.client.setActivity(null);
+						if (this.settings.automatically?.hide?.spotify && "Spotify" === ZLibrary.DiscordModules.UserActivityStore.getActivity()?.name ? true : false)
+							return this.client.setActivity(null);
 						systeminformation__WEBPACK_IMPORTED_MODULE_0__.currentLoad().then((data) => (this.cpuload = data.currentLoad.toFixed(0)));
 						this.client.setActivity({
 							details: `CPU ${this.cpuload || "0"}%`,
