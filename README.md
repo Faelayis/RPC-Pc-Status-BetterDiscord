@@ -3,7 +3,7 @@
 **BetterDiscord**
 
 -   PluginRepo _Coming soon if everything is ready_
--   [Download latest](https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord/releases/download/v2.2.2/RPCPcStatus.plugin.js)
+-   [Download latest](https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord/releases/download/v2.2.3/RPCPcStatus.plugin.js)
 
 Original [RPC-Pc-Status](https://github.com/Faelayis/RPC-Pc-Status#readme)<br>
 

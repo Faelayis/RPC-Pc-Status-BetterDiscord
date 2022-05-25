@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.2.2
+ * @version 2.2.3
  * @authorLink https://discordapp.com/users/328731868096888833
  * @description Rich Presence Pc Status for your Discord
  * @author Faelayis
@@ -34,7 +34,7 @@
 const config = {
 	info: {
 		name: "RPCPcStatus",
-		version: "2.2.2",
+		version: "2.2.3",
 		authorLink: "https://discordapp.com/users/328731868096888833",
 		description: "Rich Presence Pc Status for your Discord",
 		authors: [
@@ -13588,7 +13588,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					{
 						title: `Added`,
 						type: "added",
-						items: ["Features hide when custom status (Online, Idle, DND, Invisible)"],
+						items: ["2.5 Sec optional & set as default", "Features hide when custom status (Online, Idle, DND, Invisible)"],
 					},
 					{
 						title: `Fixed`,
