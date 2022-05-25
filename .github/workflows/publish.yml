@@ -50,7 +50,8 @@ jobs:
               run: |
                 git config --local user.email "actions@github.com"
                 git config --local user.name "GitHub Actions"
-                npm version $bumpversion -m "Bump version %s"
+                npm config set git-tag-version false
+                npm version $bumpversion -m "New Releases %s"
 
             - name: Login to GitHub Private NPM Registry
               shell: bash
