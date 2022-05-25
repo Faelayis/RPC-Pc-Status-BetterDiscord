@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.2.4
+ * @version 2.2.3
  * @authorLink https://discordapp.com/users/328731868096888833
  * @description Rich Presence Pc Status for your Discord
  * @author Faelayis
@@ -34,7 +34,7 @@
 const config = {
 	info: {
 		name: "RPCPcStatus",
-		version: "2.2.4",
+		version: "2.2.3",
 		authorLink: "https://discordapp.com/users/328731868096888833",
 		description: "Rich Presence Pc Status for your Discord",
 		authors: [
