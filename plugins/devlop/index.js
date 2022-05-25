@@ -204,7 +204,7 @@ export default class Plugin {
 					small_text: this.settings.largeImageText || this.SImageText || undefined,
 				},
 				buttons: this.buttons && (this.buttons[0] || this.buttons[1]) ? this.buttons : undefined,
-				timestamps: { start: this.startTime },
+				timestamps: { start: this.settings.timestamps === 0 ? null : this.startTime },
 			});
 		}, this.settings.presenceUpdateInterval ?? 2500);
 	}
@@ -223,13 +223,6 @@ export default class Plugin {
 		await this.stopPresence();
 	}
 	async updateSettings() {
-		if (this.settings.timestamps == 1) {
-			this.startTime = Date.now() / 1000 - os.uptime;
-		} else if (this.settings.timestamps == 2) {
-			this.startTime = timestamp;
-		} else {
-			delete this.startTime;
-		}
 		this.buttons = [];
 		if (this.settings.button1Label && this.settings.button1URL) {
 			this.buttons.push({
