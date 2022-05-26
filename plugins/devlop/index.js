@@ -34,7 +34,12 @@ const changelog = {
 		{
 			title: `Fixed`,
 			type: "fixed",
-			items: ["Wrong time system uptime & rpc uptime", "When update settings, timestamps will reset", "Hide presence when listening spotify songs not working"],
+			items: [
+				"Presence update interval hidden (Recommend) by default",
+				"Wrong time system uptime & rpc uptime",
+				"When update settings, timestamps will reset",
+				"Hide presence when listening spotify songs not working",
+			],
 		},
 	],
 	// 2.1.2 ~ 2.0.0
@@ -325,7 +330,7 @@ export default class Plugin {
 							value: 1000,
 						},
 						{
-							label: `2.5 Second ${this.settings.presenceUpdateInterval === 2500 ? "" : "(Recommend)"}`,
+							label: `2.5 Second ${this.settings.presenceUpdateInterval === 2500 || !this.settings.presenceUpdateInterval ? "" : "(Recommend)"}`,
 							value: 2500,
 						},
 						{
