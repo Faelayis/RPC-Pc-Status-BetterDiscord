@@ -24,7 +24,7 @@ jobs:
                   node-version: "16"
 
             - name: Install Dependencies
-              run: npm install -g eslint@8.16.0 eslint-plugin-prettier@4.0.0 eslint-plugin-no-one-time-vars@2.4.1 prettier@2.6.2
+              run: npm install -g eslint@8.16.0 eslint-plugin-prettier@4.0.0 eslint-plugin-no-one-time-vars@2.4.1 prettier@2.6.2 --save-dev
             - name: Run ESLint
               run: npm run fix
 
