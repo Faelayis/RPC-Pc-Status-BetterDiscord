@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SocketManager = void 0;
 const path_1 = require("path");
-const BaseEventEmitter_1 = require("./BaseEventEmitter");
+
 const consts_1 = require("./consts");
 const DiscordSocket_1 = require("./DiscordSocket");
 const util_1 = require("./util");
-class SocketManager extends BaseEventEmitter_1.BaseEventEmitter {
+class SocketManager extends require("./BaseEventEmitter").BaseEventEmitter {
 	constructor(clientId) {
 		super(clientId);
 		this.status = "disconnected";

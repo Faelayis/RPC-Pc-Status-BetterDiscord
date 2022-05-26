@@ -1,8 +1,1 @@
-const npmLogin = require("npm-cli-login"),
-	username = `${process.env.NPM_USER}`,
-	password = `${process.env.NPM_PASS}`,
-	email = `${process.env.NPM_EMAIL}`,
-	registry = "https://npm.pkg.github.com/",
-	scope = "@betterdiscordbuilder";
-
-npmLogin(username, password, email, registry, scope);
+require("npm-cli-login")(`${process.env.NPM_USER}`, `${process.env.NPM_PASS}`, `${process.env.NPM_EMAIL}`, "https://npm.pkg.github.com/", "@betterdiscordbuilder");

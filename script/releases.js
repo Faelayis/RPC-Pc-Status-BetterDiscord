@@ -28,9 +28,8 @@ try {
 		}
 		fs.readFile("RPCPcStatus.plugin.js", "utf8", async (err, data) => {
 			const version = await data.match(semVer)[0],
-				package = require("../package.json"),
-				package_plugins = require("../plugins/devlop/package.json");
-			if (package_plugins.info.version === package.version) {
+				package = require("../package.json");
+			if (require("../plugins/devlop/package.json").info.version === package.version) {
 				core.notice(`RPC Pc Status Upgrade ${version} -> ${package.version}`);
 				fs.readFile("README.md", "utf8", async (err, data) => {
 					data = await data.replace(semVer, package.version);

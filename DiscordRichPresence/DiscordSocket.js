@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createConnection = void 0;
 /* eslint-disable no-invalid-this */
-const net_1 = require("net");
+
 const util_1 = require("./util");
 function createConnection(path, connectionListener) {
-	const socket = net_1.createConnection(path, connectionListener);
+	const socket = require("net").createConnection(path, connectionListener);
 	socket.writePacket = (opcode, data) => {
 		data = JSON.stringify(data);
 		const dlen = Buffer.byteLength(data);

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Presence = void 0;
-const SocketManager_1 = require("./SocketManager");
-class Presence extends SocketManager_1.SocketManager {
+
+class Presence extends require("./SocketManager").SocketManager {
 	constructor() {
 		super(...arguments);
 		this.currentPresence = undefined;

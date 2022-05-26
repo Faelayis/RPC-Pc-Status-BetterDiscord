@@ -6,9 +6,9 @@ var __importDefault =
 	};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseEventEmitter = void 0;
-const events_1 = __importDefault(require("events"));
+
 const util_1 = require("./util");
-class BaseEventEmitter extends events_1.default {
+class BaseEventEmitter extends __importDefault(require("events")).default {
 	constructor(clientId) {
 		super();
 		util_1.debug("Instantiated with ", clientId);
