@@ -1,5 +1,5 @@
-import * as si from "systeminformation";
-import * as os from "os";
+import { time, osInfo, cpu, currentLoad } from "systeminformation";
+import { release, freemem, totalmem } from "os";
 
 const color = {
 		base: ["color: #fff", "background-color: #444", "padding: 2px 4px", "border-radius: 2px"],
@@ -78,7 +78,7 @@ export default class Plugin {
 			return BdApi.showToast('RPC Pc Status: Please install "ZeresPluginLibrary" and restart this plugin.', { type: "error" });
 		}
 		this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
-		this.startTimeStamps = [undefined, Math.round(Date.now() / 1000 - si.time().uptime), new Date()];
+		this.startTimeStamps = [undefined, Math.round(Date.now() / 1000 - time().uptime), new Date()];
 		this.generateconfig();
 		this.connected();
 		this.checkForUpdate();
@@ -136,16 +136,14 @@ export default class Plugin {
 	}
 
 	async startPresence() {
-		si.cpu().then((data) => (data.manufacturer ? (this.cpu = `${data.manufacturer} ${data.brand}`) : null));
-		await si
-			.osInfo()
-			.then(
-				(data) => (
-					data.distro ? (this.osdistro = `${data.distro}`) : null,
-					data.release ? (this.osrelease = `${data.release}`) : null,
-					data.logofile ? (this.oslogo = `${data.logofile}`) : null
-				),
-			);
+		cpu().then((data) => (data.manufacturer ? (this.cpu = `${data.manufacturer} ${data.brand}`) : null));
+		await osInfo().then(
+			(data) => (
+				data.distro ? (this.osdistro = `${data.distro}`) : null,
+				data.release ? (this.osrelease = `${data.release}`) : null,
+				data.logofile ? (this.oslogo = `${data.logofile}`) : null
+			),
+		);
 		if (process.platform === "win32") {
 			log("[RPC Pc Status] Windows platform");
 			this.SImageText = `${this.osdistro} ${this.osrelease}`;
@@ -162,7 +160,7 @@ export default class Plugin {
 			}
 		} else if (process.platform === "linux") {
 			log("[RPC Pc Status] Linux Platform");
-			this.SImageText = `${this.osdistro} ${this.osrelease} ${os.release()}`;
+			this.SImageText = `${this.osdistro} ${this.osrelease} ${release()}`;
 			switch (true) {
 				case /(Ubuntu)/g.test(this.osdistro):
 					this.oslogo = "linux_ubuntu";
@@ -184,7 +182,7 @@ export default class Plugin {
 			if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
 			if (this.settings.automatically?.hide?.spotify && ZLibrary.DiscordModules.UserActivityStore.getActivity()?.name === "Spotify" ? true : false)
 				return this.client.setActivity(null);
-			si.currentLoad().then((data) => (this.cpuload = data.currentLoad.toFixed(0)));
+			currentLoad().then((data) => (this.cpuload = data.currentLoad.toFixed(0)));
 			function formatBytes(freemem, totalmem, decimals = 0) {
 				if (freemem === 0) {
 					return "0 Bytes";
@@ -196,7 +194,7 @@ export default class Plugin {
 			}
 			this.client.setActivity({
 				details: `CPU ${this.cpuload || "0"}%`,
-				state: `RAM ${formatBytes(os.freemem(), os.totalmem())}`,
+				state: `RAM ${formatBytes(freemem(), totalmem())}`,
 				assets: {
 					large_image: this.settings.hideicon ? undefined : this.settings.largeImageKey || this.settings.LargeImageKeyColor || "icon_white",
 					large_text: this.settings.largeImageText || this.cpu || undefined,
