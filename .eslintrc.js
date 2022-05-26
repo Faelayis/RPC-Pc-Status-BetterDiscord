@@ -5,12 +5,19 @@ module.exports = {
 		es2021: true,
 	},
 	extends: ["eslint:recommended"],
-	plugins: ["prettier"],
+	plugins: ["prettier", "no-one-time-vars"],
 	parserOptions: {
-		ecmaVersion: 12,
+		ecmaVersion: "latest",
+		requireConfigFile: false,
 	},
 	rules: {
 		"prettier/prettier": "warn",
+		"no-one-time-vars/no-one-time-vars": [
+			"error",
+			{
+				ignoredVariables: ["IPCOpcode", "__webpack_unused_export__"],
+			},
+		],
 	},
 	overrides: [
 		{
@@ -23,6 +30,23 @@ module.exports = {
 				config: true,
 				ZLibrary: true,
 				document: true,
+			},
+		},
+		{
+			files: ["RPCPcStatus.plugin.js"],
+			parser: "@babel/eslint-parser",
+			globals: {
+				BdApi: true,
+				window: true,
+				config: true,
+				ZLibrary: true,
+				document: true,
+			},
+			rules: {
+				"no-unused-vars": 0,
+				"no-prototype-builtins": 0,
+				"no-async-promise-executor": 0,
+				"no-mixed-spaces-and-tabs": 0,
 			},
 		},
 	],

@@ -12,7 +12,7 @@
 		"npm-install": "cd ./plugins/devlop && npm i",
 		"prettier": "prettier --config .prettierrc --write .",
 		"script:auth": "node ./script/authentication.js",
-		"script:publish_stable": "node ./script/releases.js && npm run npm-install && bdbuilder --plugin=./devlop --production && npm run prettier"
+		"script:publish_stable": "node ./script/releases.js && npm run npm-install && bdbuilder --plugin=./devlop --production && eslint ./RPCPcStatus.plugin.js --debug --fix"
 	},
 	"repository": {
 		"type": "git",
@@ -32,9 +32,11 @@
 	},
 	"devDependencies": {
 		"@actions/core": "^1.8.2",
+		"@babel/eslint-parser": "^7.18.2",
 		"@betterdiscordbuilder/bdbuilder": "^1.2.22",
 		"edit-json-file": "^1.7.0",
 		"eslint": "^8.16.0",
+		"eslint-plugin-no-one-time-vars": "^2.4.1",
 		"eslint-plugin-prettier": "^4.0.0",
 		"npm-check-updates": "^13.0.3"
 	}
