@@ -31,6 +31,16 @@ const changelog = {
 			type: "added",
 			items: ["Features Show games playing"],
 		},
+		{
+			title: `Fixed`,
+			type: "fixed",
+			items: ["Update interval hidden (Recommend) by default"],
+		},
+		{
+			title: `Improved`,
+			type: "improved",
+			items: ["Refactor code import using necessary only"],
+		},
 	],
 	// 2.2.4 ~ 2.1.2
 	// {
