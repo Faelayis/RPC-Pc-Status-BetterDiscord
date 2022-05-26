@@ -29,19 +29,25 @@ const changelog = {
 		{
 			title: `Added`,
 			type: "added",
-			items: ["2.5 Sec optional & set as default", "Features hide when custom status (Online, Idle, DND, Invisible)"],
-		},
-		{
-			title: `Fixed`,
-			type: "fixed",
-			items: [
-				"Presence update interval hidden (Recommend) by default",
-				"Wrong time system uptime & rpc uptime",
-				"When update settings, timestamps will reset",
-				"Hide presence when listening spotify songs not working",
-			],
+			items: ["Features Show games playing"],
 		},
 	],
+	// 2.2.4 ~ 2.1.2
+	// {
+	// 	title: `Added`,
+	// 	type: "added",
+	// 	items: ["2.5 Sec optional & set as default", "Features hide when custom status (Online, Idle, DND, Invisible)"],
+	// },
+	// {
+	// 	title: `Fixed`,
+	// 	type: "fixed",
+	// 	items: [
+	// 		"Presence update interval hidden (Recommend) by default",
+	// 		"Wrong time system uptime & rpc uptime",
+	// 		"When update settings, timestamps will reset",
+	// 		"Hide presence when listening spotify songs not working",
+	// 	],
+	// },
 	// 2.1.2 ~ 2.0.0
 	// {
 	// 	title: `Added`,
@@ -192,7 +198,7 @@ export default class Plugin {
 				const ram = `${parseFloat((totalmem / k ** i).toFixed(decimals < 0 ? 0 : decimals))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][i]}`;
 				return `${parseFloat((totalmem / k ** i - freemem / k ** i).toFixed(2))}/${ram}`;
 			}
-			this.client.setActivity({
+			const Presence = {
 				details: `CPU ${this.cpuload || "0"}%`,
 				state: `RAM ${formatBytes(freemem(), totalmem())}`,
 				assets: {
@@ -203,7 +209,22 @@ export default class Plugin {
 				},
 				buttons: this.buttons && (this.buttons[0] || this.buttons[1]) ? this.buttons : undefined,
 				timestamps: { start: this.startTimeStamps[this.settings.timestamps || 0] },
-			});
+			};
+			if ((this.settings.show_game_playing || false) && BdApi) {
+				const Activities = BdApi.findModuleByProps("getActivities")
+					.getActivities()
+					.find((data) => {
+						if (data.name === "Custom Status") return;
+						if (data.name === "Spotify") return;
+						if (data.application_id === "879327042498342962") return;
+						return data;
+					});
+				if (Activities?.name) {
+					Presence.details = `${Presence.details} | ${Presence.state}`;
+					Presence.state = `Playing ${Activities.name}`;
+				}
+			}
+			this.client.setActivity(Presence);
 		}, this.settings.presenceUpdateInterval ?? 2500);
 	}
 	async stopPresence(toast) {
@@ -357,6 +378,15 @@ export default class Plugin {
 						setInterval(Interval, value);
 						this.startPresence();
 					},
+				),
+				new ZLibrary.Settings.Switch(
+					"Show games playing",
+					`${!BdApi ? "Library plugin is needed BDFDB !" : ""}`,
+					this.settings.show_game_playing || false,
+					(value) => {
+						this.settings.show_game_playing = value;
+					},
+					{ disabled: !BdApi },
 				),
 				new ZLibrary.Settings.Switch("Hide presence when listening spotify songs", "hide presence pc status", this.settings.automatically?.hide?.spotify || false, (value) => {
 					this.settings.automatically = { hide: { spotify: value } };
