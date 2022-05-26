@@ -1,12 +1,11 @@
 import * as si from "systeminformation";
 import * as os from "os";
 
-const timestamp = new Date(),
-	color = {
-		base: ["color: #fff", "background-color: #444", "padding: 2px 4px", "border-radius: 2px"],
-		warn: ["color: #eee", "background-color: red"],
-		succ: ["background-color: green"],
-	},
+const color = {
+	base: ["color: #fff", "background-color: #444", "padding: 2px 4px", "border-radius: 2px"],
+	warn: ["color: #eee", "background-color: red"],
+	succ: ["background-color: green"],
+},
 	log = (text, extra = []) => {
 		let style = color.base.join(";") + ";";
 		if (extra) style += extra.join(";");
@@ -35,7 +34,7 @@ const changelog = {
 		{
 			title: `Fixed`,
 			type: "fixed",
-			items: ["Hide presence when listening spotify songs not working"],
+			items: ["Wrong time system uptime & rpc uptime", "When update settings, timestamps will reset", "Hide presence when listening spotify songs not working"],
 		},
 	],
 	// 2.1.2 ~ 2.0.0
@@ -74,12 +73,8 @@ export default class Plugin {
 			return BdApi.showToast('RPC Pc Status: Please install "ZeresPluginLibrary" and restart this plugin.', { type: "error" });
 		}
 		this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
+		this.startTimeStamps = [undefined, Math.round(Date.now() / 1000 - si.time().uptime), new Date()]
 		this.generateconfig();
-		if (this.settings.timestamps === 1) {
-			this.startTime = Date.now() / 1000 - os.uptime;
-		} else if (this.settings.timestamps === 2) {
-			this.startTime = Date.now() / 100;
-		}
 		this.connected();
 		this.checkForUpdate();
 	}
@@ -204,7 +199,7 @@ export default class Plugin {
 					small_text: this.settings.largeImageText || this.SImageText || undefined,
 				},
 				buttons: this.buttons && (this.buttons[0] || this.buttons[1]) ? this.buttons : undefined,
-				timestamps: { start: this.settings.timestamps === 0 ? null : this.startTime },
+				timestamps: { start: this.startTimeStamps[this.settings.timestamps || 0] },
 			});
 		}, this.settings.presenceUpdateInterval ?? 2500);
 	}
