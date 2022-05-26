@@ -5,8 +5,8 @@
 	"main": "RPCPcStatus.plugin.js",
 	"scripts": {
 		"dev": "bdbuilder --plugin=./devlop --watch --production",
-		"fix": "eslint . --debug --fix",
-		"lint": "eslint .",
+		"fix": "eslint ./ --debug --fix",
+		"lint": "eslint ./",
 		"build": "node ./script/releases.js",
 		"build:pre-release": "npm run npm-install && bdbuilder --plugin=./devlop --production",
 		"npm-install": "cd ./plugins/devlop && npm i",
