@@ -1,43 +1,43 @@
 {
-	"name": "rpc-pc-status-betterdiscord",
-	"version": "2.2.4",
-	"description": "",
-	"main": "RPCPcStatus.plugin.js",
-	"scripts": {
-		"dev": "bdbuilder --plugin=./devlop --watch --production",
-		"fix": "eslint . --config .eslintrc.js --debug --fix",
-		"lint": "eslint . --config .eslintrc.js",
-		"build": "node ./script/releases.js",
-		"build:pre-release": "npm run npm-install && bdbuilder --plugin=./devlop --production",
-		"npm-install": "cd ./plugins/devlop && npm i",
-		"prettier": "prettier --config .prettierrc --write .",
-		"script:auth": "node ./script/authentication.js",
-		"script:publish_stable": "node ./script/releases.js && npm run npm-install && bdbuilder --plugin=./devlop --production && eslint ./RPCPcStatus.plugin.js --config .eslintrc.js --debug --fix"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord.git"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "gpl-3.0",
-	"bugs": {
-		"url": "https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord/issues"
-	},
-	"homepage": "https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord#readme",
-	"dependencies": {
-		"@types/bandagedbd__bdapi": "^0.3.4",
-		"npm-cli-login": "^1.0.0"
-	},
-	"devDependencies": {
-		"@actions/core": "^1.8.2",
-		"@babel/eslint-parser": "^7.18.2",
-		"@betterdiscordbuilder/bdbuilder": "^1.2.22",
-		"edit-json-file": "^1.7.0",
-		"eslint": "^8.16.0",
-		"eslint-plugin-no-one-time-vars": "^2.4.1",
-		"eslint-plugin-prettier": "^4.0.0",
-		"npm-check-updates": "^13.0.3",
-		"prettier": "^2.6.2"
-	}
+  "name": "rpc-pc-status-betterdiscord",
+  "version": "2.3.0",
+  "description": "",
+  "main": "RPCPcStatus.plugin.js",
+  "scripts": {
+    "dev": "bdbuilder --plugin=./devlop --watch --production",
+    "fix": "eslint . --config .eslintrc.js --debug --fix",
+    "lint": "eslint . --config .eslintrc.js",
+    "build": "node ./script/releases.js",
+    "build:pre-release": "npm run npm-install && bdbuilder --plugin=./devlop --production",
+    "npm-install": "cd ./plugins/devlop && npm i",
+    "prettier": "prettier --config .prettierrc --write .",
+    "script:auth": "node ./script/authentication.js",
+    "script:publish_stable": "node ./script/releases.js && npm run npm-install && bdbuilder --plugin=./devlop --production && eslint ./RPCPcStatus.plugin.js --config .eslintrc.js --debug --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "gpl-3.0",
+  "bugs": {
+    "url": "https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord/issues"
+  },
+  "homepage": "https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord#readme",
+  "dependencies": {
+    "@types/bandagedbd__bdapi": "^0.3.4",
+    "npm-cli-login": "^1.0.0"
+  },
+  "devDependencies": {
+    "@actions/core": "^1.8.2",
+    "@babel/eslint-parser": "^7.18.2",
+    "@betterdiscordbuilder/bdbuilder": "^1.2.22",
+    "edit-json-file": "^1.7.0",
+    "eslint": "^8.16.0",
+    "eslint-plugin-no-one-time-vars": "^2.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "npm-check-updates": "^13.0.3",
+    "prettier": "^2.6.2"
+  }
 }

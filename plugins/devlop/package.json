@@ -1,39 +1,39 @@
 {
-	"info": {
-		"name": "RPCPcStatus",
-		"version": "2.2.4",
-		"description": "Rich Presence Pc Status for your Discord",
-		"authorLink": "https://discordapp.com/users/328731868096888833",
-		"authors": [
-			{
-				"name": "Faelayis",
-				"discord_id": "328731868096888833",
-				"github_username": "Faelayis"
-			}
-		],
-		"github": "https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord",
-		"github_raw": "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js",
-		"donate": "https://www.buymeacoffee.com/faelayis"
-	},
-	"build": {
-		"copy": false,
-		"zlibrary": true,
-		"production": true,
-		"alias": {}
-	},
-	"release": {
-		"source": true,
-		"readme": true,
-		"contributors": [
-			{
-				"name": "Faelayis",
-				"github": "https://github.com/Faelayis"
-			}
-		]
-	},
-	"dependencies": {
-		"bufferutil": "^4.0.6",
-		"systeminformation": "^5.11.15",
-		"utf-8-validate": "^5.0.9"
-	}
+  "info": {
+    "name": "RPCPcStatus",
+    "version": "2.3.0",
+    "description": "Rich Presence Pc Status for your Discord",
+    "authorLink": "https://discordapp.com/users/328731868096888833",
+    "authors": [
+      {
+        "name": "Faelayis",
+        "discord_id": "328731868096888833",
+        "github_username": "Faelayis"
+      }
+    ],
+    "github": "https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord",
+    "github_raw": "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js",
+    "donate": "https://www.buymeacoffee.com/faelayis"
+  },
+  "build": {
+    "copy": false,
+    "zlibrary": true,
+    "production": true,
+    "alias": {}
+  },
+  "release": {
+    "source": true,
+    "readme": true,
+    "contributors": [
+      {
+        "name": "Faelayis",
+        "github": "https://github.com/Faelayis"
+      }
+    ]
+  },
+  "dependencies": {
+    "bufferutil": "^4.0.6",
+    "systeminformation": "^5.11.15",
+    "utf-8-validate": "^5.0.9"
+  }
 }
