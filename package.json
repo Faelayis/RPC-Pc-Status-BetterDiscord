@@ -27,17 +27,17 @@
 	"homepage": "https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord#readme",
 	"dependencies": {
 		"@types/bandagedbd__bdapi": "^0.3.4",
-		"npm-cli-login": "^1.0.0",
-		"prettier": "^2.6.2"
+		"npm-cli-login": "^1.0.0"
 	},
 	"devDependencies": {
 		"@actions/core": "^1.8.2",
-		"@betterdiscordbuilder/bdbuilder": "^1.2.22",
 		"@babel/eslint-parser": "^7.18.2",
+		"@betterdiscordbuilder/bdbuilder": "^1.2.22",
 		"edit-json-file": "^1.7.0",
 		"eslint": "^8.16.0",
 		"eslint-plugin-no-one-time-vars": "^2.4.1",
 		"eslint-plugin-prettier": "^4.0.0",
-		"npm-check-updates": "^13.0.3"
+		"npm-check-updates": "^13.0.3",
+		"prettier": "^2.6.2"
 	}
 }
