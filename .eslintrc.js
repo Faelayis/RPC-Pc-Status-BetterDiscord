@@ -1,7 +1,6 @@
 module.exports = {
 	env: {
 		node: true,
-		browser: true,
 		commonjs: true,
 		es2021: true,
 	},
@@ -13,4 +12,18 @@ module.exports = {
 	rules: {
 		"prettier/prettier": "warn",
 	},
+	overrides: [
+		{
+			files: ["plugins/devlop/index.js"],
+			parserOptions: {
+				sourceType: "module",
+			},
+			globals: {
+				BdApi: true,
+				config: true,
+				ZLibrary: true,
+				document: true,
+			},
+		},
+	],
 };

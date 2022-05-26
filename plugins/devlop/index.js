@@ -187,6 +187,7 @@ export default class Plugin {
 				const k = 1024;
 				const i = Math.floor(Math.log(freemem) / Math.log(k));
 				const ram = `${parseFloat((totalmem / k ** i).toFixed(decimals < 0 ? 0 : decimals))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][i]}`;
+				// eslint-disable-next-line no-constant-condition
 				return `${parseFloat((totalmem / k ** i - freemem / k ** i).toFixed(2 < 0 ? 0 : 2))}/${ram}`;
 			}
 			this.client.setActivity({

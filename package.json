@@ -26,6 +26,7 @@
 	},
 	"homepage": "https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord#readme",
 	"dependencies": {
+		"@types/bandagedbd__bdapi": "^0.3.4",
 		"npm-cli-login": "^1.0.0",
 		"prettier": "^2.6.2"
 	},
