@@ -1,0 +1,40 @@
+name: Find and fix problems in code
+
+on:
+    workflow_dispatch:
+    pull_request:
+    push:
+        branches:
+            - main
+        paths:
+            - '**.js'
+
+jobs:
+    main:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.head_ref }}
+
+            - name: Setup Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "16"
+
+            - name: Install Dependencies
+              run: npm install -g --force
+            - name: Run ESLint
+              run: npm run fix
+
+            - name: Automatically Commit Changed
+              uses: stefanzweifel/git-auto-commit-action@v4
+              with:
+                  push_options: "--force"
+                  commit_options: "--no-verify"
+                  commit_message: "Fix problems!"
+                  commit_user_name: GitHub Actions
+                  commit_user_email: actions@github.com
+                  commit_author: GitHub Actions <actions@github.com>
+                  skip_checkout: true
