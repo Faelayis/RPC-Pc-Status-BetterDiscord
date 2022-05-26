@@ -2,10 +2,10 @@ import * as si from "systeminformation";
 import * as os from "os";
 
 const color = {
-	base: ["color: #fff", "background-color: #444", "padding: 2px 4px", "border-radius: 2px"],
-	warn: ["color: #eee", "background-color: red"],
-	succ: ["background-color: green"],
-},
+		base: ["color: #fff", "background-color: #444", "padding: 2px 4px", "border-radius: 2px"],
+		warn: ["color: #eee", "background-color: red"],
+		succ: ["background-color: green"],
+	},
 	log = (text, extra = []) => {
 		let style = color.base.join(";") + ";";
 		if (extra) style += extra.join(";");
@@ -73,7 +73,7 @@ export default class Plugin {
 			return BdApi.showToast('RPC Pc Status: Please install "ZeresPluginLibrary" and restart this plugin.', { type: "error" });
 		}
 		this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
-		this.startTimeStamps = [undefined, Math.round(Date.now() / 1000 - si.time().uptime), new Date()]
+		this.startTimeStamps = [undefined, Math.round(Date.now() / 1000 - si.time().uptime), new Date()];
 		this.generateconfig();
 		this.connected();
 		this.checkForUpdate();
