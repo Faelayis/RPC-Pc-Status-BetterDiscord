@@ -1,8 +1,8 @@
 /**
  * @name RPCPcStatus
- * @version 2.2.3
- * @authorLink https://discordapp.com/users/328731868096888833
+ * @version 2.2.4
  * @description Rich Presence Pc Status for your Discord
+ * @authorLink https://discordapp.com/users/328731868096888833
  * @author Faelayis
  * @source https://github.com/Faelayis/RPC-Pc-Status-BetterDiscord
  * @updateUrl https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js
@@ -34,9 +34,9 @@
 const config = {
 	info: {
 		name: "RPCPcStatus",
-		version: "2.2.3",
-		authorLink: "https://discordapp.com/users/328731868096888833",
+		version: "2.2.4",
 		description: "Rich Presence Pc Status for your Discord",
+		authorLink: "https://discordapp.com/users/328731868096888833",
 		authors: [
 			{
 				name: "Faelayis",
@@ -13562,8 +13562,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 			var systeminformation__WEBPACK_IMPORTED_MODULE_0___default = __webpack_require__.n(systeminformation__WEBPACK_IMPORTED_MODULE_0__);
 			var os__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(37);
 			var os__WEBPACK_IMPORTED_MODULE_1___default = __webpack_require__.n(os__WEBPACK_IMPORTED_MODULE_1__);
-			const timestamp = new Date(),
-				color = {
+			const color = {
 					base: ["color: #fff", "background-color: #444", "padding: 2px 4px", "border-radius: 2px"],
 					warn: ["color: #eee", "background-color: red"],
 					succ: ["background-color: green"],
@@ -13593,7 +13592,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					{
 						title: `Fixed`,
 						type: "fixed",
-						items: ["Hide presence when listening spotify songs not working"],
+						items: ["Wrong time system uptime & rpc uptime", "When update settings, timestamps will reset", "Hide presence when listening spotify songs not working"],
 					},
 				],
 			};
@@ -13605,9 +13604,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 							type: "error",
 						});
 					this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
+					this.startTimeStamps = [void 0, Math.round(Date.now() / 1e3 - systeminformation__WEBPACK_IMPORTED_MODULE_0__.time().uptime), new Date()];
 					this.generateconfig();
-					if (1 === this.settings.timestamps) this.startTime = Date.now() / 1e3 - os__WEBPACK_IMPORTED_MODULE_1__.uptime;
-					else if (2 === this.settings.timestamps) this.startTime = Date.now() / 100;
 					this.connected();
 					this.checkForUpdate();
 				}
@@ -13733,7 +13731,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 							},
 							buttons: this.buttons && (this.buttons[0] || this.buttons[1]) ? this.buttons : void 0,
 							timestamps: {
-								start: this.startTime,
+								start: this.startTimeStamps[this.settings.timestamps || 0],
 							},
 						});
 					}, this.settings.presenceUpdateInterval ?? 2500);
@@ -13755,9 +13753,6 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					await this.stopPresence();
 				}
 				async updateSettings() {
-					if (1 == this.settings.timestamps) this.startTime = Date.now() / 1e3 - os__WEBPACK_IMPORTED_MODULE_1__.uptime;
-					else if (2 == this.settings.timestamps) this.startTime = timestamp;
-					else delete this.startTime;
 					this.buttons = [];
 					if (this.settings.button1Label && this.settings.button1URL)
 						this.buttons.push({
@@ -13826,8 +13821,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 										value: "icon_orange",
 									},
 								],
-								(val) => {
-									this.settings.LargeImageKeyColor = val;
+								(value) => {
+									this.settings.LargeImageKeyColor = value;
 								},
 							),
 							new ZLibrary.Settings.Dropdown(
@@ -13848,8 +13843,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 										value: 2,
 									},
 								],
-								(val) => {
-									this.settings.timestamps = val;
+								(value) => {
+									this.settings.timestamps = value;
 								},
 							),
 							new ZLibrary.Settings.Dropdown(
@@ -13886,10 +13881,10 @@ function buildPlugin([BasePlugin, PluginApi]) {
 										value: 18e4,
 									},
 								],
-								(val) => {
-									this.settings.presenceUpdateInterval = val;
+								(value) => {
+									this.settings.presenceUpdateInterval = value;
 									clearInterval(Interval);
-									setInterval(Interval, val);
+									setInterval(Interval, value);
 									this.startPresence();
 								},
 							),
@@ -13897,16 +13892,16 @@ function buildPlugin([BasePlugin, PluginApi]) {
 								"Hide presence when listening spotify songs",
 								"hide presence pc status",
 								this.settings.automatically?.hide?.spotify || false,
-								(val) => {
+								(value) => {
 									this.settings.automatically = {
 										hide: {
-											spotify: val,
+											spotify: value,
 										},
 									};
 								},
 							),
-							new ZLibrary.Settings.Switch("Hide Icon", "presence show only text", this.settings.hideicon || false, (val) => {
-								this.settings.hideicon = val;
+							new ZLibrary.Settings.Switch("Hide Icon", "presence show only text", this.settings.hideicon || false, (value) => {
+								this.settings.hideicon = value;
 							}),
 						);
 					new ZLibrary.Settings.SettingGroup("Hide when custom status", {
@@ -13918,17 +13913,19 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					})
 						.appendTo(panel)
 						.append(
-							new ZLibrary.Settings.Switch("Online", null, this.settings.customstatus_hide?.includes("online") ?? false, (val) => {
-								val ? this.settings.customstatus_hide.push("online") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => "online" !== x));
+							new ZLibrary.Settings.Switch("Online", null, this.settings.customstatus_hide?.includes("online") ?? false, (value) => {
+								value
+									? this.settings.customstatus_hide.push("online")
+									: (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => "online" !== x));
 							}),
-							new ZLibrary.Settings.Switch("Idle", null, this.settings.customstatus_hide?.includes("idle") ?? false, (val) => {
-								val ? this.settings.customstatus_hide.push("idle") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => "idle" !== x));
+							new ZLibrary.Settings.Switch("Idle", null, this.settings.customstatus_hide?.includes("idle") ?? false, (value) => {
+								value ? this.settings.customstatus_hide.push("idle") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => "idle" !== x));
 							}),
-							new ZLibrary.Settings.Switch("Do Not Disturb", null, this.settings.customstatus_hide?.includes("dnd") ?? false, (val) => {
-								val ? this.settings.customstatus_hide.push("dnd") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => "dnd" !== x));
+							new ZLibrary.Settings.Switch("Do Not Disturb", null, this.settings.customstatus_hide?.includes("dnd") ?? false, (value) => {
+								value ? this.settings.customstatus_hide.push("dnd") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => "dnd" !== x));
 							}),
-							new ZLibrary.Settings.Switch("Invisible", null, this.settings.customstatus_hide?.includes("invisible") ?? true, (val) => {
-								val
+							new ZLibrary.Settings.Switch("Invisible", null, this.settings.customstatus_hide?.includes("invisible") ?? true, (value) => {
+								value
 									? this.settings.customstatus_hide.push("invisible")
 									: (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => "invisible" !== x));
 							}),
@@ -13942,17 +13939,17 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					})
 						.appendTo(panel)
 						.append(
-							new window.ZeresPluginLibrary.Settings.Textbox("Button 1 Label", "Label for button.", this.settings.button1Label || "", (val) => {
-								this.settings.button1Label = val;
+							new ZLibrary.Settings.Textbox("Button 1 Label", "Label for button.", this.settings.button1Label || "", (value) => {
+								this.settings.button1Label = value;
 							}),
-							new ZLibrary.Settings.Textbox("Button 1 URL", "URL for button.", this.settings.button1URL || "", (val) => {
-								this.settings.button1URL = val;
+							new ZLibrary.Settings.Textbox("Button 1 URL", "URL for button.", this.settings.button1URL || "", (value) => {
+								this.settings.button1URL = value;
 							}),
-							new ZLibrary.Settings.Textbox("Button 2 Label", "Label for button.", this.settings.button2Label || "", (val) => {
-								this.settings.button2Label = val;
+							new ZLibrary.Settings.Textbox("Button 2 Label", "Label for button.", this.settings.button2Label || "", (value) => {
+								this.settings.button2Label = value;
 							}),
-							new ZLibrary.Settings.Textbox("Button 2 URL", "URL for button.", this.settings.button2URL || "", (val) => {
-								this.settings.button2URL = val;
+							new ZLibrary.Settings.Textbox("Button 2 URL", "URL for button.", this.settings.button2URL || "", (value) => {
+								this.settings.button2URL = value;
 							}),
 						);
 					new ZLibrary.Settings.SettingGroup("Rich Presence (advanced)", {
@@ -13964,8 +13961,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					})
 						.appendTo(panel)
 						.append(
-							new ZLibrary.Settings.Textbox("Client ID", "The client ID of your Discord Rich Presence application.", this.settings.clientID || "", (val) => {
-								this.settings.clientID = val;
+							new ZLibrary.Settings.Textbox("Client ID", "The client ID of your Discord Rich Presence application.", this.settings.clientID || "", (value) => {
+								this.settings.clientID = value;
 								this.stopPresence();
 								this.connected();
 							}),
@@ -13973,32 +13970,32 @@ function buildPlugin([BasePlugin, PluginApi]) {
 								"Large Image Key",
 								"The name of the asset or url (.png or .jpg) for your large image.",
 								this.settings.largeImageKey || "",
-								(val) => {
-									this.settings.largeImageKey = val;
+								(value) => {
+									this.settings.largeImageKey = value;
 								},
 							),
 							new ZLibrary.Settings.Textbox(
 								"Large Image Text",
 								"The text that appears when your large image is hovered over.",
 								this.settings.largeImageText || "",
-								(val) => {
-									this.settings.largeImageText = val;
+								(value) => {
+									this.settings.largeImageText = value;
 								},
 							),
 							new ZLibrary.Settings.Textbox(
 								"Small Image Key",
 								"The name of the asset or url (.png or .jpg) for your small image.",
 								this.settings.smallImageKey || "",
-								(val) => {
-									this.settings.smallImageKey = val;
+								(value) => {
+									this.settings.smallImageKey = value;
 								},
 							),
 							new ZLibrary.Settings.Textbox(
 								"Small Image Text",
 								"The text that appears when your small image is hovered over.",
 								this.settings.smallImageText || "",
-								(val) => {
-									this.settings.smallImageText = val;
+								(value) => {
+									this.settings.smallImageText = value;
 								},
 							),
 						);
@@ -14023,8 +14020,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 										color: "#43b581",
 									},
 								],
-								(val) => {
-									this.checkForUpdate(val);
+								(value) => {
+									this.checkForUpdate(value);
 								},
 							),
 						);
