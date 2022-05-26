@@ -1,4 +1,4 @@
-name: Find and fix problems in code
+name: ESLint
 
 on:
     workflow_dispatch:
@@ -24,7 +24,7 @@ jobs:
                   node-version: "16"
 
             - name: Install Dependencies
-              run: npm install -g --dev
+              run: npm install -g --include=dev
             - name: Run ESLint
               run: npm run fix
 
