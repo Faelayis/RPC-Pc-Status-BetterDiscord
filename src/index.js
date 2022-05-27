@@ -28,12 +28,12 @@ const changelog = {
 		{
 			title: `Added`,
 			type: "added",
-			items: ["Features Show games playing"],
+			items: ["Optional show premid", "Features Show games playing"],
 		},
 		{
 			title: `Fixed`,
 			type: "fixed",
-			items: ["Update interval hidden (Recommend) by default"],
+			items: ["Fix same as custom Client ID", "Update interval hidden (Recommend) by default"],
 		},
 		{
 			title: `Improved`,
@@ -153,6 +153,12 @@ export default class Plugin {
 			if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
 			if (this.settings.automatically?.hide?.spotify && ZLibrary.DiscordModules.UserActivityStore.getActivity()?.name === "Spotify" ? true : false)
 				return this.client.setActivity(null);
+			if ((this.settings.show_premid ?? true) && BdApi) {
+				BdApi.findModuleByProps("getActivities")
+					.getActivities()
+					.find((data) => data === data.assets.large_text.includes("PreMiD"));
+				return;
+			}
 			currentLoad().then((data) => (this.cpuload = data.currentLoad.toFixed(0)));
 			function formatBytes(freemem, totalmem, decimals = 0) {
 				if (freemem === 0) {
@@ -347,6 +353,9 @@ export default class Plugin {
 						this.startPresence();
 					},
 				),
+				new ZLibrary.Settings.Switch("Show Premid", undefined, this.settings.show_premid || true, (value) => {
+					this.settings.show_premid = value;
+				}),
 				new ZLibrary.Settings.Switch(
 					"Show games playing",
 					!BdApi ? "Library plugin is needed BDFDB!" : undefined,
