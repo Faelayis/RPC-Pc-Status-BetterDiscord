@@ -353,9 +353,6 @@ export default class Plugin {
 						this.startPresence();
 					},
 				),
-				new ZLibrary.Settings.Switch("Show Premid", undefined, this.settings.show_premid || true, (value) => {
-					this.settings.show_premid = value;
-				}),
 				new ZLibrary.Settings.Switch(
 					"Show games playing",
 					!BdApi ? "Library plugin is needed BDFDB!" : undefined,
@@ -462,6 +459,9 @@ export default class Plugin {
 		})
 			.appendTo(panel)
 			.append(
+				new ZLibrary.Settings.Switch("Show Premid", undefined, this.settings.show_premid || true, (value) => {
+					this.settings.show_premid = value;
+				}),
 				new ZLibrary.Settings.RadioGroup(
 					"Update Channel",
 					undefined,
