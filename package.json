@@ -12,7 +12,7 @@
 		"npm-install": "cd ./src && npm install",
 		"script:auth": "node ./script/authentication.js",
 		"script:releases": "node ./script/releases.js",
-		"script:publish_stable": "npm run script:releases && npm run npm-install && npm run build && eslint ./RPCPcStatus.plugin.js --config .eslintrc.js --debug --fix"
+		"script:publish_stable": "npm run script:releases && npm run npm-install && npm run prettier && npm run build && eslint ./RPCPcStatus.plugin.js --config .eslintrc.js --debug --fix"
 	},
 	"repository": {
 		"type": "git",
