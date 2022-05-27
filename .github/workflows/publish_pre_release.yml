@@ -38,13 +38,10 @@ jobs:
                   npm-cli-login -u $NPM_USER -p $NPM_PASS -e "$NPM_EMAIL" -r "https://npm.pkg.github.com" -s "@betterdiscordbuilder"
 
             - name: Install Dependencies
-              run: npm install
+              run: npm install -g
             - name: Run script
               id: build_prerelease
               run: npm run script:publish_prerelease
-
-            - name: Install version-bump-prompt
-              run: npm install -g version-bump-prompt
 
             - name: Bump a package version
               if: steps.build_prerelease.outcome == 'success'
