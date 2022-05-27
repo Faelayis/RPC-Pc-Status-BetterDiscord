@@ -31,6 +31,9 @@ module.exports = {
 				ZLibrary: true,
 				document: true,
 			},
+			rules: {
+				"no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
+			},
 		},
 		{
 			files: ["RPCPcStatus.plugin.js"],
