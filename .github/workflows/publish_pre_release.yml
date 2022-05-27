@@ -45,11 +45,12 @@ jobs:
 
             - name: Bump a package version
               if: steps.build_prerelease.outcome == 'success'
-              id: bumprelease
-              run: bump $bumprelease packagedev.json RPCPcStatus.devlop.js
+              id: bump_version
+              run: |
+                  bump $bumprelease packagedev.json RPCPcStatus.devlop.js
 
             - uses: nyaa8/package-version@v1
-              if: steps.bumprelease.outcome == 'success'
+              if: steps.bump_version.outcome == 'success'
               id: package_version
               with:
                 path: './packagedev.json'
