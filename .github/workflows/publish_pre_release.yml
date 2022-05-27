@@ -46,8 +46,7 @@ jobs:
             - name: Bump a package version
               if: steps.build_prerelease.outcome == 'success'
               id: bump_version
-              run: |
-                  bump ${{ github.event.inputs.bumprelease }} packagedev.json RPCPcStatus.devlop.js
+              run: bump $github.event.inputs.bumprelease packagedev.json RPCPcStatus.devlop.js
 
             - uses: nyaa8/package-version@v1
               if: steps.bump_version.outcome == 'success'
