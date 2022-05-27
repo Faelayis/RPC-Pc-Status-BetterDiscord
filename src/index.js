@@ -346,7 +346,7 @@ export default class Plugin {
 				),
 				new ZLibrary.Settings.Switch(
 					"Show games playing",
-					`${!BdApi ? "Library plugin is needed BDFDB !" : ""}`,
+					`Last games played open. ${!BdApi ? "Library plugin is needed BDFDB !" : ""}`,
 					this.settings.show_game_playing || false,
 					(value) => {
 						this.settings.show_game_playing = value;
