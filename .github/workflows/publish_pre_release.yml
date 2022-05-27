@@ -1,6 +1,8 @@
 name: Publish Pre-release
 
 on:
+    schedule:
+        - cron: "0 0 * * *"
     workflow_dispatch:
         inputs:
             bumprelease:
@@ -20,7 +22,26 @@ env:
     NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
 
 jobs:
+    check_date:
+        runs-on: ubuntu-latest
+        name: Check latest commit
+        outputs:
+            should_run: ${{ steps.should_run.outputs.should_run }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Latest Commit
+              run: echo ${{ github.sha }}
+
+            - id: should_run
+              continue-on-error: true
+              name: Check latest commit is less than a day
+              if: ${{ github.event_name == 'schedule' }}
+              run: test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) && echo "::set-output name=should_run::false"
+
     main:
+        needs: check_date
+        if: ${{ needs.check_date.outputs.should_run != 'false' }
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -53,8 +74,8 @@ jobs:
             - uses: nyaa8/package-version@v1
               id: package_version
               with:
-                path: './packagedev.json'
-                follow-symlinks: 'false'
+                  path: "./packagedev.json"
+                  follow-symlinks: "false"
 
             - name: Create Release
               if: steps.package_version.outcome == 'success'
