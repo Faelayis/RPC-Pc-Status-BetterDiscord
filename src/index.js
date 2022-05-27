@@ -38,7 +38,7 @@ const changelog = {
 		{
 			title: `Improved`,
 			type: "improved",
-			items: ["Refactor code import using necessary only"],
+			items: ["UI improvements", "Hide ColorPicker if you custom Client ID", "Refactor code import using necessary only"],
 		},
 	],
 };
@@ -239,48 +239,50 @@ export default class Plugin {
 		})
 			.appendTo(panel)
 			.append(
-				new ZLibrary.Settings.Dropdown(
-					"Color",
-					null,
-					this.settings.LargeImageKeyColor ?? "icon_white",
-					[
-						{
-							label: "White",
-							value: "icon_white",
-						},
-						{
-							label: "Dark",
-							value: "icon_dark",
-						},
-						{
-							label: "Red",
-							value: "icon_red",
-						},
-						{
-							label: "Yellow",
-							value: "icon_yellow",
-						},
-						{
-							label: "Lime",
-							value: "icon_lime",
-						},
-						{
-							label: "Aqua",
-							value: "icon_aqua",
-						},
-						{
-							label: "Blue",
-							value: "icon_blue",
-						},
-						{
-							label: "Orange",
-							value: "icon_orange",
-						},
-					],
-					(value) => {
-						this.settings.LargeImageKeyColor = value;
-					},
-				),
+				!this.settings.clientID
+					? new ZLibrary.Settings.Dropdown(
+							"Color Picker",
+							undefined,
+							this.settings.LargeImageKeyColor ?? "icon_white",
+							[
+								{
+									label: "White",
+									value: "icon_white",
+								},
+								{
+									label: "Dark",
+									value: "icon_dark",
+								},
+								{
+									label: "Red",
+									value: "icon_red",
+								},
+								{
+									label: "Yellow",
+									value: "icon_yellow",
+								},
+								{
+									label: "Lime",
+									value: "icon_lime",
+								},
+								{
+									label: "Aqua",
+									value: "icon_aqua",
+								},
+								{
+									label: "Blue",
+									value: "icon_blue",
+								},
+								{
+									label: "Orange",
+									value: "icon_orange",
+								},
+							],
+							(value) => {
+								this.settings.LargeImageKeyColor = value;
+							},
+					  )
+					: undefined,
 				new ZLibrary.Settings.Dropdown(
 					"Uptime Timestamp",
 					"Weather you want to displays the amount of time your Rich Presence / System was up.",
@@ -346,18 +348,18 @@ export default class Plugin {
 				),
 				new ZLibrary.Settings.Switch(
 					"Show games playing",
-					`Last games played open. ${!BdApi ? "Library plugin is needed BDFDB !" : ""}`,
+					!BdApi ? "Library plugin is needed BDFDB!" : undefined,
 					this.settings.show_game_playing || false,
 					(value) => {
 						this.settings.show_game_playing = value;
 					},
 					{ disabled: !BdApi },
 				),
-				new ZLibrary.Settings.Switch("Hide presence when listening spotify songs", "hide presence pc status", this.settings.automatically?.hide?.spotify || false, (value) => {
-					this.settings.automatically = { hide: { spotify: value } };
-				}),
-				new ZLibrary.Settings.Switch("Hide Icon", "presence show only text", this.settings.hideicon || false, (value) => {
+				new ZLibrary.Settings.Switch("Hide icon and image asset", undefined, this.settings.hideicon || false, (value) => {
 					this.settings.hideicon = value;
+				}),
+				new ZLibrary.Settings.Switch("Hide when listening spotify songs", undefined, this.settings.automatically?.hide?.spotify || false, (value) => {
+					this.settings.automatically = { hide: { spotify: value } };
 				}),
 			);
 		new ZLibrary.Settings.SettingGroup("Hide when custom status", {
@@ -369,16 +371,16 @@ export default class Plugin {
 		})
 			.appendTo(panel)
 			.append(
-				new ZLibrary.Settings.Switch("Online", null, this.settings.customstatus_hide?.includes("online") ?? false, (value) => {
+				new ZLibrary.Settings.Switch("Online", undefined, this.settings.customstatus_hide?.includes("online") ?? false, (value) => {
 					value ? this.settings.customstatus_hide.push("online") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "online"));
 				}),
-				new ZLibrary.Settings.Switch("Idle", null, this.settings.customstatus_hide?.includes("idle") ?? false, (value) => {
+				new ZLibrary.Settings.Switch("Idle", undefined, this.settings.customstatus_hide?.includes("idle") ?? false, (value) => {
 					value ? this.settings.customstatus_hide.push("idle") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "idle"));
 				}),
-				new ZLibrary.Settings.Switch("Do Not Disturb", null, this.settings.customstatus_hide?.includes("dnd") ?? false, (value) => {
+				new ZLibrary.Settings.Switch("Do Not Disturb", undefined, this.settings.customstatus_hide?.includes("dnd") ?? false, (value) => {
 					value ? this.settings.customstatus_hide.push("dnd") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "dnd"));
 				}),
-				new ZLibrary.Settings.Switch("Invisible", null, this.settings.customstatus_hide?.includes("invisible") ?? true, (value) => {
+				new ZLibrary.Settings.Switch("Invisible", undefined, this.settings.customstatus_hide?.includes("invisible") ?? true, (value) => {
 					value ? this.settings.customstatus_hide.push("invisible") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "invisible"));
 				}),
 			);
@@ -418,15 +420,25 @@ export default class Plugin {
 					this.stopPresence();
 					this.connected();
 				}),
-				new ZLibrary.Settings.Textbox("Large Image Key", "The name of the asset or url (.png or .jpg) for your large image.", this.settings.largeImageKey || "", (value) => {
-					this.settings.largeImageKey = value;
-				}),
+				new ZLibrary.Settings.Textbox(
+					"Large Image Key or URL",
+					"The name of the asset or url (.gif .png or .jpg) for your large image.",
+					this.settings.largeImageKey || "",
+					(value) => {
+						this.settings.largeImageKey = value;
+					},
+				),
 				new ZLibrary.Settings.Textbox("Large Image Text", "The text that appears when your large image is hovered over.", this.settings.largeImageText || "", (value) => {
 					this.settings.largeImageText = value;
 				}),
-				new ZLibrary.Settings.Textbox("Small Image Key", "The name of the asset or url (.png or .jpg) for your small image.", this.settings.smallImageKey || "", (value) => {
-					this.settings.smallImageKey = value;
-				}),
+				new ZLibrary.Settings.Textbox(
+					"Small Image Key or URL",
+					"The name of the asset or url (.gif .png or .jpg) for your small image.",
+					this.settings.smallImageKey || "",
+					(value) => {
+						this.settings.smallImageKey = value;
+					},
+				),
 				new ZLibrary.Settings.Textbox("Small Image Text", "The text that appears when your small image is hovered over.", this.settings.smallImageText || "", (value) => {
 					this.settings.smallImageText = value;
 				}),
@@ -442,7 +454,7 @@ export default class Plugin {
 			.append(
 				new ZLibrary.Settings.RadioGroup(
 					"Update Channel",
-					null,
+					undefined,
 					this.settings.updatechannel ?? 0,
 					[
 						{
