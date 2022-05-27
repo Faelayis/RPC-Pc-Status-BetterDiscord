@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.3.0
+ * @version 2.3.1
  * @description Rich Presence Pc Status for your Discord
  * @authorLink https://discordapp.com/users/328731868096888833
  * @author Faelayis
@@ -34,7 +34,7 @@
 const config = {
 	"info": {
 		"name": "RPCPcStatus",
-		"version": "2.3.0",
+		"version": "2.3.1",
 		"description": "Rich Presence Pc Status for your Discord",
 		"authorLink": "https://discordapp.com/users/328731868096888833",
 		"authors": [{
@@ -288,7 +288,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					value: true
 				});
 				exports.BaseEventEmitter = void 0;
-				const util_1 = __webpack_require__(179);
+				const util_1 = __webpack_require__(866);
 				class BaseEventEmitter extends __importDefault(__webpack_require__(702)).default {
 					constructor(clientId) {
 						super();
@@ -307,7 +307,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					value: true
 				});
 				exports.createConnection = void 0;
-				const util_1 = __webpack_require__(179);
+				const util_1 = __webpack_require__(866);
 				function createConnection(path, connectionListener) {
 					const socket = __webpack_require__(216).createConnection(path, connectionListener);
 					socket.writePacket = (opcode, data) => {
@@ -362,7 +362,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				const path_1 = __webpack_require__(315);
 				const consts_1 = __webpack_require__(931);
 				const DiscordSocket_1 = __webpack_require__(821);
-				const util_1 = __webpack_require__(179);
+				const util_1 = __webpack_require__(866);
 				class SocketManager extends __webpack_require__(308).BaseEventEmitter {
 					constructor(clientId) {
 						super(clientId);
@@ -583,21 +583,23 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.z = Presence;
 			},
-			179: (__unused_webpack_module, exports) => {
+			866: (__unused_webpack_module, exports) => {
 				Object.defineProperty(exports, "__esModule", {
 					value: true
 				});
 				exports.debug = void 0;
 				function debug(...args) {
-					if (!process.env["EZP-DEBUG"]) return;
-					console.debug("[EZP]", ...args);
+					if (BdApi ?? false) {
+						const developer = BdApi.settings[0].settings.find((args => "developer" === args?.id)).settings;
+						if (developer.find((args => "debugLogs" === args?.id)).value ?? false) console.debug("[RPC Pc Status DEBUG]", ...args);
+					}
 				}
 				exports.debug = debug;
 			},
-			764: (__unused_webpack_module, exports, __webpack_require__) => {
+			265: (__unused_webpack_module, exports, __webpack_require__) => {
 				const exec = __webpack_require__(282).exec;
 				const execSync = __webpack_require__(282).execSync;
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				let _platform = process.platform;
 				const _linux = "linux" === _platform || "android" === _platform;
 				const _darwin = "darwin" === _platform;
@@ -756,10 +758,10 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.audio = audio;
 			},
-			620: (module, __unused_webpack_exports, __webpack_require__) => {
+			494: (module, __unused_webpack_exports, __webpack_require__) => {
 				const exec = __webpack_require__(282).exec;
 				const fs = __webpack_require__(48);
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				let _platform = process.platform;
 				const _linux = "linux" === _platform || "android" === _platform;
 				const _darwin = "darwin" === _platform;
@@ -989,11 +991,11 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					}));
 				};
 			},
-			184: (__unused_webpack_module, exports, __webpack_require__) => {
+			854: (__unused_webpack_module, exports, __webpack_require__) => {
 				const exec = __webpack_require__(282).exec;
 				const execSync = __webpack_require__(282).execSync;
 				const path = __webpack_require__(315);
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				const fs = __webpack_require__(48);
 				let _platform = process.platform;
 				const _linux = "linux" === _platform || "android" === _platform;
@@ -1118,12 +1120,12 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.bluetoothDevices = bluetoothDevices;
 			},
-			871: (__unused_webpack_module, exports, __webpack_require__) => {
+			562: (__unused_webpack_module, exports, __webpack_require__) => {
 				const os = __webpack_require__(37);
 				const exec = __webpack_require__(282).exec;
 				const execSync = __webpack_require__(282).execSync;
 				const fs = __webpack_require__(48);
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				let _platform = process.platform;
 				const _linux = "linux" === _platform || "android" === _platform;
 				const _darwin = "darwin" === _platform;
@@ -2510,9 +2512,9 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.fullLoad = fullLoad;
 			},
-			866: (__unused_webpack_module, exports, __webpack_require__) => {
-				const util = __webpack_require__(858);
-				const DockerSocket = __webpack_require__(392);
+			840: (__unused_webpack_module, exports, __webpack_require__) => {
+				const util = __webpack_require__(376);
+				const DockerSocket = __webpack_require__(619);
 				let _platform = process.platform;
 				const _windows = "win32" === _platform;
 				let _docker_container_stats = {};
@@ -3050,7 +3052,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.dockerAll = dockerAll;
 			},
-			392: (module, __unused_webpack_exports, __webpack_require__) => {
+			619: (module, __unused_webpack_exports, __webpack_require__) => {
 				const net = __webpack_require__(808);
 				const isWin = "Windows_NT" === __webpack_require__(37).type();
 				const socketPath = isWin ? "//./pipe/docker_engine" : "/var/run/docker.sock";
@@ -3318,8 +3320,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				module.exports = DockerSocket;
 			},
-			255: (__unused_webpack_module, exports, __webpack_require__) => {
-				const util = __webpack_require__(858);
+			611: (__unused_webpack_module, exports, __webpack_require__) => {
+				const util = __webpack_require__(376);
 				const fs = __webpack_require__(48);
 				const exec = __webpack_require__(282).exec;
 				const execSync = __webpack_require__(282).execSync;
@@ -4433,11 +4435,11 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.diskLayout = diskLayout;
 			},
-			27: (__unused_webpack_module, exports, __webpack_require__) => {
+			564: (__unused_webpack_module, exports, __webpack_require__) => {
 				const fs = __webpack_require__(48);
 				const exec = __webpack_require__(282).exec;
 				const execSync = __webpack_require__(282).execSync;
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				let _platform = process.platform;
 				let _nvidiaSmiPath = "";
 				const _linux = "linux" === _platform || "android" === _platform;
@@ -5303,27 +5305,27 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.graphics = graphics;
 			},
-			303: (__unused_webpack_module, exports, __webpack_require__) => {
-				const lib_version = __webpack_require__(631).i8;
-				const util = __webpack_require__(858);
-				const system = __webpack_require__(57);
-				const osInfo = __webpack_require__(17);
-				const cpu = __webpack_require__(871);
-				const memory = __webpack_require__(453);
-				const battery = __webpack_require__(620);
-				const graphics = __webpack_require__(27);
-				const filesystem = __webpack_require__(255);
-				const network = __webpack_require__(96);
-				const wifi = __webpack_require__(694);
-				const processes = __webpack_require__(537);
-				const users = __webpack_require__(577);
-				const internet = __webpack_require__(34);
-				const docker = __webpack_require__(866);
-				const vbox = __webpack_require__(398);
-				const printer = __webpack_require__(818);
-				const usb = __webpack_require__(848);
-				const audio = __webpack_require__(764);
-				const bluetooth = __webpack_require__(184);
+			844: (__unused_webpack_module, exports, __webpack_require__) => {
+				const lib_version = __webpack_require__(476).i8;
+				const util = __webpack_require__(376);
+				const system = __webpack_require__(643);
+				const osInfo = __webpack_require__(311);
+				const cpu = __webpack_require__(562);
+				const memory = __webpack_require__(423);
+				const battery = __webpack_require__(494);
+				const graphics = __webpack_require__(564);
+				const filesystem = __webpack_require__(611);
+				const network = __webpack_require__(143);
+				const wifi = __webpack_require__(655);
+				const processes = __webpack_require__(367);
+				const users = __webpack_require__(786);
+				const internet = __webpack_require__(642);
+				const docker = __webpack_require__(840);
+				const vbox = __webpack_require__(835);
+				const printer = __webpack_require__(310);
+				const usb = __webpack_require__(350);
+				const audio = __webpack_require__(265);
+				const bluetooth = __webpack_require__(854);
 				let _platform = process.platform;
 				const _windows = "win32" === _platform;
 				const _freebsd = "freebsd" === _platform;
@@ -5613,8 +5615,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				exports.powerShellStart = util.powerShellStart;
 				exports.powerShellRelease = util.powerShellRelease;
 			},
-			34: (__unused_webpack_module, exports, __webpack_require__) => {
-				const util = __webpack_require__(858);
+			642: (__unused_webpack_module, exports, __webpack_require__) => {
+				const util = __webpack_require__(376);
 				let _platform = process.platform;
 				const _linux = "linux" === _platform || "android" === _platform;
 				const _darwin = "darwin" === _platform;
@@ -5809,11 +5811,11 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.inetLatency = inetLatency;
 			},
-			453: (__unused_webpack_module, exports, __webpack_require__) => {
+			423: (__unused_webpack_module, exports, __webpack_require__) => {
 				const os = __webpack_require__(37);
 				const exec = __webpack_require__(282).exec;
 				const execSync = __webpack_require__(282).execSync;
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				const fs = __webpack_require__(48);
 				let _platform = process.platform;
 				const _linux = "linux" === _platform || "android" === _platform;
@@ -6206,12 +6208,12 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.memLayout = memLayout;
 			},
-			96: (__unused_webpack_module, exports, __webpack_require__) => {
+			143: (__unused_webpack_module, exports, __webpack_require__) => {
 				const os = __webpack_require__(37);
 				const exec = __webpack_require__(282).exec;
 				const execSync = __webpack_require__(282).execSync;
 				const fs = __webpack_require__(48);
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				let _platform = process.platform;
 				const _linux = "linux" === _platform || "android" === _platform;
 				const _darwin = "darwin" === _platform;
@@ -7550,10 +7552,10 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.networkGatewayDefault = networkGatewayDefault;
 			},
-			17: (__unused_webpack_module, exports, __webpack_require__) => {
+			311: (__unused_webpack_module, exports, __webpack_require__) => {
 				const os = __webpack_require__(37);
 				const fs = __webpack_require__(48);
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				const exec = __webpack_require__(282).exec;
 				const execSync = __webpack_require__(282).execSync;
 				let _platform = process.platform;
@@ -8379,9 +8381,9 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.uuid = uuid;
 			},
-			818: (__unused_webpack_module, exports, __webpack_require__) => {
+			310: (__unused_webpack_module, exports, __webpack_require__) => {
 				const exec = __webpack_require__(282).exec;
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				let _platform = process.platform;
 				const _linux = "linux" === _platform || "android" === _platform;
 				const _darwin = "darwin" === _platform;
@@ -8538,13 +8540,13 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.printer = printer;
 			},
-			537: (__unused_webpack_module, exports, __webpack_require__) => {
+			367: (__unused_webpack_module, exports, __webpack_require__) => {
 				const os = __webpack_require__(37);
 				const fs = __webpack_require__(48);
 				const path = __webpack_require__(315);
 				const exec = __webpack_require__(282).exec;
 				const execSync = __webpack_require__(282).execSync;
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				let _platform = process.platform;
 				const _linux = "linux" === _platform || "android" === _platform;
 				const _darwin = "darwin" === _platform;
@@ -9531,10 +9533,10 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.processLoad = processLoad;
 			},
-			57: (__unused_webpack_module, exports, __webpack_require__) => {
+			643: (__unused_webpack_module, exports, __webpack_require__) => {
 				const fs = __webpack_require__(48);
 				const os = __webpack_require__(37);
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				const exec = __webpack_require__(282).exec;
 				const execSync = __webpack_require__(282).execSync;
 				const execPromise = util.promisify(__webpack_require__(282).exec);
@@ -10069,9 +10071,9 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.chassis = chassis;
 			},
-			848: (__unused_webpack_module, exports, __webpack_require__) => {
+			350: (__unused_webpack_module, exports, __webpack_require__) => {
 				const exec = __webpack_require__(282).exec;
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				let _platform = process.platform;
 				const _linux = "linux" === _platform || "android" === _platform;
 				const _darwin = "darwin" === _platform;
@@ -10268,9 +10270,9 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.usb = usb;
 			},
-			577: (__unused_webpack_module, exports, __webpack_require__) => {
+			786: (__unused_webpack_module, exports, __webpack_require__) => {
 				const exec = __webpack_require__(282).exec;
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				let _platform = process.platform;
 				const _linux = "linux" === _platform || "android" === _platform;
 				const _darwin = "darwin" === _platform;
@@ -10542,7 +10544,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.users = users;
 			},
-			858: (__unused_webpack_module, exports, __webpack_require__) => {
+			376: (__unused_webpack_module, exports, __webpack_require__) => {
 				const os = __webpack_require__(37);
 				const fs = __webpack_require__(48);
 				const path = __webpack_require__(315);
@@ -11583,10 +11585,10 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				exports.getFilesInPath = getFilesInPath;
 				exports.semverCompare = semverCompare;
 			},
-			398: (__unused_webpack_module, exports, __webpack_require__) => {
+			835: (__unused_webpack_module, exports, __webpack_require__) => {
 				const os = __webpack_require__(37);
 				const exec = __webpack_require__(282).exec;
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				function vboxInfo(callback) {
 					let result = [];
 					return new Promise((resolve => {
@@ -11672,11 +11674,11 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				exports.vboxInfo = vboxInfo;
 			},
-			694: (__unused_webpack_module, exports, __webpack_require__) => {
+			655: (__unused_webpack_module, exports, __webpack_require__) => {
 				const os = __webpack_require__(37);
 				const exec = __webpack_require__(282).exec;
 				const execSync = __webpack_require__(282).execSync;
-				const util = __webpack_require__(858);
+				const util = __webpack_require__(376);
 				let _platform = process.platform;
 				const _linux = "linux" === _platform || "android" === _platform;
 				const _darwin = "darwin" === _platform;
@@ -12321,7 +12323,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				module.exports = require("https");
 			},
-			631: module => {
+			476: module => {
 				module.exports = {
 					i8: "5.11.15"
 				};
@@ -12374,19 +12376,18 @@ function buildPlugin([BasePlugin, PluginApi]) {
 			__webpack_require__.d(__webpack_exports__, {
 				default: () => Plugin
 			});
-			var systeminformation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(303);
+			var systeminformation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(844);
 			var systeminformation__WEBPACK_IMPORTED_MODULE_0___default = __webpack_require__.n(systeminformation__WEBPACK_IMPORTED_MODULE_0__);
 			var os__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(37);
 			var os__WEBPACK_IMPORTED_MODULE_1___default = __webpack_require__.n(os__WEBPACK_IMPORTED_MODULE_1__);
 			const color = {
-					base: ["color: #fff", "background-color: #444", "padding: 2px 4px", "border-radius: 2px"],
-					warn: ["color: #eee", "background-color: red"],
-					succ: ["background-color: green"]
+					base: ["color: #FE926B;,", "color: #FFFFFF;"],
+					succ: ["color: #FE926B;,", "color: #00FF00;"],
+					warn: ["color: #FE926B;,", "color: #FFFF00;"],
+					error: ["color: #FE926B;,", "color: #FF0000;"]
 				},
-				log = (text, extra = []) => {
-					let style = color.base.join(";") + ";";
-					if (extra) style += extra.join(";");
-					console.log(`%c${text}`, style);
+				log = (text, extra) => {
+					console.log(`%c[RPC Pc Status] %c${text}`, ...extra ?? color.base);
 				};
 			let Interval, connecting;
 			const changelog = {
@@ -12408,13 +12409,13 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}, {
 					title: `Improved`,
 					type: "improved",
-					items: ["Refactor code import using necessary only"]
+					items: ["UI improvements", "Hide ColorPicker if you custom Client ID", "Refactor code import using necessary only"]
 				}]
 			};
 			class Plugin {
 				start() {
-					log("[RPC Pc Status] Start!", color.succ);
-					if ("undefined" === typeof ZLibrary) return BdApi.showToast('RPC Pc Status: Please install "ZeresPluginLibrary" and restart this plugin.', {
+					log("Start!", color.succ);
+					if ("undefined" === typeof ZLibrary) return BdApi.showToast("RPC Pc Status: Please install ZeresPluginLibrary and restart this plugin.", {
 						type: "error"
 					});
 					this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
@@ -12431,7 +12432,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					if (!this.client) {
 						this.client = new(__webpack_require__(487).z)(this.settings.clientID || "879327042498342962");
 						this.client.once("connected", (() => {
-							log("[RPC Pc Status] Connected!", color.succ);
+							log("Connected!", color.succ);
 							connecting = false;
 							this.startPresence();
 							BdApi.showToast("RPC Pc Status: Connected");
@@ -12439,7 +12440,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						this.client.once("disconnected", (() => {
 							this.stopPresence();
 							if (!connecting && this.settings.clientID) return connecting = true;
-							log("[RPC Pc Status] Disconnected!", color.warn);
+							log("Disconnected!", color.warn);
 							if (connecting) BdApi.showToast("Client ID authentication failed make sure your client ID is correct.", {
 								type: "error"
 							});
@@ -12466,7 +12467,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					await (0, systeminformation__WEBPACK_IMPORTED_MODULE_0__.osInfo)().then((data => (data.distro ? this.osdistro = `${data.distro}` : null,
 						data.release ? this.osrelease = `${data.release}` : null, data.logofile ? this.oslogo = `${data.logofile}` : null)));
 					if ("win32" === process.platform) {
-						log("[RPC Pc Status] Windows platform");
+						log("Windows platform");
 						this.SImageText = `${this.osdistro} ${this.osrelease}`;
 						switch (true) {
 							case /(Windows\s10)/g.test(this.osdistro):
@@ -12480,7 +12481,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 								break;
 						}
 					} else if ("linux" === process.platform) {
-						log("[RPC Pc Status] Linux Platform");
+						log("Linux Platform");
 						this.SImageText = `${this.osdistro} ${this.osrelease} ${(0, os__WEBPACK_IMPORTED_MODULE_1__.release)()}`;
 						switch (true) {
 							case /(Ubuntu)/g.test(this.osdistro):
@@ -12494,7 +12495,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 								break;
 						}
 					} else if ("darwin" === process.platform) {
-						log("[RPC Pc Status] Darwin platform");
+						log("Darwin platform");
 						this.oslogo = "macOS";
 					}
 					if (Interval) await clearInterval(Interval);
@@ -12548,11 +12549,11 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						BdApi.showToast("RPC Pc Status stopped error", {
 							type: "error"
 						});
-						log(`[RPC Pc Status] ${error}`, color.warn);
+						log(`${error}`, color.error);
 					}
 				}
-				async stop() {
-					await this.stopPresence();
+				stop() {
+					this.stopPresence();
 				}
 				async updateSettings() {
 					this.buttons = [];
@@ -12580,7 +12581,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						callback: () => {
 							this.updateSettings();
 						}
-					}).appendTo(panel).append(new ZLibrary.Settings.Dropdown("Color", null, this.settings.LargeImageKeyColor ?? "icon_white", [{
+					}).appendTo(panel).append(!this.settings.clientID ? new ZLibrary.Settings.Dropdown("Color Picker", void 0, this.settings.LargeImageKeyColor ?? "icon_white", [{
 						label: "White",
 						value: "icon_white"
 					}, {
@@ -12606,7 +12607,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						value: "icon_orange"
 					}], (value => {
 						this.settings.LargeImageKeyColor = value;
-					})), new ZLibrary.Settings.Dropdown("Uptime Timestamp", "Weather you want to displays the amount of time your Rich Presence / System was up.", this.settings.timestamps ?? 0, [{
+					})) : void 0, new ZLibrary.Settings.Dropdown("Uptime Timestamp", "Weather you want to displays the amount of time your Rich Presence / System was up.", this.settings.timestamps ?? 0, [{
 						label: "Off",
 						value: 0
 					}, {
@@ -12643,18 +12644,18 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						clearInterval(Interval);
 						setInterval(Interval, value);
 						this.startPresence();
-					})), new ZLibrary.Settings.Switch("Show games playing", `${!BdApi ? "Library plugin is needed BDFDB !" : ""}`, this.settings.show_game_playing || false, (value => {
+					})), new ZLibrary.Settings.Switch("Show games playing", !BdApi ? "Library plugin is needed BDFDB!" : void 0, this.settings.show_game_playing || false, (value => {
 						this.settings.show_game_playing = value;
 					}), {
 						disabled: !BdApi
-					}), new ZLibrary.Settings.Switch("Hide presence when listening spotify songs", "hide presence pc status", this.settings.automatically?.hide?.spotify || false, (value => {
+					}), new ZLibrary.Settings.Switch("Hide icon and image asset", void 0, this.settings.hideicon || false, (value => {
+						this.settings.hideicon = value;
+					})), new ZLibrary.Settings.Switch("Hide when listening spotify songs", void 0, this.settings.automatically?.hide?.spotify || false, (value => {
 						this.settings.automatically = {
 							hide: {
 								spotify: value
 							}
 						};
-					})), new ZLibrary.Settings.Switch("Hide Icon", "presence show only text", this.settings.hideicon || false, (value => {
-						this.settings.hideicon = value;
 					})));
 					new ZLibrary.Settings.SettingGroup("Hide when custom status", {
 						collapsible: true,
@@ -12662,13 +12663,13 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						callback: () => {
 							this.updateSettings();
 						}
-					}).appendTo(panel).append(new ZLibrary.Settings.Switch("Online", null, this.settings.customstatus_hide?.includes("online") ?? false, (value => {
+					}).appendTo(panel).append(new ZLibrary.Settings.Switch("Online", void 0, this.settings.customstatus_hide?.includes("online") ?? false, (value => {
 						value ? this.settings.customstatus_hide.push("online") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "online" !== x));
-					})), new ZLibrary.Settings.Switch("Idle", null, this.settings.customstatus_hide?.includes("idle") ?? false, (value => {
+					})), new ZLibrary.Settings.Switch("Idle", void 0, this.settings.customstatus_hide?.includes("idle") ?? false, (value => {
 						value ? this.settings.customstatus_hide.push("idle") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "idle" !== x));
-					})), new ZLibrary.Settings.Switch("Do Not Disturb", null, this.settings.customstatus_hide?.includes("dnd") ?? false, (value => {
+					})), new ZLibrary.Settings.Switch("Do Not Disturb", void 0, this.settings.customstatus_hide?.includes("dnd") ?? false, (value => {
 						value ? this.settings.customstatus_hide.push("dnd") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "dnd" !== x));
-					})), new ZLibrary.Settings.Switch("Invisible", null, this.settings.customstatus_hide?.includes("invisible") ?? true, (value => {
+					})), new ZLibrary.Settings.Switch("Invisible", void 0, this.settings.customstatus_hide?.includes("invisible") ?? true, (value => {
 						value ? this.settings.customstatus_hide.push("invisible") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "invisible" !== x));
 					})));
 					new ZLibrary.Settings.SettingGroup("Button", {
@@ -12696,11 +12697,11 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						this.settings.clientID = value;
 						this.stopPresence();
 						this.connected();
-					})), new ZLibrary.Settings.Textbox("Large Image Key", "The name of the asset or url (.png or .jpg) for your large image.", this.settings.largeImageKey || "", (value => {
+					})), new ZLibrary.Settings.Textbox("Large Image Key or URL", "The name of the asset or url (.gif .png or .jpg) for your large image.", this.settings.largeImageKey || "", (value => {
 						this.settings.largeImageKey = value;
 					})), new ZLibrary.Settings.Textbox("Large Image Text", "The text that appears when your large image is hovered over.", this.settings.largeImageText || "", (value => {
 						this.settings.largeImageText = value;
-					})), new ZLibrary.Settings.Textbox("Small Image Key", "The name of the asset or url (.png or .jpg) for your small image.", this.settings.smallImageKey || "", (value => {
+					})), new ZLibrary.Settings.Textbox("Small Image Key or URL", "The name of the asset or url (.gif .png or .jpg) for your small image.", this.settings.smallImageKey || "", (value => {
 						this.settings.smallImageKey = value;
 					})), new ZLibrary.Settings.Textbox("Small Image Text", "The text that appears when your small image is hovered over.", this.settings.smallImageText || "", (value => {
 						this.settings.smallImageText = value;
@@ -12711,7 +12712,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						callback: () => {
 							this.updateSettings();
 						}
-					}).appendTo(panel).append(new ZLibrary.Settings.RadioGroup("Update Channel", null, this.settings.updatechannel ?? 0, [{
+					}).appendTo(panel).append(new ZLibrary.Settings.RadioGroup("Update Channel", void 0, this.settings.updatechannel ?? 0, [{
 						name: "Stable",
 						value: 0,
 						desc: "",
