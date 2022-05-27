@@ -1,4 +1,4 @@
-name: Build Pre-release
+name: Publish Pre-release
 
 on:
     workflow_dispatch:
