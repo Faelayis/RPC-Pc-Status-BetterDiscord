@@ -38,7 +38,7 @@ jobs:
                   npm-cli-login -u $NPM_USER -p $NPM_PASS -e "$NPM_EMAIL" -r "https://npm.pkg.github.com" -s "@betterdiscordbuilder"
 
             - name: Install Dependencies
-              run: npm install -g
+              run: npm install
             - name: Run script
               id: build_prerelease
               run: npm run script:publish_prerelease
