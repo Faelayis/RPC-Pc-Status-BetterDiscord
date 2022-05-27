@@ -48,6 +48,7 @@ export default class Plugin {
 		if (typeof ZLibrary === "undefined") {
 			return BdApi.showToast("RPC Pc Status: Please install ZeresPluginLibrary and restart this plugin.", { type: "error" });
 		}
+		this.checkos();
 		this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
 		this.startTimeStamps = [undefined, Math.round(Date.now() / 1000 - time().uptime), new Date()];
 		this.generateconfig();
@@ -105,8 +106,16 @@ export default class Plugin {
 			return a < b ? -1 : 1;
 		}
 	}
-
-	async startPresence() {
+	formatRAM(freemem, totalmem, decimals = 0) {
+		if (freemem === 0) {
+			return "0 Bytes";
+		}
+		const k = 1024;
+		const i = Math.floor(Math.log(freemem) / Math.log(k));
+		const ram = `${parseFloat((totalmem / k ** i).toFixed(decimals < 0 ? 0 : decimals))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][i]}`;
+		return `${parseFloat((totalmem / k ** i - freemem / k ** i).toFixed(2))}/${ram}`;
+	}
+	async checkos() {
 		cpu().then((data) => (data.manufacturer ? (this.cpu = `${data.manufacturer} ${data.brand}`) : null));
 		await osInfo().then(
 			(data) => (
@@ -147,6 +156,8 @@ export default class Plugin {
 			log("Darwin platform");
 			this.oslogo = "macOS";
 		}
+	}
+	async startPresence() {
 		if (Interval) await clearInterval(Interval);
 		Interval = setInterval(async () => {
 			if (!this.client) return clearInterval(Interval);
@@ -159,19 +170,9 @@ export default class Plugin {
 					.find((data) => data === data.assets.large_text.includes("PreMiD"));
 				return;
 			}
-			currentLoad().then((data) => (this.cpuload = data.currentLoad.toFixed(0)));
-			function formatBytes(freemem, totalmem, decimals = 0) {
-				if (freemem === 0) {
-					return "0 Bytes";
-				}
-				const k = 1024;
-				const i = Math.floor(Math.log(freemem) / Math.log(k));
-				const ram = `${parseFloat((totalmem / k ** i).toFixed(decimals < 0 ? 0 : decimals))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][i]}`;
-				return `${parseFloat((totalmem / k ** i - freemem / k ** i).toFixed(2))}/${ram}`;
-			}
 			const Presence = {
-				details: `CPU ${this.cpuload || "0"}%`,
-				state: `RAM ${formatBytes(freemem(), totalmem())}`,
+				details: `CPU ${(await currentLoad().then((data) => data.currentLoad.toFixed(0))) || "0"}%`,
+				state: `RAM ${this.formatRAM(freemem(), totalmem())}`,
 				assets: {
 					large_image: this.settings.hideicon ? undefined : this.settings.largeImageKey || this.settings.LargeImageKeyColor || "icon_white",
 					large_text: this.settings.largeImageText || this.cpu || undefined,
