@@ -1,0 +1,8 @@
+{
+	"build": {
+		"watch": false,
+		"output": "./",
+		"debug": true,
+		"filename": "RPCPcStatus.devlop.js"
+	}
+}
