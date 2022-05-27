@@ -8,11 +8,13 @@
 		"fix": "eslint . --config .eslintrc.js --debug --fix",
 		"lint": "eslint . --config .eslintrc.js",
 		"build": "bdbuilder --plugin=../src --production",
+		"build_dev": "bdbuilder --plugin=../src --production --config bdbuilder.devlop.json",
 		"prettier": "prettier --config .prettierrc --write .",
 		"npm-install": "cd ./src && npm install",
 		"script:auth": "node ./script/authentication.js",
 		"script:releases": "node ./script/releases.js",
-		"script:publish_stable": "npm run script:releases && npm run npm-install && npm run prettier && npm run build && eslint ./RPCPcStatus.plugin.js --config .eslintrc.js --debug --fix"
+		"script:publish_stable": "npm run script:releases && npm run npm-install && npm run prettier && npm run build && eslint ./RPCPcStatus.plugin.js --config .eslintrc.js --debug --fix",
+		"script:publish_prerelease": "npm run npm-install && npm run prettier && npm run build_dev && bump prerelease packagedev.json RPCPcStatus.devlop.js && eslint ./RPCPcStatus.devlop.js --config .eslintrc.js --debug --fix"
 	},
 	"repository": {
 		"type": "git",
@@ -30,6 +32,7 @@
 		"npm-cli-login": "^1.0.0"
 	},
 	"devDependencies": {
+		"version-bump-prompt": "^6.1.0",
 		"@actions/core": "^1.8.2",
 		"@babel/eslint-parser": "^7.18.2",
 		"@betterdiscordbuilder/bdbuilder": "^1.2.22",

@@ -29,14 +29,47 @@ jobs:
             - name: Install Dependencies
               run: npm install
             - name: Run script
-              run: npm run build:pre-release
+              id: build_prerelease
+              run: npm run script:publish_prerelease
+
+            - uses: nyaa8/package-version@v1
+              if: steps.build_prerelease.outcome == 'success'
+              id: package_version
+              with:
+                path: './packagedev.json'
+                follow-symlinks: 'false'
+
+            - name: Create Release
+              if: steps.package_version.outcome == 'success'
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: v${{ env.PACKAGE_VERSION }}
+                  release_name: ${{ env.PACKAGE_VERSION }}
+                  draft: false
+                  prerelease: true
+
+            - name: Upload Release Asset
+              if: steps.create_release.outcome == 'success'
+              id: upload_release_asset
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ./RPCPcStatus.devlop.js
+                  asset_name: RPCPcStatus.plugin.js
+                  asset_content_type: text/javascript
 
             - name: Automatically Commit Changed
+              if: steps.upload_release_asset.outcome == 'success'
               uses: stefanzweifel/git-auto-commit-action@v4
               with:
                   push_options: "--force"
                   commit_options: "--no-verify"
-                  commit_message: "Pre-release"
+                  commit_message: "New Pre release ${{ env.PACKAGE_VERSION }}"
                   commit_user_name: GitHub Actions
                   commit_user_email: actions@github.com
                   commit_author: GitHub Actions <actions@github.com>
