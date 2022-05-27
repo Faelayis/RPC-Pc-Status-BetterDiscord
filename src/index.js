@@ -182,6 +182,7 @@ export default class Plugin {
 						if (data.name === "Custom Status") return;
 						if (data.name === "Spotify") return;
 						if (data.application_id === "879327042498342962") return;
+						if (data.application_id === this.settings.clientID) return;
 						return data;
 					});
 				if (Activities?.name) {
