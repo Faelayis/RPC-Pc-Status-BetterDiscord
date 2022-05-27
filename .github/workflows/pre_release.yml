@@ -2,8 +2,19 @@ name: Build Pre-release
 
 on:
     workflow_dispatch:
+        inputs:
+            bumprelease:
+                type: choice
+                description: Bump a package version
+                required: true
+                options:
+                    - prerelease
+                    - prepatch
+                    - preminor
+                    - premajor
 
 env:
+    bumprelease: ${{ github.event.inputs.bumprelease }}
     NPM_USER: ${{ secrets.NPM_USER }}
     NPM_PASS: ${{ secrets.NPM_PASS }}
     NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
@@ -32,8 +43,13 @@ jobs:
               id: build_prerelease
               run: npm run script:publish_prerelease
 
-            - uses: nyaa8/package-version@v1
+            - name: Bump a package version
               if: steps.build_prerelease.outcome == 'success'
+              id: bumprelease
+              run: bump $bumprelease packagedev.json RPCPcStatus.devlop.js
+
+            - uses: nyaa8/package-version@v1
+              if: steps.bumprelease.outcome == 'success'
               id: package_version
               with:
                 path: './packagedev.json'
@@ -48,7 +64,7 @@ jobs:
               with:
                   tag_name: v${{ env.PACKAGE_VERSION }}
                   release_name: ${{ env.PACKAGE_VERSION }}
-                  body: ""
+                  body: "##### $bumprelease"
                   draft: false
                   prerelease: true
 
