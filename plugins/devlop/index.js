@@ -2,14 +2,13 @@ import { time, osInfo, cpu, currentLoad } from "systeminformation";
 import { release, freemem, totalmem } from "os";
 
 const color = {
-		base: ["color: #fff", "background-color: #444", "padding: 2px 4px", "border-radius: 2px"],
-		warn: ["color: #eee", "background-color: red"],
-		succ: ["background-color: green"],
+		base: ["color: #FE926B;,", "color: #FFFFFF;"],
+		succ: ["color: #FE926B;,", "color: #00FF00;"],
+		warn: ["color: #FE926B;,", "color: #FFFF00;"],
+		error: ["color: #FE926B;,", "color: #FF0000;"],
 	},
-	log = (text, extra = []) => {
-		let style = color.base.join(";") + ";";
-		if (extra) style += extra.join(";");
-		console.log(`%c${text}`, style);
+	log = (text, extra) => {
+		console.log(`%c[RPC Pc Status] %c${text}`, ...(extra ?? color.base));
 	};
 let Interval,
 	connecting = undefined;
@@ -42,54 +41,10 @@ const changelog = {
 			items: ["Refactor code import using necessary only"],
 		},
 	],
-	// 2.2.4 ~ 2.1.2
-	// {
-	// 	title: `Added`,
-	// 	type: "added",
-	// 	items: ["2.5 Sec optional & set as default", "Features hide when custom status (Online, Idle, DND, Invisible)"],
-	// },
-	// {
-	// 	title: `Fixed`,
-	// 	type: "fixed",
-	// 	items: [
-	// 		"Presence update interval hidden (Recommend) by default",
-	// 		"Wrong time system uptime & rpc uptime",
-	// 		"When update settings, timestamps will reset",
-	// 		"Hide presence when listening spotify songs not working",
-	// 	],
-	// },
-	// 2.1.2 ~ 2.0.0
-	// {
-	// 	title: `Added`,
-	// 	type: "added",
-	// 	items: ["1 and 3 min optional for presence update interval custom", "Features Hide presence when listening spotify songs"],
-	// },
-	// {
-	// 	title: `Improved`,
-	// 	type: "improved",
-	// 	items: ["Hide update channel devlop", "Refactor code"],
-	// },
-	//
-	// 	{
-	// 		title: `Fixed`,
-	// 		type: "fixed",
-	// 		items: ["if update from v1.x.x and above, changelog will not be displayed", "uptime timestamp defaults optional not found for first time install"],
-	// 	},
-	// 	{
-	// 		title: `Added`,
-	// 		type: "added",
-	// 		items: ["Features hide icon", "Features update channel stable and devlop", "Features presence update interval custom (1, 3, 10, 30) sec", "Support all os"],
-	// 	},
-	// 	{
-	// 		title: `Improved`,
-	// 		type: "improved",
-	// 		items: ["Refactor rewrite code (2.0.0)"],
-	// 	},
-	// ],
 };
 export default class Plugin {
 	start() {
-		log("[RPC Pc Status] Start!", color.succ);
+		log("Start!", color.succ);
 		if (typeof ZLibrary === "undefined") {
 			return BdApi.showToast('RPC Pc Status: Please install "ZeresPluginLibrary" and restart this plugin.', { type: "error" });
 		}
@@ -110,7 +65,7 @@ export default class Plugin {
 			this.client = new (require("../../DiscordRichPresence").Presence)(this.settings.clientID || "879327042498342962");
 			this.client.once("connected", () => {
 				// this.client.environment.user.username
-				log("[RPC Pc Status] Connected!", color.succ);
+				log("Connected!", color.succ);
 				connecting = false;
 				this.startPresence();
 				BdApi.showToast("RPC Pc Status: Connected");
@@ -118,7 +73,7 @@ export default class Plugin {
 			this.client.once("disconnected", () => {
 				this.stopPresence();
 				if (!connecting && this.settings.clientID) return (connecting = true);
-				log("[RPC Pc Status] Disconnected!", color.warn);
+				log("Disconnected!", color.warn);
 				if (connecting) {
 					BdApi.showToast("Client ID authentication failed make sure your client ID is correct.", { type: "error" });
 				} else {
@@ -161,7 +116,7 @@ export default class Plugin {
 			),
 		);
 		if (process.platform === "win32") {
-			log("[RPC Pc Status] Windows platform");
+			log("Windows platform");
 			this.SImageText = `${this.osdistro} ${this.osrelease}`;
 			switch (true) {
 				case /(Windows\s10)/g.test(this.osdistro):
@@ -175,7 +130,7 @@ export default class Plugin {
 					break;
 			}
 		} else if (process.platform === "linux") {
-			log("[RPC Pc Status] Linux Platform");
+			log("Linux Platform");
 			this.SImageText = `${this.osdistro} ${this.osrelease} ${release()}`;
 			switch (true) {
 				case /(Ubuntu)/g.test(this.osdistro):
@@ -189,7 +144,7 @@ export default class Plugin {
 					break;
 			}
 		} else if (process.platform === "darwin") {
-			log("[RPC Pc Status] Darwin platform");
+			log("Darwin platform");
 			this.oslogo = "macOS";
 		}
 		if (Interval) await clearInterval(Interval);
@@ -245,11 +200,11 @@ export default class Plugin {
 		} catch (error) {
 			if (!toast) return;
 			BdApi.showToast("RPC Pc Status stopped error", { type: "error" });
-			log(`[RPC Pc Status] ${error}`, color.warn);
+			log(`${error}`, color.error);
 		}
 	}
-	async stop() {
-		await this.stopPresence();
+	stop() {
+		this.stopPresence();
 	}
 	async updateSettings() {
 		this.buttons = [];
