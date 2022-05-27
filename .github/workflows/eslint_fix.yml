@@ -7,12 +7,12 @@ on:
         branches:
             - main
         paths:
-            - '**.js'
+            - "**.js"
 env:
     NPM_USER: ${{ secrets.NPM_USER }}
     NPM_PASS: ${{ secrets.NPM_PASS }}
     NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
-    
+
 jobs:
     main:
         runs-on: ubuntu-latest
