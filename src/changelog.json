@@ -14,7 +14,7 @@
 		{
 			"title": "Improved",
 			"type": "improved",
-			"items": ["UI improvements", "Hide ColorPicker if you custom Client ID", "Refactor code import using necessary only"],
+			"items": ["UI improvements", "Hide ColorPicker if you custom Client ID", "Refactor code import using necessary only"]
 		}
 	],
 	"2.2": [
