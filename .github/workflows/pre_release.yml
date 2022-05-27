@@ -48,6 +48,7 @@ jobs:
               with:
                   tag_name: v${{ env.PACKAGE_VERSION }}
                   release_name: ${{ env.PACKAGE_VERSION }}
+                  body: ""
                   draft: false
                   prerelease: true
 
