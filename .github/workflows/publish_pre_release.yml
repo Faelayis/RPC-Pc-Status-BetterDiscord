@@ -43,21 +43,13 @@ jobs:
               id: build_prerelease
               run: npm run script:publish_prerelease
 
-            - name: Bump prerelease
-              if: ${{ env.bumprelease == 'prerelease' }}
-              run: bump prerelease packagedev.json RPCPcStatus.devlop.js
+            - name: Install version-bump-prompt
+              run: npm install -g version-bump-prompt
 
-            - name: Bump prepatch
-              if: ${{ env.bumprelease == 'prepatch' }}
-              run: bump prepatch packagedev.json RPCPcStatus.devlop.js
-
-            - name: Bump preminor
-              if: ${{ env.bumprelease == 'preminor' }}
-              run: bump preminor packagedev.json RPCPcStatus.devlop.js
-
-            - name: Bump premajor
-              if: ${{ env.bumprelease == 'premajor' }}
-              run: bump premajor packagedev.json RPCPcStatus.devlop.js
+            - name: Bump a package version
+              if: steps.build_prerelease.outcome == 'success'
+              id: bump_version
+              run: bump $bumprelease packagedev.json RPCPcStatus.devlop.js
 
             - uses: nyaa8/package-version@v1
               id: package_version
