@@ -21,7 +21,7 @@ module.exports = {
 	},
 	overrides: [
 		{
-			files: ["plugins/devlop/index.js"],
+			files: ["src/index.js"],
 			parserOptions: {
 				sourceType: "module",
 			},

@@ -62,7 +62,7 @@ export default class Plugin {
 	}
 	async connected() {
 		if (!this.client) {
-			this.client = new (require("../../DiscordRichPresence").Presence)(this.settings.clientID || "879327042498342962");
+			this.client = new (require("../DiscordRichPresence").Presence)(this.settings.clientID || "879327042498342962");
 			this.client.once("connected", () => {
 				// this.client.environment.user.username
 				log("Connected!", color.succ);

@@ -4,15 +4,15 @@
 	"description": "",
 	"main": "RPCPcStatus.plugin.js",
 	"scripts": {
-		"dev": "bdbuilder --plugin=./devlop --watch --production",
+		"dev": "bdbuilder --plugin=../src --watch --production",
 		"fix": "eslint . --config .eslintrc.js --debug --fix",
 		"lint": "eslint . --config .eslintrc.js",
-		"build": "node ./script/releases.js",
-		"build:pre-release": "npm run npm-install && bdbuilder --plugin=./devlop --production",
-		"npm-install": "cd ./plugins/devlop && npm i",
+		"build": "bdbuilder --plugin=../src --production",
 		"prettier": "prettier --config .prettierrc --write .",
+		"npm-install": "cd ./src && npm install",
 		"script:auth": "node ./script/authentication.js",
-		"script:publish_stable": "node ./script/releases.js && npm run npm-install && bdbuilder --plugin=./devlop --production && eslint ./RPCPcStatus.plugin.js --config .eslintrc.js --debug --fix"
+		"script:releases": "node ./script/releases.js",
+		"script:publish_stable": "npm run script:releases && npm run npm-install && npm run build && eslint ./RPCPcStatus.plugin.js --config .eslintrc.js --debug --fix"
 	},
 	"repository": {
 		"type": "git",
