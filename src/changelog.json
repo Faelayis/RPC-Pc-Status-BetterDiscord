@@ -1,0 +1,63 @@
+{
+	"2.3.0": [
+		{
+			"title": "Added",
+			"type": "added",
+			"items": ["Features Show games playing"]
+		},
+		{
+			"title": "Fixed",
+			"type": "fixed",
+			"items": ["Update interval hidden (Recommend) by default"]
+		},
+		{
+			"title": "Improved",
+			"type": "improved",
+			"items": ["Refactor code import using necessary only"]
+		}
+	],
+	"2.2.4-2.1.2": [
+		{
+			"title": "Added",
+			"type": "added",
+			"items": ["2.5 Sec optional & set as default", "Features hide when custom status (Online, Idle, DND, Invisible)"]
+		},
+		{
+			"title": "Fixed",
+			"type": "fixed",
+			"items": [
+				"Presence update interval hidden (Recommend) by default",
+				"Wrong time system uptime & rpc uptime",
+				"When update settings, timestamps will reset",
+				"Hide presence when listening spotify songs not working"
+			]
+		}
+	],
+	"2.1.2-2.0.0": [
+		{
+			"title": "Added",
+			"type": "added",
+			"items": ["1 and 3 min optional for presence update interval custom", "Features Hide presence when listening spotify songs"]
+		},
+		{
+			"title": "Improved",
+			"type": "improved",
+			"items": ["Hide update channel devlop", "Refactor code"]
+		},
+		{
+			"title": "Fixed",
+			"type": "fixed",
+			"items": ["if update from v1.x.x and above, changelog will not be displayed", "uptime timestamp defaults optional not found for first time install"]
+		},
+		{
+			"title": "Added",
+			"type": "added",
+			"items": ["Features hide icon", "Features update channel stable and devlop", "Features presence update interval custom (1, 3, 10, 30) sec", "Support all os"]
+		},
+		{
+			"title": "Improved",
+			"type": "improved",
+			"items": ["Refactor rewrite code (2.0.0)"]
+		}
+	]
+}
