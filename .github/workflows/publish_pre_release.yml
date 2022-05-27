@@ -44,23 +44,22 @@ jobs:
               run: npm run script:publish_prerelease
 
             - name: Bump prerelease
-              if: ${{ github.event.inputs.bumprelease == "prerelease" }}
+              if: ${{ env.bumprelease == "prerelease" }}
               run: bump prerelease packagedev.json RPCPcStatus.devlop.js
 
             - name: Bump prepatch
-              if: ${{ github.event.inputs.bumprelease == "prepatch" }}
+              if: ${{ env.bumprelease == "prepatch" }}
               run: bump prepatch packagedev.json RPCPcStatus.devlop.js
 
             - name: Bump preminor
-              if: ${{ github.event.inputs.bumprelease == "preminor" }}
+              if: ${{ env.bumprelease == "preminor" }}
               run: bump preminor packagedev.json RPCPcStatus.devlop.js
 
             - name: Bump premajor
-              if: ${{ github.event.inputs.bumprelease == "premajor" }}
+              if: ${{ env.bumprelease == "premajor" }}
               run: bump premajor packagedev.json RPCPcStatus.devlop.js
 
             - uses: nyaa8/package-version@v1
-              if: steps.bump_version.outcome == 'success'
               id: package_version
               with:
                 path: './packagedev.json'
