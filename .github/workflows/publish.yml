@@ -32,7 +32,7 @@ env:
     NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
 
 jobs:
-    main:
+    Releases:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
