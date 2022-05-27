@@ -1,5 +1,6 @@
 {
-	"2.3.0": [
+	"2.3": [
+		"2.3.0 ~ Current",
 		{
 			"title": "Added",
 			"type": "added",
@@ -16,7 +17,8 @@
 			"items": ["Refactor code import using necessary only"]
 		}
 	],
-	"2.2.4-2.1.2": [
+	"2.2": [
+		"2.2.0 ~ 2.2.4",
 		{
 			"title": "Added",
 			"type": "added",
@@ -33,7 +35,8 @@
 			]
 		}
 	],
-	"2.1.2-2.0.0": [
+	"2.1": [
+		"2.0.0 ~ 2.1.2",
 		{
 			"title": "Added",
 			"type": "added",
