@@ -49,8 +49,8 @@ export default class Plugin {
 			return BdApi.showToast("RPC Pc Status: Please install ZeresPluginLibrary and restart this plugin.", { type: "error" });
 		}
 		this.checkos();
-		this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
 		this.startTimeStamps = [undefined, Math.round(Date.now() / 1000 - time().uptime), new Date()];
+		this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
 		this.generateconfig();
 		this.connected();
 		this.checkForUpdate();
@@ -125,7 +125,7 @@ export default class Plugin {
 			),
 		);
 		if (process.platform === "win32") {
-			log("Windows platform");
+			log("Windows Platform");
 			this.SImageText = `${this.osdistro} ${this.osrelease}`;
 			switch (true) {
 				case /(Windows\s10)/g.test(this.osdistro):
@@ -135,7 +135,7 @@ export default class Plugin {
 					this.oslogo = "windows11";
 					break;
 				default:
-					this.oslogo = null;
+					this.oslogo = undefined;
 					break;
 			}
 		} else if (process.platform === "linux") {
@@ -149,11 +149,11 @@ export default class Plugin {
 					this.oslogo = "linux_kali";
 					break;
 				default:
-					this.oslogo = null;
+					this.oslogo = undefined;
 					break;
 			}
 		} else if (process.platform === "darwin") {
-			log("Darwin platform");
+			log("Darwin Platform");
 			this.oslogo = "macOS";
 		}
 	}
