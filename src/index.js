@@ -31,6 +31,11 @@ const changelog = {
 			items: ["Update channel pre release", "Features Optional show premid"],
 		},
 		{
+			title: "Fixed",
+			type: "fixed",
+			items: ["Features show premid not working"],
+		},
+		{
 			title: "Improved",
 			type: "improved",
 			items: ["Refactor code"],
@@ -54,6 +59,7 @@ export default class Plugin {
 		if (!this.settings.customstatus_hide) {
 			this.settings.customstatus_hide = ["invisible"];
 		}
+		!this.settings.show_premid ? (this.settings.show_premid = true) : undefined;
 		this.updateSettings();
 	}
 	async connected() {
@@ -172,12 +178,16 @@ export default class Plugin {
 			if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
 			if (this.settings.automatically?.hide?.spotify && ZLibrary.DiscordModules.UserActivityStore.getActivity()?.name === "Spotify" ? true : false)
 				return this.client.setActivity(null);
-			if ((this.settings.show_premid ?? true) && BdApi) {
+			if (
+				this.settings.show_premid &&
+				BdApi &&
 				BdApi.findModuleByProps("getActivities")
 					.getActivities()
-					.find((data) => data === data.assets.large_text.includes("PreMiD"));
-				return;
-			}
+					.find((data) => data.assets?.large_text.match(/(PreMiD)/))
+					? true
+					: false
+			)
+				return this.client.setActivity(null);
 			const Presence = {
 				details: `CPU ${(await currentLoad().then((data) => data.currentLoad.toFixed(0))) || "0"}%`,
 				state: `RAM ${this.formatRAM(freemem(), totalmem())}`,
@@ -468,7 +478,7 @@ export default class Plugin {
 		})
 			.appendTo(panel)
 			.append(
-				new ZLibrary.Settings.Switch("Show Premid", undefined, this.settings.show_premid || true, (value) => {
+				new ZLibrary.Settings.Switch("Show Premid", undefined, this.settings.show_premid, (value) => {
 					this.settings.show_premid = value;
 				}),
 				new ZLibrary.Settings.RadioGroup(
