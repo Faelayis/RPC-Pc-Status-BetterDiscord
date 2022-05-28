@@ -72,8 +72,21 @@ jobs:
               id: extract_version
               uses: Saionaro/extract-package-version@v1.0.6
 
-            - name: Create Release
+            - name: Automatically Commit Changed
               if: steps.extract_version.outcome == 'success'
+              id: commit_changed
+              uses: stefanzweifel/git-auto-commit-action@v4
+              with:
+                  push_options: "--force"
+                  commit_options: "--no-verify"
+                  commit_message: "New Releases ${{ steps.extract_version.outputs.version }}"
+                  commit_user_name: GitHub Actions
+                  commit_user_email: actions@github.com
+                  commit_author: GitHub Actions <actions@github.com>
+                  skip_checkout: true
+
+            - name: Create Release
+              if: steps.commit_changed.outcome == 'success'
               id: create_release
               uses: actions/create-release@v1
               env:
@@ -87,7 +100,6 @@ jobs:
 
             - name: Upload Release Asset
               if: steps.create_release.outcome == 'success'
-              id: upload_release_asset
               uses: actions/upload-release-asset@v1
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -96,15 +108,3 @@ jobs:
                   asset_path: ./RPCPcStatus.plugin.js
                   asset_name: RPCPcStatus.plugin.js
                   asset_content_type: text/javascript
-
-            - name: Automatically Commit Changed
-              if: steps.upload_release_asset.outcome == 'success'
-              uses: stefanzweifel/git-auto-commit-action@v4
-              with:
-                  push_options: "--force"
-                  commit_options: "--no-verify"
-                  commit_message: "New Releases ${{ steps.extract_version.outputs.version }}"
-                  commit_user_name: GitHub Actions
-                  commit_user_email: actions@github.com
-                  commit_author: GitHub Actions <actions@github.com>
-                  skip_checkout: true

@@ -1,8 +1,8 @@
 name: Publish Pre-release
 
 on:
-#     schedule:
-#         - cron: "0 0 * * *"
+    #     schedule:
+    #         - cron: "0 0 * * *"
     workflow_dispatch:
         inputs:
             bumprelease:
@@ -68,11 +68,12 @@ jobs:
             - name: Install Dependencies
               run: npm install
             - name: Run script
-              id: build_prerelease
               if: steps.bump_version.outcome == 'success'
+              id: build_prerelease
               run: npm run script:publish_prerelease
 
             - uses: nyaa8/package-version@v1
+              if: steps.build_prerelease.outcome == 'success'
               id: package_version
               with:
                   path: "./pre-release/package.json"
@@ -104,7 +105,8 @@ jobs:
             #       asset_content_type: text/javascript
 
             - name: Automatically Commit Changed
-              if: steps.upload_release_asset.outcome == 'success'
+              if: steps.package_version.outcome == 'success'
+              id: commit_changed
               uses: stefanzweifel/git-auto-commit-action@v4
               with:
                   push_options: "--force"
@@ -115,7 +117,8 @@ jobs:
                   commit_author: GitHub Actions <actions@github.com>
                   skip_checkout: true
 
-           - name: Create/update tag
-             uses: rickstaa/action-create-tag@v1
-             with:
-               tag: v${{ env.PACKAGE_VERSION }}
+            - name: Create tag
+              if: steps.commit_changed.outcome == 'success'
+              uses: rickstaa/action-create-tag@v1
+              with:
+                  tag: v${{ env.PACKAGE_VERSION }}
