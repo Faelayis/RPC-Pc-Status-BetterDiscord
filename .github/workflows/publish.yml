@@ -82,6 +82,7 @@ jobs:
                   commit_message: "New Releases ${{ steps.extract_version.outputs.version }}"
                   commit_user_name: GitHub Actions
                   commit_user_email: actions@github.com
+                  tagging_message: v${{ steps.extract_version.outputs.version }}
                   commit_author: GitHub Actions <actions@github.com>
                   skip_checkout: true
 
