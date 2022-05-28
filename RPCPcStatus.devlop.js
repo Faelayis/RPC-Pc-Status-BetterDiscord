@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.3.1
+ * @version 2.4.3-beta.1
  * @description Rich Presence Pc Status for your Discord
  * @authorLink https://discordapp.com/users/328731868096888833
  * @author Faelayis
@@ -34,7 +34,7 @@
 const config = {
 	"info": {
 		"name": "RPCPcStatus",
-		"version": "2.3.1",
+		"version": "2.4.3-beta.1",
 		"description": "Rich Presence Pc Status for your Discord",
 		"authorLink": "https://discordapp.com/users/328731868096888833",
 		"authors": [{
@@ -12399,17 +12399,17 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					github_username: "Faelayis"
 				}],
 				changelog: [{
-					title: `Added`,
+					title: "Added",
 					type: "added",
-					items: ["Optional show premid", "Features Show games playing"]
+					items: ["Update channel pre release", "Features Optional show premid"]
 				}, {
-					title: `Fixed`,
+					title: "Fixed",
 					type: "fixed",
-					items: ["Fix same as custom Client ID", "Update interval hidden (Recommend) by default"]
+					items: ["Settings premid are reset on restart discord", "Features show premid not working"]
 				}, {
-					title: `Improved`,
+					title: "Improved",
 					type: "improved",
-					items: ["UI improvements", "Hide ColorPicker if you custom Client ID", "Refactor code import using necessary only"]
+					items: ["Refactor code"]
 				}]
 			};
 			class Plugin {
@@ -12427,6 +12427,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				generateconfig() {
 					if (!this.settings.customstatus_hide) this.settings.customstatus_hide = ["invisible"];
+					if (void 0 === this.settings.show_premid) this.settings.show_premid = true;
 					this.updateSettings();
 				}
 				async connected() {
@@ -12461,7 +12462,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						delete this.settings.lastChangelogVersionSeen;
 						this.updateSettings();
 					}
-					ZLibrary?.PluginUpdater?.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js");
+					if (1 === this.settings.updatechannel) ZLibrary.PluginUpdater.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.devlop.js");
+					else ZLibrary.PluginUpdater.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js");
 				}
 				formatRAM(freemem, totalmem, decimals = 0) {
 					if (0 === freemem) return "0 Bytes";
@@ -12513,10 +12515,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						if (!this.client) return clearInterval(Interval);
 						if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
 						if (this.settings.automatically?.hide?.spotify && "Spotify" === ZLibrary.DiscordModules.UserActivityStore.getActivity()?.name ? true : false) return this.client.setActivity(null);
-						if ((this.settings.show_premid ?? true) && BdApi) {
-							BdApi.findModuleByProps("getActivities").getActivities().find((data => data === data.assets.large_text.includes("PreMiD")));
-							return;
-						}
+						if (this.settings.show_premid && BdApi && BdApi.findModuleByProps("getActivities").getActivities().find((data => data.assets?.large_text.match(/(PreMiD)/))) ? true : false) return this.client.setActivity(null);
 						const Presence = {
 							details: `CPU ${await (0, systeminformation__WEBPACK_IMPORTED_MODULE_0__.currentLoad)().then((data => data.currentLoad.toFixed(0))) || "0"}%`,
 							state: `RAM ${this.formatRAM((0, os__WEBPACK_IMPORTED_MODULE_1__.freemem)(), (0, 
@@ -12653,6 +12652,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						clearInterval(Interval);
 						setInterval(Interval, value);
 						this.startPresence();
+					})), new ZLibrary.Settings.Switch("Show Premid", void 0, this.settings.show_premid, (value => {
+						this.settings.show_premid = value;
 					})), new ZLibrary.Settings.Switch("Show games playing", !BdApi ? "Library plugin is needed BDFDB!" : void 0, this.settings.show_game_playing || false, (value => {
 						this.settings.show_game_playing = value;
 					}), {
@@ -12721,14 +12722,19 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						callback: () => {
 							this.updateSettings();
 						}
-					}).appendTo(panel).append(new ZLibrary.Settings.Switch("Show Premid", void 0, this.settings.show_premid || true, (value => {
-						this.settings.show_premid = value;
-					})), new ZLibrary.Settings.RadioGroup("Update Channel", void 0, this.settings.updatechannel ?? 0, [{
+					}).appendTo(panel).append(new ZLibrary.Settings.RadioGroup("Update Channel", void 0, this.settings.updatechannel ?? 0, [{
 						name: "Stable",
 						value: 0,
-						desc: "",
+						desc: void 0,
 						color: "#43b581"
+					}, {
+						name: "Pre release",
+						value: 1,
+						desc: void 0,
+						color: "#d29922"
 					}], (value => {
+						ZLibrary.PluginUpdater.removeUpdateNotice("RPCPcStatus");
+						this.settings.updatechannel = value;
 						this.checkForUpdate(value);
 					})));
 				}
