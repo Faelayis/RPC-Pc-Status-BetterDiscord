@@ -30,6 +30,11 @@ const changelog = {
 			type: "added",
 			items: ["Update channel pre release", "Features Optional show premid"],
 		},
+		{
+			title: "Improved",
+			type: "improved",
+			items: ["Refactor code"],
+		},
 	],
 };
 export default class Plugin {

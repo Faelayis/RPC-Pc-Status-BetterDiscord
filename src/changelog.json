@@ -1,6 +1,19 @@
 {
+	"2.4": [
+		"2.4.0 ~ Current",
+		{
+			"title": "Added",
+			"type": "added",
+			"items": ["Update channel pre release", "Features Optional show premid"]
+		},
+		{
+			"title": "Improved",
+			"type": "improved",
+			"items": ["Refactor code"]
+		}
+	],
 	"2.3": [
-		"2.3.0 ~ Current",
+		"2.3.0",
 		{
 			"title": "Added",
 			"type": "added",
