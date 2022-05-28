@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.4.3-beta.1
+ * @version 2.4.3
  * @description Rich Presence Pc Status for your Discord
  * @authorLink https://discordapp.com/users/328731868096888833
  * @author Faelayis
@@ -34,7 +34,7 @@
 const config = {
 	"info": {
 		"name": "RPCPcStatus",
-		"version": "2.4.3-beta.1",
+		"version": "2.4.3",
 		"description": "Rich Presence Pc Status for your Discord",
 		"authorLink": "https://discordapp.com/users/328731868096888833",
 		"authors": [{
@@ -12405,7 +12405,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}, {
 					title: "Fixed",
 					type: "fixed",
-					items: ["Settings premid are reset on restart discord", "Features show premid not working"]
+					items: ["Fix Update pre release create new file", "Settings premid are reset on restart discord", "Features show premid not working"]
 				}, {
 					title: "Improved",
 					type: "improved",
@@ -12462,7 +12462,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						delete this.settings.lastChangelogVersionSeen;
 						this.updateSettings();
 					}
-					if (1 === this.settings.updatechannel) ZLibrary.PluginUpdater.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.devlop.js");
+					if (1 === this.settings.updatechannel) ZLibrary.PluginUpdater.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/pre-release/RPCPcStatus.plugin.js");
 					else ZLibrary.PluginUpdater.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js");
 				}
 				formatRAM(freemem, totalmem, decimals = 0) {
