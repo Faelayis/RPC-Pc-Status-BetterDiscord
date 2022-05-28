@@ -9,6 +9,7 @@ on:
                 type: choice
                 description: Bump a package version
                 required: true
+                default: prerelease
                 options:
                     - prerelease
                     - prepatch
@@ -16,7 +17,7 @@ on:
                     - premajor
 
 env:
-    bumprelease: ${{ github.event.inputs.bumprelease }}
+    bumprelease: ${{ github.event.inputs.bumprelease || 'prerelease' }}
     NPM_USER: ${{ secrets.NPM_USER }}
     NPM_PASS: ${{ secrets.NPM_PASS }}
     NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
