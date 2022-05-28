@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.4.1
+ * @version 2.4.2
  * @description Rich Presence Pc Status for your Discord
  * @authorLink https://discordapp.com/users/328731868096888833
  * @author Faelayis
@@ -34,7 +34,7 @@
 const config = {
 	"info": {
 		"name": "RPCPcStatus",
-		"version": "2.4.1",
+		"version": "2.4.2",
 		"description": "Rich Presence Pc Status for your Discord",
 		"authorLink": "https://discordapp.com/users/328731868096888833",
 		"authors": [{
@@ -12405,7 +12405,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}, {
 					title: "Fixed",
 					type: "fixed",
-					items: ["Features show premid not working"]
+					items: ["Settings premid are reset on restart discord", "Features show premid not working"]
 				}, {
 					title: "Improved",
 					type: "improved",
@@ -12427,7 +12427,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}
 				generateconfig() {
 					if (!this.settings.customstatus_hide) this.settings.customstatus_hide = ["invisible"];
-					!this.settings.show_premid ? this.settings.show_premid = true : void 0;
+					if (void 0 === this.settings.show_premid) this.settings.show_premid = true;
 					this.updateSettings();
 				}
 				async connected() {
