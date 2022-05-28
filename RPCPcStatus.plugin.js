@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.3.1
+ * @version 2.4.0
  * @description Rich Presence Pc Status for your Discord
  * @authorLink https://discordapp.com/users/328731868096888833
  * @author Faelayis
@@ -34,7 +34,7 @@
 const config = {
 	"info": {
 		"name": "RPCPcStatus",
-		"version": "2.3.1",
+		"version": "2.4.0",
 		"description": "Rich Presence Pc Status for your Discord",
 		"authorLink": "https://discordapp.com/users/328731868096888833",
 		"authors": [{
@@ -12399,17 +12399,13 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					github_username: "Faelayis"
 				}],
 				changelog: [{
-					title: `Added`,
+					title: "Added",
 					type: "added",
-					items: ["Features Show games playing"]
+					items: ["Update channel pre release", "Features Optional show premid"]
 				}, {
-					title: `Fixed`,
-					type: "fixed",
-					items: ["Update interval hidden (Recommend) by default"]
-				}, {
-					title: `Improved`,
+					title: "Improved",
 					type: "improved",
-					items: ["UI improvements", "Hide ColorPicker if you custom Client ID", "Refactor code import using necessary only"]
+					items: ["Refactor code"]
 				}]
 			};
 			class Plugin {
@@ -12418,8 +12414,9 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					if ("undefined" === typeof ZLibrary) return BdApi.showToast("RPC Pc Status: Please install ZeresPluginLibrary and restart this plugin.", {
 						type: "error"
 					});
-					this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
+					this.checkos();
 					this.startTimeStamps = [void 0, Math.round(Date.now() / 1e3 - (0, systeminformation__WEBPACK_IMPORTED_MODULE_0__.time)().uptime), new Date];
+					this.settings = BdApi.loadData("RPCPcStatus", "settings") || {};
 					this.generateconfig();
 					this.connected();
 					this.checkForUpdate();
@@ -12460,14 +12457,22 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						delete this.settings.lastChangelogVersionSeen;
 						this.updateSettings();
 					}
-					ZLibrary?.PluginUpdater?.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js");
+					if (1 === this.settings.updatechannel) ZLibrary.PluginUpdater.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.devlop.js");
+					else ZLibrary.PluginUpdater.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js");
 				}
-				async startPresence() {
+				formatRAM(freemem, totalmem, decimals = 0) {
+					if (0 === freemem) return "0 Bytes";
+					const k = 1024;
+					const i = Math.floor(Math.log(freemem) / Math.log(k));
+					const ram = `${parseFloat((totalmem / k ** i).toFixed(decimals < 0 ? 0 : decimals))} ${[ "Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" ][i]}`;
+					return `${parseFloat((totalmem / k ** i - freemem / k ** i).toFixed(2))}/${ram}`;
+				}
+				async checkos() {
 					(0, systeminformation__WEBPACK_IMPORTED_MODULE_0__.cpu)().then((data => data.manufacturer ? this.cpu = `${data.manufacturer} ${data.brand}` : null));
 					await (0, systeminformation__WEBPACK_IMPORTED_MODULE_0__.osInfo)().then((data => (data.distro ? this.osdistro = `${data.distro}` : null,
 						data.release ? this.osrelease = `${data.release}` : null, data.logofile ? this.oslogo = `${data.logofile}` : null)));
 					if ("win32" === process.platform) {
-						log("Windows platform");
+						log("Windows Platform");
 						this.SImageText = `${this.osdistro} ${this.osrelease}`;
 						switch (true) {
 							case /(Windows\s10)/g.test(this.osdistro):
@@ -12477,7 +12482,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 								this.oslogo = "windows11";
 								break;
 							default:
-								this.oslogo = null;
+								this.oslogo = void 0;
 								break;
 						}
 					} else if ("linux" === process.platform) {
@@ -12491,28 +12496,28 @@ function buildPlugin([BasePlugin, PluginApi]) {
 								this.oslogo = "linux_kali";
 								break;
 							default:
-								this.oslogo = null;
+								this.oslogo = void 0;
 								break;
 						}
 					} else if ("darwin" === process.platform) {
-						log("Darwin platform");
+						log("Darwin Platform");
 						this.oslogo = "macOS";
 					}
+				}
+				async startPresence() {
 					if (Interval) await clearInterval(Interval);
 					Interval = setInterval((async () => {
 						if (!this.client) return clearInterval(Interval);
 						if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
 						if (this.settings.automatically?.hide?.spotify && "Spotify" === ZLibrary.DiscordModules.UserActivityStore.getActivity()?.name ? true : false) return this.client.setActivity(null);
-						(0, systeminformation__WEBPACK_IMPORTED_MODULE_0__.currentLoad)().then((data => this.cpuload = data.currentLoad.toFixed(0)));
+						if ((this.settings.show_premid ?? true) && BdApi) {
+							BdApi.findModuleByProps("getActivities").getActivities().find((data => data === data.assets.large_text.includes("PreMiD")));
+							return;
+						}
 						const Presence = {
-							details: `CPU ${this.cpuload || "0"}%`,
-							state: `RAM ${function(freemem, totalmem, decimals = 0) {
-                            if (0 === freemem) return "0 Bytes";
-                            const k = 1024;
-                            const i = Math.floor(Math.log(freemem) / Math.log(k));
-                            const ram = `${parseFloat((totalmem / k ** i).toFixed(decimals < 0 ? 0 : decimals))} ${[ "Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" ][i]}`;
-                            return `${parseFloat((totalmem / k ** i - freemem / k ** i).toFixed(2))}/${ram}`;
-                        }((0, os__WEBPACK_IMPORTED_MODULE_1__.freemem)(), (0, os__WEBPACK_IMPORTED_MODULE_1__.totalmem)())}`,
+							details: `CPU ${await (0, systeminformation__WEBPACK_IMPORTED_MODULE_0__.currentLoad)().then((data => data.currentLoad.toFixed(0))) || "0"}%`,
+							state: `RAM ${this.formatRAM((0, os__WEBPACK_IMPORTED_MODULE_1__.freemem)(), (0, 
+                        os__WEBPACK_IMPORTED_MODULE_1__.totalmem)())}`,
 							assets: {
 								large_image: this.settings.hideicon ? void 0 : this.settings.largeImageKey || this.settings.LargeImageKeyColor || "icon_white",
 								large_text: this.settings.largeImageText || this.cpu || void 0,
@@ -12529,6 +12534,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 								if ("Custom Status" === data.name) return;
 								if ("Spotify" === data.name) return;
 								if ("879327042498342962" === data.application_id) return;
+								if (data.application_id === this.settings.clientID) return;
 								return data;
 							}));
 							if (Activities?.name) {
@@ -12712,12 +12718,21 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						callback: () => {
 							this.updateSettings();
 						}
-					}).appendTo(panel).append(new ZLibrary.Settings.RadioGroup("Update Channel", void 0, this.settings.updatechannel ?? 0, [{
+					}).appendTo(panel).append(new ZLibrary.Settings.Switch("Show Premid", void 0, this.settings.show_premid || true, (value => {
+						this.settings.show_premid = value;
+					})), new ZLibrary.Settings.RadioGroup("Update Channel", void 0, this.settings.updatechannel ?? 0, [{
 						name: "Stable",
 						value: 0,
-						desc: "",
+						desc: void 0,
 						color: "#43b581"
+					}, {
+						name: "Pre release",
+						value: 1,
+						desc: void 0,
+						color: "#d29922"
 					}], (value => {
+						ZLibrary.PluginUpdater.removeUpdateNotice("RPCPcStatus");
+						this.settings.updatechannel = value;
 						this.checkForUpdate(value);
 					})));
 				}
