@@ -28,17 +28,7 @@ const changelog = {
 		{
 			title: `Added`,
 			type: "added",
-			items: ["Optional show premid", "Features Show games playing"],
-		},
-		{
-			title: `Fixed`,
-			type: "fixed",
-			items: ["Fix same as custom Client ID", "Update interval hidden (Recommend) by default"],
-		},
-		{
-			title: `Improved`,
-			type: "improved",
-			items: ["UI improvements", "Hide ColorPicker if you custom Client ID", "Refactor code import using necessary only"],
+			items: ["Update channel pre release", "Features Optional show premid"],
 		},
 	],
 };
@@ -90,7 +80,20 @@ export default class Plugin {
 			delete this.settings.lastChangelogVersionSeen;
 			this.updateSettings();
 		}
-		ZLibrary?.PluginUpdater?.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js");
+		if (this.settings.updatechannel === 1) {
+			ZLibrary.PluginUpdater.checkForUpdate?.(
+				"RPCPcStatus",
+				changelog.version,
+				"https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.devlop.js",
+			);
+		} else {
+			ZLibrary.PluginUpdater.checkForUpdate?.(
+				"RPCPcStatus",
+				changelog.version,
+				"https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js",
+			);
+		}
+
 		function versionCompare(a, b) {
 			a = a
 				.toLowerCase()
@@ -471,18 +474,19 @@ export default class Plugin {
 						{
 							name: "Stable",
 							value: 0,
-							desc: "",
+							desc: undefined,
 							color: "#43b581",
 						},
-						// {
-						// 	name: "Devlop",
-						// 	value: 1,
-						// 	desc: "Come Soon",
-						// 	color: "#d83c3e",
-						// 	disabled: true,
-						// },
+						{
+							name: "Pre release",
+							value: 1,
+							desc: undefined,
+							color: "#d29922",
+						},
 					],
 					(value) => {
+						ZLibrary.PluginUpdater.removeUpdateNotice("RPCPcStatus");
+						this.settings.updatechannel = value;
 						this.checkForUpdate(value);
 					},
 				),
