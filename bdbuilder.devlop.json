@@ -1,8 +1,8 @@
 {
 	"build": {
 		"watch": false,
-		"output": "./",
+		"output": "./pre-release",
 		"debug": true,
-		"filename": "RPCPcStatus.devlop.js"
+		"filename": "RPCPcStatus.plugin.js"
 	}
 }

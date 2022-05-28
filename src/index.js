@@ -33,7 +33,7 @@ const changelog = {
 		{
 			title: "Fixed",
 			type: "fixed",
-			items: ["Settings premid are reset on restart discord", "Features show premid not working"],
+			items: ["Fix Update pre release create new file", "Settings premid are reset on restart discord", "Features show premid not working"],
 		},
 		{
 			title: "Improved",
@@ -97,7 +97,7 @@ export default class Plugin {
 			ZLibrary.PluginUpdater.checkForUpdate?.(
 				"RPCPcStatus",
 				changelog.version,
-				"https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.devlop.js",
+				"https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/pre-release/RPCPcStatus.plugin.js",
 			);
 		} else {
 			ZLibrary.PluginUpdater.checkForUpdate?.(

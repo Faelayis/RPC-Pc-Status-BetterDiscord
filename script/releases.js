@@ -2,7 +2,7 @@ const fs = require("fs"),
 	ncu = require("npm-check-updates"),
 	core = require("@actions/core"),
 	editJsonFile = require("edit-json-file"),
-	package_directory = ["./../package.json", "./../packagedev.json", "./../src/package.json"],
+	package_directory = ["./../package.json", "./../pre-release/package.json", "./../src/package.json"],
 	semVer = new RegExp(
 		/(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?/gm,
 	);
@@ -40,9 +40,9 @@ try {
 				}
 			});
 		} else if (process.env.bumprelease) {
-			fs.readFile("RPCPcStatus.devlop.js", "utf8", async (err, data) => {
+			fs.readFile("./pre-release/RPCPcStatus.devlop.js", "utf8", async (err, data) => {
 				const version_old = await data.match(semVer)[0],
-					{ version } = require("../packagedev.json");
+					{ version } = require("../pre-release/package.json");
 				core.notice(`RPC Pc Status devlop pre release ${version_old} -> ${version}`);
 				core.info(`${process.env.bumpversion} Bump package version: ${version}`);
 				await editJsonFile(`${__dirname}/./../src/package.json`, {

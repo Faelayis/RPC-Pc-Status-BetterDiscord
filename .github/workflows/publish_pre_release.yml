@@ -63,7 +63,7 @@ jobs:
               id: bump_version
               run: |
                   npm install -g version-bump-prompt
-                  bump $bumprelease packagedev.json
+                  bump $bumprelease ./pre-release/package.json
 
             - name: Install Dependencies
               run: npm install
@@ -75,33 +75,33 @@ jobs:
             - uses: nyaa8/package-version@v1
               id: package_version
               with:
-                  path: "./packagedev.json"
+                  path: "./pre-release/package.json"
                   follow-symlinks: "false"
 
-            - name: Create Release
-              if: steps.package_version.outcome == 'success'
-              id: create_release
-              uses: actions/create-release@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  tag_name: v${{ env.PACKAGE_VERSION }}
-                  release_name: ${{ env.PACKAGE_VERSION }}
-                  body: "##### ${{ env.bumprelease }}"
-                  draft: false
-                  prerelease: true
+            # - name: Create Release
+            #   if: steps.package_version.outcome == 'success'
+            #   id: create_release
+            #   uses: actions/create-release@v1
+            #   env:
+            #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            #   with:
+            #       tag_name: v${{ env.PACKAGE_VERSION }}
+            #       release_name: ${{ env.PACKAGE_VERSION }}
+            #       body: "##### ${{ env.bumprelease }}"
+            #       draft: false
+            #       prerelease: true
 
-            - name: Upload Release Asset
-              if: steps.create_release.outcome == 'success'
-              id: upload_release_asset
-              uses: actions/upload-release-asset@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./RPCPcStatus.devlop.js
-                  asset_name: RPCPcStatus.plugin.js
-                  asset_content_type: text/javascript
+            # - name: Upload Release Asset
+            #   if: steps.create_release.outcome == 'success'
+            #   id: upload_release_asset
+            #   uses: actions/upload-release-asset@v1
+            #   env:
+            #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            #   with:
+            #       upload_url: ${{ steps.create_release.outputs.upload_url }}
+            #       asset_path: ./pre-release/RPCPcStatus.plugin.js
+            #       asset_name: RPCPcStatus.plugin.js
+            #       asset_content_type: text/javascript
 
             - name: Automatically Commit Changed
               if: steps.upload_release_asset.outcome == 'success'
@@ -114,3 +114,8 @@ jobs:
                   commit_user_email: actions@github.com
                   commit_author: GitHub Actions <actions@github.com>
                   skip_checkout: true
+
+           - name: Create/update tag
+             uses: rickstaa/action-create-tag@v1
+             with:
+               tag: v${{ env.PACKAGE_VERSION }}
