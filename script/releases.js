@@ -2,7 +2,7 @@ const fs = require("fs"),
 	ncu = require("npm-check-updates"),
 	core = require("@actions/core"),
 	editJsonFile = require("edit-json-file"),
-	package_directory = ["./../package.json", "./../src/package.json"],
+	package_directory = ["./../package.json", "./../packagedev.json", "./../src/package.json"],
 	semVer = new RegExp(
 		/(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?/gm,
 	);
@@ -23,7 +23,7 @@ try {
 			for (const key of package_directory) {
 				await editJsonFile(`${__dirname}/${key}`, {
 					autosave: true,
-				}).set(["version", "info.version"][package_directory.indexOf(key)], version);
+				}).set(["version", "version", "info.version"][package_directory.indexOf(key)], version);
 			}
 			fs.readFile("RPCPcStatus.plugin.js", "utf8", async (err, data) => {
 				const version_old = await data.match(semVer)[0],
