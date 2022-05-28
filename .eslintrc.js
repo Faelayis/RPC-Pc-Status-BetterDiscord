@@ -11,6 +11,7 @@ module.exports = {
 		requireConfigFile: false,
 	},
 	rules: {
+		quotes: ["error", "double"],
 		"prettier/prettier": "warn",
 		"no-one-time-vars/no-one-time-vars": [
 			"error",
