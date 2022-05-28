@@ -40,7 +40,7 @@ try {
 				}
 			});
 		} else if (process.env.bumprelease) {
-			fs.readFile("./pre-release/RPCPcStatus.devlop.js", "utf8", async (err, data) => {
+			fs.readFile("./pre-release/RPCPcStatus.plugin.js", "utf8", async (err, data) => {
 				const version_old = await data.match(semVer)[0],
 					{ version } = require("../pre-release/package.json");
 				core.notice(`RPC Pc Status devlop pre release ${version_old} -> ${version}`);
