@@ -13,8 +13,9 @@
 		"npm-install": "cd ./src && npm install",
 		"script:auth": "node ./script/authentication.js",
 		"script:releases": "node ./script/releases.js",
-		"script:publish_stable": "npm run script:releases && npm run npm-install && npm run prettier && npm run build && eslint ./RPCPcStatus.plugin.js --config .eslintrc.js --debug --fix",
-		"script:publish_prerelease": "npm run npm-install && npm run prettier && npm run build_dev && eslint ./RPCPcStatus.devlop.js --config .eslintrc.js --debug --fix"
+		"publish_setup": "npm run script:releases && npm run npm-install && npm run prettier",
+		"script:publish_stable": " npm run publish_setup && npm run build && eslint ./RPCPcStatus.plugin.js --config .eslintrc.js --debug --fix",
+		"script:publish_prerelease": "npm run publish_setup && npm run build_dev && eslint ./RPCPcStatus.devlop.js --config .eslintrc.js --debug --fix && git checkout ./src/package.json"
 	},
 	"repository": {
 		"type": "git",

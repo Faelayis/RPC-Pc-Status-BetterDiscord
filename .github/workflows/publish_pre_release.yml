@@ -59,18 +59,18 @@ jobs:
                   npm install -g npm-cli-login
                   npm-cli-login -u $NPM_USER -p $NPM_PASS -e "$NPM_EMAIL" -r "https://npm.pkg.github.com" -s "@betterdiscordbuilder"
 
-            - name: Install Dependencies
-              run: npm install
-            - name: Run script
-              id: build_prerelease
-              run: npm run script:publish_prerelease
-
             - name: Bump a package version
               if: steps.build_prerelease.outcome == 'success'
               id: bump_version
               run: |
                   npm install -g version-bump-prompt
-                  bump $bumprelease packagedev.json RPCPcStatus.devlop.js
+                  bump $bumprelease packagedev.json
+
+            - name: Install Dependencies
+              run: npm install
+            - name: Run script
+              id: build_prerelease
+              run: npm run script:publish_prerelease
 
             - uses: nyaa8/package-version@v1
               id: package_version
