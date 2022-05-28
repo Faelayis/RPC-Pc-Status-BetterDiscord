@@ -33,7 +33,7 @@ const changelog = {
 		{
 			title: "Fixed",
 			type: "fixed",
-			items: ["Features show premid not working"],
+			items: ["Settings premid are reset on restart discord", "Features show premid not working"],
 		},
 		{
 			title: "Improved",
@@ -59,7 +59,9 @@ export default class Plugin {
 		if (!this.settings.customstatus_hide) {
 			this.settings.customstatus_hide = ["invisible"];
 		}
-		!this.settings.show_premid ? (this.settings.show_premid = true) : undefined;
+		if (this.settings.show_premid === undefined) {
+			this.settings.show_premid = true;
+		}
 		this.updateSettings();
 	}
 	async connected() {
