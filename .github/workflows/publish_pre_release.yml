@@ -115,10 +115,11 @@ jobs:
                   commit_user_name: GitHub Actions
                   commit_user_email: actions@github.com
                   commit_author: GitHub Actions <actions@github.com>
+                  tagging_message: v${{ env.PACKAGE_VERSION }}
                   skip_checkout: true
 
-            - name: Create tag
-              if: steps.commit_changed.outcome == 'success'
-              uses: rickstaa/action-create-tag@v1
-              with:
-                  tag: v${{ env.PACKAGE_VERSION }}
+            # - name: Create tag
+            #   if: steps.commit_changed.outcome == 'success'
+            #   uses: rickstaa/action-create-tag@v1
+            #   with:
+            #       tag: v${{ env.PACKAGE_VERSION }}
