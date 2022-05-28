@@ -26,7 +26,7 @@ const changelog = {
 	],
 	changelog: [
 		{
-			title: `Added`,
+			title: "Added",
 			type: "added",
 			items: ["Update channel pre release", "Features Optional show premid"],
 		},
