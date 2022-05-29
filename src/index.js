@@ -26,6 +26,11 @@ const changelog = {
 	],
 	changelog: [
 		{
+			title: "Update",
+			type: "added",
+			items: ["Text ShowToast"],
+		},
+		{
 			title: "Fixed",
 			type: "fixed",
 			items: ["Type cannot read property"],
@@ -60,28 +65,32 @@ export default class Plugin {
 		this.updateSettings();
 	}
 	async connected() {
-		if (!this.client) {
-			this.client = new (require("../DiscordRichPresence").Presence)(this.settings.clientID || "879327042498342962");
-			this.client.once("connected", () => {
-				// this.client.environment.user.username
-				log("Connected!", color.succ);
-				connecting = false;
-				this.startPresence();
-				BdApi.showToast("RPC Pc Status: Connected");
-			});
-			this.client.once("disconnected", () => {
-				this.stopPresence();
-				if (!connecting && this.settings.clientID) return (connecting = true);
-				log("Disconnected!", color.warn);
-				if (connecting) {
-					BdApi.showToast("Client ID authentication failed make sure your client ID is correct.", { type: "error" });
-				} else {
-					BdApi.showToast("RPC Pc Status: Disconnected");
-				}
-			});
+		try {
+			if (!this.client) {
+				this.client = new (require("../DiscordRichPresence").Presence)(this.settings.clientID || "879327042498342962");
+				this.client.once("connected", () => {
+					// this.client.environment.user.username
+					log("Connected!", color.succ);
+					connecting = false;
+					this.startPresence();
+					BdApi.showToast("RPC Pc Status: Connected", { type: "success" });
+				});
+				this.client.once("disconnected", () => {
+					this.stopPresence();
+					if (!connecting && this.settings.clientID) return (connecting = true);
+					log("Disconnected!", color.warn);
+					if (connecting) {
+						BdApi.showToast("RPC Pc Status: Client ID Authentication Failed", { type: "warn" });
+					} else {
+						BdApi.showToast("RPC Pc Status: Disconnected");
+					}
+				});
+			}
+		} catch (error) {
+			BdApi.showToast(`RPC Pc Status: Error connected ${error.name ?? ""}`, { type: "error" });
 		}
 	}
-	async checkForUpdate() {
+	async checkForUpdate(toast) {
 		if (!this.settings.lastVersionSeen || changelog.version !== this.settings.lastVersionSeen) {
 			ZLibrary.Modals.showChangelogModal(changelog.title, changelog.version, changelog.changelog);
 			this.settings.lastVersionSeen = changelog.version;
@@ -101,7 +110,17 @@ export default class Plugin {
 			return file.match(semVer)[0] || "0.0.0";
 		}
 		function comparator(current, remote) {
-			return current !== remote ? true : false;
+			switch (current !== remote) {
+				case true:
+					toast && BdApi.showToast(`RPC Pc Status: Update Available ${remote}`);
+					return true;
+				case false:
+					toast && BdApi.showToast(`RPC Pc Status: You are now using ${current} latest version`);
+					return false;
+				default:
+					toast && BdApi.showToast("RPC Pc Status: Update Not Available");
+					return false;
+			}
 		}
 	}
 	formatRAM(freemem, totalmem, decimals = 0) {
@@ -206,7 +225,7 @@ export default class Plugin {
 			delete this.client;
 		} catch (error) {
 			if (!toast) return;
-			BdApi.showToast("RPC Pc Status stopped error", { type: "error" });
+			BdApi.showToast("RPC Pc Status Stopped Error", { type: "error" });
 			log(`${error}`, color.error);
 		}
 	}
@@ -483,7 +502,7 @@ export default class Plugin {
 					(value) => {
 						ZLibrary.PluginUpdater.removeUpdateNotice("RPCPcStatus");
 						this.settings.updatechannel = value;
-						this.checkForUpdate(value);
+						this.checkForUpdate(true);
 					},
 				),
 			);
