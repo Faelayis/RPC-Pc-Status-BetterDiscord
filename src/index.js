@@ -33,7 +33,7 @@ const changelog = {
 		{
 			title: "Fixed",
 			type: "fixed",
-			items: ["Pre release update loop", " Update pre release create new file", "Settings premid are reset on restart discord", "Features show premid not working"],
+			items: ["Pre release update loop", "Update pre release create new file", "Settings premid are reset on restart discord", "Features show premid not working"],
 		},
 		{
 			title: "Improved",
