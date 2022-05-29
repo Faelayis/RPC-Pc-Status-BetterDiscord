@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.4.5-beta.1
+ * @version 2.4.5-beta.2
  * @description Rich Presence Pc Status for your Discord
  * @authorLink https://discordapp.com/users/328731868096888833
  * @author Faelayis
@@ -34,7 +34,7 @@
 const config = {
 	"info": {
 		"name": "RPCPcStatus",
-		"version": "2.4.5-beta.1",
+		"version": "2.4.5-beta.2",
 		"description": "Rich Presence Pc Status for your Discord",
 		"authorLink": "https://discordapp.com/users/328731868096888833",
 		"authors": [{
@@ -12399,17 +12399,9 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					github_username: "Faelayis"
 				}],
 				changelog: [{
-					title: "Added",
-					type: "added",
-					items: ["Update channel pre release", "Features Optional show premid"]
-				}, {
-					title: "Fixed",
-					type: "fixed",
-					items: ["Pre release update loop", "Update pre release create new file", "Settings premid are reset on restart discord", "Features show premid not working"]
-				}, {
 					title: "Improved",
 					type: "improved",
-					items: ["Refactor code"]
+					items: ["algorithm show premid"]
 				}]
 			};
 			class Plugin {
