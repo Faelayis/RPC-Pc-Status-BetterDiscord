@@ -33,7 +33,7 @@ const changelog = {
 		{
 			title: "Fixed",
 			type: "fixed",
-			items: ["Fix Update pre release create new file", "Settings premid are reset on restart discord", "Features show premid not working"],
+			items: ["Pre release update loop", " Update pre release create new file", "Settings premid are reset on restart discord", "Features show premid not working"],
 		},
 		{
 			title: "Improved",
@@ -87,7 +87,7 @@ export default class Plugin {
 		}
 	}
 	async checkForUpdate() {
-		if (!this.settings.lastVersionSeen || versionCompare(changelog.version, this.settings.lastChangelogVersionSeen || this.settings.lastVersionSeen) === 1) {
+		if (!this.settings.lastVersionSeen || changelog.version !== this.settings.lastVersionSeen) {
 			ZLibrary.Modals.showChangelogModal(changelog.title, changelog.version, changelog.changelog);
 			this.settings.lastVersionSeen = changelog.version;
 			delete this.settings.lastChangelogVersionSeen;
@@ -98,28 +98,26 @@ export default class Plugin {
 				"RPCPcStatus",
 				changelog.version,
 				"https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/pre-release/RPCPcStatus.plugin.js",
+				versioner,
+				comparator,
 			);
 		} else {
 			ZLibrary.PluginUpdater.checkForUpdate?.(
 				"RPCPcStatus",
 				changelog.version,
 				"https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js",
+				versioner,
+				comparator,
 			);
 		}
-
-		function versionCompare(a, b) {
-			a = a
-				.toLowerCase()
-				.split(/[.-]/)
-				.map((x) => (/\d/.test(x[0]) ? x.padStart(10, "0") : x.padEnd(10, "0")))
-				.join("");
-			b = b
-				.toLowerCase()
-				.split(/[.-]/)
-				.map((x) => (/\d/.test(x[0]) ? x.padStart(10, "0") : x.padEnd(10, "0")))
-				.join("");
-			if (a === b) return 0;
-			return a < b ? -1 : 1;
+		function versioner(file) {
+			const semVer = new RegExp(
+				/(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?/,
+			);
+			return file.match(semVer)[0] || "0.0.0";
+		}
+		function comparator(current, remote) {
+			return current !== remote ? true : false;
 		}
 	}
 	formatRAM(freemem, totalmem, decimals = 0) {
