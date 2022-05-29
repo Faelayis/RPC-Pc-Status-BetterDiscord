@@ -26,19 +26,9 @@ const changelog = {
 	],
 	changelog: [
 		{
-			title: "Added",
-			type: "added",
-			items: ["Update channel pre release", "Features Optional show premid"],
-		},
-		{
-			title: "Fixed",
-			type: "fixed",
-			items: ["Pre release update loop", "Update pre release create new file", "Settings premid are reset on restart discord", "Features show premid not working"],
-		},
-		{
 			title: "Improved",
 			type: "improved",
-			items: ["Refactor code"],
+			items: ["algorithm show premid"],
 		},
 	],
 };
