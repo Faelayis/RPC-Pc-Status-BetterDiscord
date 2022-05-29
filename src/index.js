@@ -174,19 +174,15 @@ export default class Plugin {
 		if (Interval) await clearInterval(Interval);
 		Interval = setInterval(async () => {
 			if (!this.client) return clearInterval(Interval);
-			if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
 			if (this.settings.automatically?.hide?.spotify && ZLibrary.DiscordModules.UserActivityStore.getActivity()?.name === "Spotify" ? true : false)
 				return this.client.setActivity(null);
-			if (
-				this.settings.show_premid &&
-				BdApi &&
-				BdApi.findModuleByProps("getActivities")
+			if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
+			if (this.settings.show_premid && BdApi) {
+				const has = BdApi.findModuleByProps("getActivities")
 					.getActivities()
-					.find((data) => data.assets?.large_text.match(/(PreMiD)/))
-					? true
-					: false
-			)
-				return this.client.setActivity(null);
+					.find((data) => data.assets?.large_text.match(/(PreMiD)/));
+				if (has) return this.client.setActivity(null);
+			}
 			const Presence = {
 				details: `CPU ${(await currentLoad().then((data) => data.currentLoad.toFixed(0))) || "0"}%`,
 				state: `RAM ${this.formatRAM(freemem(), totalmem())}`,
