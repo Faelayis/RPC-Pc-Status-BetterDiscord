@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.4.4
+ * @version 2.4.5-beta.1
  * @description Rich Presence Pc Status for your Discord
  * @authorLink https://discordapp.com/users/328731868096888833
  * @author Faelayis
@@ -34,7 +34,7 @@
 const config = {
 	"info": {
 		"name": "RPCPcStatus",
-		"version": "2.4.4",
+		"version": "2.4.5-beta.1",
 		"description": "Rich Presence Pc Status for your Discord",
 		"authorLink": "https://discordapp.com/users/328731868096888833",
 		"authors": [{
@@ -12405,7 +12405,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}, {
 					title: "Fixed",
 					type: "fixed",
-					items: ["Pre release update loop", " Update pre release create new file", "Settings premid are reset on restart discord", "Features show premid not working"]
+					items: ["Pre release update loop", "Update pre release create new file", "Settings premid are reset on restart discord", "Features show premid not working"]
 				}, {
 					title: "Improved",
 					type: "improved",
@@ -12514,9 +12514,12 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					if (Interval) await clearInterval(Interval);
 					Interval = setInterval((async () => {
 						if (!this.client) return clearInterval(Interval);
-						if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
 						if (this.settings.automatically?.hide?.spotify && "Spotify" === ZLibrary.DiscordModules.UserActivityStore.getActivity()?.name ? true : false) return this.client.setActivity(null);
-						if (this.settings.show_premid && BdApi && BdApi.findModuleByProps("getActivities").getActivities().find((data => data.assets?.large_text.match(/(PreMiD)/))) ? true : false) return this.client.setActivity(null);
+						if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
+						if (this.settings.show_premid && BdApi) {
+							const has = BdApi.findModuleByProps("getActivities").getActivities().find((data => data.assets?.large_text.match(/(PreMiD)/)));
+							if (has) return this.client.setActivity(null);
+						}
 						const Presence = {
 							details: `CPU ${await (0, systeminformation__WEBPACK_IMPORTED_MODULE_0__.currentLoad)().then((data => data.currentLoad.toFixed(0))) || "0"}%`,
 							state: `RAM ${this.formatRAM((0, os__WEBPACK_IMPORTED_MODULE_1__.freemem)(), (0, 
