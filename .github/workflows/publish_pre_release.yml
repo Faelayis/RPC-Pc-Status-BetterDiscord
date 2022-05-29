@@ -60,6 +60,7 @@ jobs:
                   npm-cli-login -u $NPM_USER -p $NPM_PASS -e "$NPM_EMAIL" -r "https://npm.pkg.github.com" -s "@betterdiscordbuilder"
 
             - name: Bump a package version
+              if: ${{ 'refs/heads/main' == github.ref }}
               id: bump_version
               run: |
                   npm install -g version-bump-prompt
