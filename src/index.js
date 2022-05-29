@@ -26,9 +26,14 @@ const changelog = {
 	],
 	changelog: [
 		{
+			title: "Fixed",
+			type: "fixed",
+			items: ["Type cannot read property"],
+		},
+		{
 			title: "Improved",
 			type: "improved",
-			items: ["algorithm show premid"],
+			items: ["Shorten code", "Algorithm show premid"],
 		},
 	],
 };
@@ -82,23 +87,13 @@ export default class Plugin {
 			this.settings.lastVersionSeen = changelog.version;
 			this.updateSettings();
 		}
-		if (this.settings.updatechannel === 1) {
-			ZLibrary.PluginUpdater.checkForUpdate?.(
-				"RPCPcStatus",
-				changelog.version,
-				"https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/pre-release/RPCPcStatus.plugin.js",
-				versioner,
-				comparator,
-			);
-		} else {
-			ZLibrary.PluginUpdater.checkForUpdate?.(
-				"RPCPcStatus",
-				changelog.version,
-				"https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js",
-				versioner,
-				comparator,
-			);
-		}
+		ZLibrary.PluginUpdater.checkForUpdate?.(
+			"RPCPcStatus",
+			changelog.version,
+			`https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/${this.settings.updatechannel === 1 ? "pre-release" : ""}/RPCPcStatus.plugin.js`,
+			versioner,
+			comparator,
+		);
 		function versioner(file) {
 			const semVer = new RegExp(
 				/(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?/,
@@ -157,6 +152,7 @@ export default class Plugin {
 			}
 		} else if (process.platform === "darwin") {
 			log("Darwin Platform");
+			this.SImageText = `${this.osdistro} ${this.osrelease}`;
 			this.oslogo = "macOS";
 		}
 	}
@@ -170,7 +166,7 @@ export default class Plugin {
 			if (this.settings.show_premid && BdApi) {
 				const has = BdApi.findModuleByProps("getActivities")
 					.getActivities()
-					.find((data) => data.assets?.large_text.match(/(PreMiD)/));
+					.find((data) => data.assets?.large_text?.match(/(PreMiD)/));
 				if (has) return this.client.setActivity(null);
 			}
 			const Presence = {
@@ -189,10 +185,10 @@ export default class Plugin {
 				const Activities = BdApi.findModuleByProps("getActivities")
 					.getActivities()
 					.find((data) => {
-						if (data.name === "Custom Status") return;
-						if (data.name === "Spotify") return;
-						if (data.application_id === "879327042498342962") return;
-						if (data.application_id === this.settings.clientID) return;
+						if (data?.name === "Custom Status") return;
+						if (data?.name === "Spotify") return;
+						if (data?.application_id === "879327042498342962") return;
+						if (data?.application_id === this.settings.clientID) return;
 						return data;
 					});
 				if (Activities?.name) {
