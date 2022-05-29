@@ -90,7 +90,6 @@ export default class Plugin {
 		if (!this.settings.lastVersionSeen || changelog.version !== this.settings.lastVersionSeen) {
 			ZLibrary.Modals.showChangelogModal(changelog.title, changelog.version, changelog.changelog);
 			this.settings.lastVersionSeen = changelog.version;
-			delete this.settings.lastChangelogVersionSeen;
 			this.updateSettings();
 		}
 		if (this.settings.updatechannel === 1) {
