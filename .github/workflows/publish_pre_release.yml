@@ -27,22 +27,33 @@ jobs:
         runs-on: ubuntu-latest
         name: Check latest commit
         outputs:
-            should_run: ${{ steps.should_run.outputs.should_run }}
+            has_new_commits: ${{ steps.has_new_commits.outputs.has_new_commits }}
         steps:
             - name: Checkout
               uses: actions/checkout@v2
-            - name: Latest Commit
-              run: echo ${{ github.sha }}
+              with:
+                  fetch-depth: 0
 
-            - id: should_run
-              continue-on-error: true
-              name: Check latest commit is less than a day
-              if: ${{ github.event_name == 'schedule' }}
-              run: test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) && echo "::set-output name=should_run::false"
+            - name: Check for commits within time
+              uses: AlexHolderDeveloper/CommitsWithinTime@v1.1.5
+              id: commitswithintime
+              with:
+                  hours: 24
+
+            - name: Get the output from CommitsWithinTime
+              run: |
+                  echo "The 'has-new-commits-within-time' value is ${{ steps.commitswithintime.outputs.has-new-commits-within-time }}"
+                  echo "The 'number-of-commits-within-time' value is ${{ steps.commitswithintime.outputs.number-of-commits-within-time }}"
+                  echo "The 'total-commits' value is ${{ steps.commitswithintime.outputs.total-commits }}"
+
+            - id: has_new_commits
+              name: Check latest commit in 24 hrs ago
+              if: ${{ (steps.commitswithintime.outputs.has-new-commits-within-time) && (github.event_name == 'schedule') }}
+              run: echo "::set-output name=has_new_commits::true"
 
     main:
         needs: check_date
-        if: ${{ needs.check_date.outputs.should_run != 'false' }}
+        if: ${{ needs.check_date.outputs.has_new_commits }}
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
