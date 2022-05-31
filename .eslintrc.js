@@ -4,7 +4,7 @@ module.exports = {
 		commonjs: true,
 		es2021: true,
 	},
-	extends: ["eslint:recommended"],
+	extends: ["eslint:recommended", "plugin:json/recommended"],
 	plugins: ["prettier", "no-one-time-vars"],
 	parserOptions: {
 		ecmaVersion: "latest",
