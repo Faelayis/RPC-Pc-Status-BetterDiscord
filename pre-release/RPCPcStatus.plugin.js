@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.4.5-beta.3
+ * @version 2.4.5-beta.4
  * @description Rich Presence Pc Status for your Discord
  * @authorLink https://discordapp.com/users/328731868096888833
  * @author Faelayis
@@ -34,7 +34,7 @@
 const config = {
 	"info": {
 		"name": "RPCPcStatus",
-		"version": "2.4.5-beta.3",
+		"version": "2.4.5-beta.4",
 		"description": "Rich Presence Pc Status for your Discord",
 		"authorLink": "https://discordapp.com/users/328731868096888833",
 		"authors": [{
@@ -12325,7 +12325,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 			},
 			476: module => {
 				module.exports = {
-					i8: "5.11.15"
+					i8: "5.11.16"
 				};
 			}
 		};
