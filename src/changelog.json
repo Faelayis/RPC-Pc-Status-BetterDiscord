@@ -1,6 +1,24 @@
 {
+	"2.5": [
+		"2.5.0 ~ Current",
+		{
+			"title": "Update",
+			"type": "added",
+			"items": ["Text ShowToast"]
+		},
+		{
+			"title": "Fixed",
+			"type": "fixed",
+			"items": ["Type cannot read property"]
+		},
+		{
+			"title": "Improved",
+			"type": "improved",
+			"items": ["Stop Plugin", "Shorten code", "Algorithm show premid"]
+		}
+	],
 	"2.4": [
-		"2.4.0 ~ Current",
+		"2.4.0 ~ 2.4.4",
 		{
 			"title": "Added",
 			"type": "added",
@@ -18,7 +36,7 @@
 		}
 	],
 	"2.3": [
-		"2.3.0",
+		"2.3.0 ~ 2.3.1",
 		{
 			"title": "Added",
 			"type": "added",
