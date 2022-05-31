@@ -39,6 +39,7 @@ jobs:
               id: commitswithintime
               with:
                   hours: 24
+                  usernamesToIgnore: '{"ignoredUsernamesList": ["actions-user"]}'
 
             - name: Get the output from CommitsWithinTime
               run: |
