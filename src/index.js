@@ -38,7 +38,7 @@ const changelog = {
 		{
 			title: "Improved",
 			type: "improved",
-			items: ["Shorten code", "Algorithm show premid"],
+			items: ["Stop Plugin", "Shorten code", "Algorithm show premid"],
 		},
 	],
 };
@@ -229,8 +229,8 @@ export default class Plugin {
 			log(`${error}`, color.error);
 		}
 	}
-	stop() {
-		this.stopPresence();
+	async stop() {
+		await this.stopPresence();
 	}
 	async updateSettings() {
 		this.buttons = [];
@@ -391,28 +391,6 @@ export default class Plugin {
 					this.settings.automatically = { hide: { spotify: value } };
 				}),
 			);
-		new ZLibrary.Settings.SettingGroup("Hide when custom status", {
-			collapsible: true,
-			shown: false,
-			callback: () => {
-				this.updateSettings();
-			},
-		})
-			.appendTo(panel)
-			.append(
-				new ZLibrary.Settings.Switch("Online", undefined, this.settings.customstatus_hide?.includes("online") ?? false, (value) => {
-					value ? this.settings.customstatus_hide.push("online") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "online"));
-				}),
-				new ZLibrary.Settings.Switch("Idle", undefined, this.settings.customstatus_hide?.includes("idle") ?? false, (value) => {
-					value ? this.settings.customstatus_hide.push("idle") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "idle"));
-				}),
-				new ZLibrary.Settings.Switch("Do Not Disturb", undefined, this.settings.customstatus_hide?.includes("dnd") ?? false, (value) => {
-					value ? this.settings.customstatus_hide.push("dnd") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "dnd"));
-				}),
-				new ZLibrary.Settings.Switch("Invisible", undefined, this.settings.customstatus_hide?.includes("invisible") ?? true, (value) => {
-					value ? this.settings.customstatus_hide.push("invisible") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "invisible"));
-				}),
-			);
 		new ZLibrary.Settings.SettingGroup("Button", {
 			collapsible: true,
 			shown: false,
@@ -470,6 +448,28 @@ export default class Plugin {
 				),
 				new ZLibrary.Settings.Textbox("Small Image Text", "The text that appears when your small image is hovered over.", this.settings.smallImageText || "", (value) => {
 					this.settings.smallImageText = value;
+				}),
+			);
+		new ZLibrary.Settings.SettingGroup("Hide when custom status", {
+			collapsible: true,
+			shown: false,
+			callback: () => {
+				this.updateSettings();
+			},
+		})
+			.appendTo(panel)
+			.append(
+				new ZLibrary.Settings.Switch("Online", undefined, this.settings.customstatus_hide?.includes("online") ?? false, (value) => {
+					value ? this.settings.customstatus_hide.push("online") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "online"));
+				}),
+				new ZLibrary.Settings.Switch("Idle", undefined, this.settings.customstatus_hide?.includes("idle") ?? false, (value) => {
+					value ? this.settings.customstatus_hide.push("idle") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "idle"));
+				}),
+				new ZLibrary.Settings.Switch("Do Not Disturb", undefined, this.settings.customstatus_hide?.includes("dnd") ?? false, (value) => {
+					value ? this.settings.customstatus_hide.push("dnd") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "dnd"));
+				}),
+				new ZLibrary.Settings.Switch("Invisible", undefined, this.settings.customstatus_hide?.includes("invisible") ?? true, (value) => {
+					value ? this.settings.customstatus_hide.push("invisible") : (this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x) => x !== "invisible"));
 				}),
 			);
 		new ZLibrary.Settings.SettingGroup("Other", {
