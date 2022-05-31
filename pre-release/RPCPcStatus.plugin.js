@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.4.5-beta.4
+ * @version 2.5.0
  * @description Rich Presence Pc Status for your Discord
  * @authorLink https://discordapp.com/users/328731868096888833
  * @author Faelayis
@@ -34,7 +34,7 @@
 const config = {
 	"info": {
 		"name": "RPCPcStatus",
-		"version": "2.4.5-beta.4",
+		"version": "2.5.0",
 		"description": "Rich Presence Pc Status for your Discord",
 		"authorLink": "https://discordapp.com/users/328731868096888833",
 		"authors": [{
@@ -12409,7 +12409,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 				}, {
 					title: "Improved",
 					type: "improved",
-					items: ["Shorten code", "Algorithm show premid"]
+					items: ["Stop Plugin", "Shorten code", "Algorithm show premid"]
 				}]
 			};
 			class Plugin {
@@ -12580,8 +12580,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						log(`${error}`, color.error);
 					}
 				}
-				stop() {
-					this.stopPresence();
+				async stop() {
+					await this.stopPresence();
 				}
 				async updateSettings() {
 					this.buttons = [];
@@ -12687,21 +12687,6 @@ function buildPlugin([BasePlugin, PluginApi]) {
 							}
 						};
 					})));
-					new ZLibrary.Settings.SettingGroup("Hide when custom status", {
-						collapsible: true,
-						shown: false,
-						callback: () => {
-							this.updateSettings();
-						}
-					}).appendTo(panel).append(new ZLibrary.Settings.Switch("Online", void 0, this.settings.customstatus_hide?.includes("online") ?? false, (value => {
-						value ? this.settings.customstatus_hide.push("online") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "online" !== x));
-					})), new ZLibrary.Settings.Switch("Idle", void 0, this.settings.customstatus_hide?.includes("idle") ?? false, (value => {
-						value ? this.settings.customstatus_hide.push("idle") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "idle" !== x));
-					})), new ZLibrary.Settings.Switch("Do Not Disturb", void 0, this.settings.customstatus_hide?.includes("dnd") ?? false, (value => {
-						value ? this.settings.customstatus_hide.push("dnd") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "dnd" !== x));
-					})), new ZLibrary.Settings.Switch("Invisible", void 0, this.settings.customstatus_hide?.includes("invisible") ?? true, (value => {
-						value ? this.settings.customstatus_hide.push("invisible") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "invisible" !== x));
-					})));
 					new ZLibrary.Settings.SettingGroup("Button", {
 						collapsible: true,
 						shown: false,
@@ -12735,6 +12720,21 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						this.settings.smallImageKey = value;
 					})), new ZLibrary.Settings.Textbox("Small Image Text", "The text that appears when your small image is hovered over.", this.settings.smallImageText || "", (value => {
 						this.settings.smallImageText = value;
+					})));
+					new ZLibrary.Settings.SettingGroup("Hide when custom status", {
+						collapsible: true,
+						shown: false,
+						callback: () => {
+							this.updateSettings();
+						}
+					}).appendTo(panel).append(new ZLibrary.Settings.Switch("Online", void 0, this.settings.customstatus_hide?.includes("online") ?? false, (value => {
+						value ? this.settings.customstatus_hide.push("online") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "online" !== x));
+					})), new ZLibrary.Settings.Switch("Idle", void 0, this.settings.customstatus_hide?.includes("idle") ?? false, (value => {
+						value ? this.settings.customstatus_hide.push("idle") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "idle" !== x));
+					})), new ZLibrary.Settings.Switch("Do Not Disturb", void 0, this.settings.customstatus_hide?.includes("dnd") ?? false, (value => {
+						value ? this.settings.customstatus_hide.push("dnd") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "dnd" !== x));
+					})), new ZLibrary.Settings.Switch("Invisible", void 0, this.settings.customstatus_hide?.includes("invisible") ?? true, (value => {
+						value ? this.settings.customstatus_hide.push("invisible") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "invisible" !== x));
 					})));
 					new ZLibrary.Settings.SettingGroup("Other", {
 						collapsible: true,

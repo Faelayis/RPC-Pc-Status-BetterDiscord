@@ -1,6 +1,6 @@
 /**
  * @name RPCPcStatus
- * @version 2.4.4
+ * @version 2.5.0
  * @description Rich Presence Pc Status for your Discord
  * @authorLink https://discordapp.com/users/328731868096888833
  * @author Faelayis
@@ -34,7 +34,7 @@
 const config = {
 	"info": {
 		"name": "RPCPcStatus",
-		"version": "2.4.4",
+		"version": "2.5.0",
 		"description": "Rich Presence Pc Status for your Discord",
 		"authorLink": "https://discordapp.com/users/328731868096888833",
 		"authors": [{
@@ -12325,7 +12325,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 			},
 			476: module => {
 				module.exports = {
-					i8: "5.11.15"
+					i8: "5.11.16"
 				};
 			}
 		};
@@ -12399,17 +12399,17 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					github_username: "Faelayis"
 				}],
 				changelog: [{
-					title: "Added",
+					title: "Update",
 					type: "added",
-					items: ["Update channel pre release", "Features Optional show premid"]
+					items: ["Text ShowToast"]
 				}, {
 					title: "Fixed",
 					type: "fixed",
-					items: ["Pre release update loop", " Update pre release create new file", "Settings premid are reset on restart discord", "Features show premid not working"]
+					items: ["Type cannot read property"]
 				}, {
 					title: "Improved",
 					type: "improved",
-					items: ["Refactor code"]
+					items: ["Stop Plugin", "Shorten code", "Algorithm show premid"]
 				}]
 			};
 			class Plugin {
@@ -12431,40 +12431,55 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					this.updateSettings();
 				}
 				async connected() {
-					if (!this.client) {
-						this.client = new(__webpack_require__(487).z)(this.settings.clientID || "879327042498342962");
-						this.client.once("connected", (() => {
-							log("Connected!", color.succ);
-							connecting = false;
-							this.startPresence();
-							BdApi.showToast("RPC Pc Status: Connected");
-						}));
-						this.client.once("disconnected", (() => {
-							this.stopPresence();
-							if (!connecting && this.settings.clientID) return connecting = true;
-							log("Disconnected!", color.warn);
-							if (connecting) BdApi.showToast("Client ID authentication failed make sure your client ID is correct.", {
-								type: "error"
-							});
-							else BdApi.showToast("RPC Pc Status: Disconnected");
-						}));
+					try {
+						if (!this.client) {
+							this.client = new(__webpack_require__(487).z)(this.settings.clientID || "879327042498342962");
+							this.client.once("connected", (() => {
+								log("Connected!", color.succ);
+								connecting = false;
+								this.startPresence();
+								BdApi.showToast("RPC Pc Status: Connected", {
+									type: "success"
+								});
+							}));
+							this.client.once("disconnected", (() => {
+								this.stopPresence();
+								if (!connecting && this.settings.clientID) return connecting = true;
+								log("Disconnected!", color.warn);
+								if (connecting) BdApi.showToast("RPC Pc Status: Client ID Authentication Failed", {
+									type: "warn"
+								});
+								else BdApi.showToast("RPC Pc Status: Disconnected");
+							}));
+						}
+					} catch (error) {
+						BdApi.showToast(`RPC Pc Status: Error connected ${error.name ?? ""}`, {
+							type: "error"
+						});
 					}
 				}
-				async checkForUpdate() {
+				async checkForUpdate(toast) {
 					if (!this.settings.lastVersionSeen || changelog.version !== this.settings.lastVersionSeen) {
 						ZLibrary.Modals.showChangelogModal(changelog.title, changelog.version, changelog.changelog);
 						this.settings.lastVersionSeen = changelog.version;
 						this.updateSettings();
 					}
-					if (1 === this.settings.updatechannel) ZLibrary.PluginUpdater.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/pre-release/RPCPcStatus.plugin.js", versioner, comparator);
-					else ZLibrary.PluginUpdater.checkForUpdate?.("RPCPcStatus", changelog.version, "https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/RPCPcStatus.plugin.js", versioner, comparator);
-					function versioner(file) {
+					ZLibrary.PluginUpdater.checkForUpdate?.("RPCPcStatus", changelog.version, `https://raw.githubusercontent.com/Faelayis/RPC-Pc-Status-BetterDiscord/main/${1 === this.settings.updatechannel ? "pre-release" : ""}/RPCPcStatus.plugin.js`, (function(file) {
 						const semVer = new RegExp(/(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?/);
 						return file.match(semVer)[0] || "0.0.0";
-					}
-					function comparator(current, remote) {
-						return current !== remote ? true : false;
-					}
+					}), (function(current, remote) {
+						switch (current !== remote) {
+							case true:
+								toast && BdApi.showToast(`RPC Pc Status: Update Available ${remote}`);
+								return true;
+							case false:
+								toast && BdApi.showToast(`RPC Pc Status: You are now using ${current} latest version`);
+								return false;
+							default:
+								toast && BdApi.showToast("RPC Pc Status: Update Not Available");
+								return false;
+						}
+					}));
 				}
 				formatRAM(freemem, totalmem, decimals = 0) {
 					if (0 === freemem) return "0 Bytes";
@@ -12507,6 +12522,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						}
 					} else if ("darwin" === process.platform) {
 						log("Darwin Platform");
+						this.SImageText = `${this.osdistro} ${this.osrelease}`;
 						this.oslogo = "macOS";
 					}
 				}
@@ -12514,9 +12530,12 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					if (Interval) await clearInterval(Interval);
 					Interval = setInterval((async () => {
 						if (!this.client) return clearInterval(Interval);
-						if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
 						if (this.settings.automatically?.hide?.spotify && "Spotify" === ZLibrary.DiscordModules.UserActivityStore.getActivity()?.name ? true : false) return this.client.setActivity(null);
-						if (this.settings.show_premid && BdApi && BdApi.findModuleByProps("getActivities").getActivities().find((data => data.assets?.large_text.match(/(PreMiD)/))) ? true : false) return this.client.setActivity(null);
+						if (this.settings.customstatus_hide?.includes(ZLibrary.DiscordModules.UserSettingsStore.status)) return this.client.setActivity(null);
+						if (this.settings.show_premid && BdApi) {
+							const has = BdApi.findModuleByProps("getActivities").getActivities().find((data => data.assets?.large_text?.match(/(PreMiD)/)));
+							if (has) return this.client.setActivity(null);
+						}
 						const Presence = {
 							details: `CPU ${await (0, systeminformation__WEBPACK_IMPORTED_MODULE_0__.currentLoad)().then((data => data.currentLoad.toFixed(0))) || "0"}%`,
 							state: `RAM ${this.formatRAM((0, os__WEBPACK_IMPORTED_MODULE_1__.freemem)(), (0, 
@@ -12534,10 +12553,10 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						};
 						if ((this.settings.show_game_playing || false) && BdApi) {
 							const Activities = BdApi.findModuleByProps("getActivities").getActivities().find((data => {
-								if ("Custom Status" === data.name) return;
-								if ("Spotify" === data.name) return;
-								if ("879327042498342962" === data.application_id) return;
-								if (data.application_id === this.settings.clientID) return;
+								if ("Custom Status" === data?.name) return;
+								if ("Spotify" === data?.name) return;
+								if ("879327042498342962" === data?.application_id) return;
+								if (data?.application_id === this.settings.clientID) return;
 								return data;
 							}));
 							if (Activities?.name) {
@@ -12555,14 +12574,14 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						delete this.client;
 					} catch (error) {
 						if (!toast) return;
-						BdApi.showToast("RPC Pc Status stopped error", {
+						BdApi.showToast("RPC Pc Status Stopped Error", {
 							type: "error"
 						});
 						log(`${error}`, color.error);
 					}
 				}
-				stop() {
-					this.stopPresence();
+				async stop() {
+					await this.stopPresence();
 				}
 				async updateSettings() {
 					this.buttons = [];
@@ -12668,21 +12687,6 @@ function buildPlugin([BasePlugin, PluginApi]) {
 							}
 						};
 					})));
-					new ZLibrary.Settings.SettingGroup("Hide when custom status", {
-						collapsible: true,
-						shown: false,
-						callback: () => {
-							this.updateSettings();
-						}
-					}).appendTo(panel).append(new ZLibrary.Settings.Switch("Online", void 0, this.settings.customstatus_hide?.includes("online") ?? false, (value => {
-						value ? this.settings.customstatus_hide.push("online") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "online" !== x));
-					})), new ZLibrary.Settings.Switch("Idle", void 0, this.settings.customstatus_hide?.includes("idle") ?? false, (value => {
-						value ? this.settings.customstatus_hide.push("idle") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "idle" !== x));
-					})), new ZLibrary.Settings.Switch("Do Not Disturb", void 0, this.settings.customstatus_hide?.includes("dnd") ?? false, (value => {
-						value ? this.settings.customstatus_hide.push("dnd") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "dnd" !== x));
-					})), new ZLibrary.Settings.Switch("Invisible", void 0, this.settings.customstatus_hide?.includes("invisible") ?? true, (value => {
-						value ? this.settings.customstatus_hide.push("invisible") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "invisible" !== x));
-					})));
 					new ZLibrary.Settings.SettingGroup("Button", {
 						collapsible: true,
 						shown: false,
@@ -12717,6 +12721,21 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					})), new ZLibrary.Settings.Textbox("Small Image Text", "The text that appears when your small image is hovered over.", this.settings.smallImageText || "", (value => {
 						this.settings.smallImageText = value;
 					})));
+					new ZLibrary.Settings.SettingGroup("Hide when custom status", {
+						collapsible: true,
+						shown: false,
+						callback: () => {
+							this.updateSettings();
+						}
+					}).appendTo(panel).append(new ZLibrary.Settings.Switch("Online", void 0, this.settings.customstatus_hide?.includes("online") ?? false, (value => {
+						value ? this.settings.customstatus_hide.push("online") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "online" !== x));
+					})), new ZLibrary.Settings.Switch("Idle", void 0, this.settings.customstatus_hide?.includes("idle") ?? false, (value => {
+						value ? this.settings.customstatus_hide.push("idle") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "idle" !== x));
+					})), new ZLibrary.Settings.Switch("Do Not Disturb", void 0, this.settings.customstatus_hide?.includes("dnd") ?? false, (value => {
+						value ? this.settings.customstatus_hide.push("dnd") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "dnd" !== x));
+					})), new ZLibrary.Settings.Switch("Invisible", void 0, this.settings.customstatus_hide?.includes("invisible") ?? true, (value => {
+						value ? this.settings.customstatus_hide.push("invisible") : this.settings.customstatus_hide = this.settings.customstatus_hide.filter((x => "invisible" !== x));
+					})));
 					new ZLibrary.Settings.SettingGroup("Other", {
 						collapsible: true,
 						shown: false,
@@ -12736,7 +12755,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					}], (value => {
 						ZLibrary.PluginUpdater.removeUpdateNotice("RPCPcStatus");
 						this.settings.updatechannel = value;
-						this.checkForUpdate(value);
+						this.checkForUpdate(true);
 					})));
 				}
 			}
