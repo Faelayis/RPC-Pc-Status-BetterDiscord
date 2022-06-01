@@ -1,4 +1,4 @@
-import { time, osInfo, cpu, currentLoad } from "systeminformation";
+import { time, osInfo, cpu, currentLoad, get, getStaticData } from "systeminformation";
 import { release, freemem, totalmem } from "os";
 
 const color = {
@@ -11,7 +11,9 @@ const color = {
 		console.log(`%c[RPC Pc Status] %c${text}`, ...(extra ?? color.base));
 	};
 let Interval,
-	connecting = undefined;
+	connecting = undefined,
+	osinfo,
+	valueObject = {};
 
 //added, improved, fixed, progress
 const changelog = {
@@ -26,19 +28,9 @@ const changelog = {
 	],
 	changelog: [
 		{
-			title: "Update",
+			title: "Added",
 			type: "added",
-			items: ["Text ShowToast"],
-		},
-		{
-			title: "Fixed",
-			type: "fixed",
-			items: ["Type cannot read property"],
-		},
-		{
-			title: "Improved",
-			type: "improved",
-			items: ["Stop Plugin", "Shorten code", "Algorithm show premid"],
+			items: ["Full text custom information for large image text and small image text"],
 		},
 	],
 };
@@ -61,6 +53,9 @@ export default class Plugin {
 		}
 		if (this.settings.show_premid === undefined) {
 			this.settings.show_premid = true;
+		}
+		if (this.settings.largeImageText === undefined) {
+			this.settings.largeImageText = "%cpu.manufacturer% %cpu.brand%";
 		}
 		this.updateSettings();
 	}
@@ -132,18 +127,49 @@ export default class Plugin {
 		const ram = `${parseFloat((totalmem / k ** i).toFixed(decimals < 0 ? 0 : decimals))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][i]}`;
 		return `${parseFloat((totalmem / k ** i - freemem / k ** i).toFixed(2))}/${ram}`;
 	}
+	async getStatic(text) {
+		// example this.getStatic("%cpu.brand% %cpu.brand% %baseboard.model%");
+		if (!text.includes("%")) return text;
+		if (!osinfo) {
+			osinfo = await getStaticData();
+		}
+		let output = "";
+		get(valueObject).then((data) => console.log(data));
+		for (const key of text.split("%")) {
+			output += getObject(key) || key || "";
+		}
+		for (const key of text.split("%")) {
+			if (key.includes(".")) {
+				if (key === " ") return;
+				valueObject[key.replace(".", ",").split(",")[0]] += `${key.replace(".", ",").split(",")[1]}, `;
+			}
+		}
+		console.log(valueObject);
+		function getObject(object) {
+			if (object === " ") return;
+			function Object(os, object) {
+				try {
+					return object.length ? Object(os[object[0]], object.slice(1)) : os;
+				} catch (error) {
+					if (error) return;
+				}
+			}
+			return Object(osinfo, object.split("."));
+		}
+		return output;
+	}
 	async checkos() {
-		cpu().then((data) => (data.manufacturer ? (this.cpu = `${data.manufacturer} ${data.brand}`) : null));
+		cpu().then((data) => (data.manufacturer ? (this.cpu = `${data.manufacturer} ${data.brand} `) : null));
 		await osInfo().then(
 			(data) => (
-				data.distro ? (this.osdistro = `${data.distro}`) : null,
-				data.release ? (this.osrelease = `${data.release}`) : null,
-				data.logofile ? (this.oslogo = `${data.logofile}`) : null
+				data.distro ? (this.osdistro = `${data.distro} `) : null,
+				data.release ? (this.osrelease = `${data.release} `) : null,
+				data.logofile ? (this.oslogo = `${data.logofile} `) : null
 			),
 		);
 		if (process.platform === "win32") {
 			log("Windows Platform");
-			this.SImageText = `${this.osdistro} ${this.osrelease}`;
+			this.SImageText = `${this.osdistro} ${this.osrelease} `;
 			switch (true) {
 				case /(Windows\s10)/g.test(this.osdistro):
 					this.oslogo = "windows10";
@@ -157,7 +183,7 @@ export default class Plugin {
 			}
 		} else if (process.platform === "linux") {
 			log("Linux Platform");
-			this.SImageText = `${this.osdistro} ${this.osrelease} ${release()}`;
+			this.SImageText = `${this.osdistro} ${this.osrelease} ${release()} `;
 			switch (true) {
 				case /(Ubuntu)/g.test(this.osdistro):
 					this.oslogo = "linux_ubuntu";
@@ -171,7 +197,7 @@ export default class Plugin {
 			}
 		} else if (process.platform === "darwin") {
 			log("Darwin Platform");
-			this.SImageText = `${this.osdistro} ${this.osrelease}`;
+			this.SImageText = `${this.osdistro} ${this.osrelease} `;
 			this.oslogo = "macOS";
 		}
 	}
@@ -189,13 +215,13 @@ export default class Plugin {
 				if (has) return this.client.setActivity(null);
 			}
 			const Presence = {
-				details: `CPU ${(await currentLoad().then((data) => data.currentLoad.toFixed(0))) || "0"}%`,
-				state: `RAM ${this.formatRAM(freemem(), totalmem())}`,
+				details: `CPU ${(await currentLoad().then((data) => data.currentLoad.toFixed(0))) || "0"}% `,
+				state: `RAM ${this.formatRAM(freemem(), totalmem())} `,
 				assets: {
 					large_image: this.settings.hideicon ? undefined : this.settings.largeImageKey || this.settings.LargeImageKeyColor || "icon_white",
-					large_text: this.settings.largeImageText || this.cpu || undefined,
+					large_text: this.settings.largeImageText ? await this.getStatic(this.settings.largeImageText) : this.cpu || undefined,
 					small_image: this.settings.hideicon ? undefined : this.settings.smallImageKey || this.oslogo || undefined,
-					small_text: this.settings.largeImageText || this.SImageText || undefined,
+					small_text: this.settings.smallImageText ? await this.getStatic(this.settings.smallImageText) : this.SImageText || undefined,
 				},
 				buttons: this.buttons && (this.buttons[0] || this.buttons[1]) ? this.buttons : undefined,
 				timestamps: { start: this.startTimeStamps[this.settings.timestamps || 0] },
@@ -211,8 +237,8 @@ export default class Plugin {
 						return data;
 					});
 				if (Activities?.name) {
-					Presence.details = `${Presence.details} | ${Presence.state}`;
-					Presence.state = `Playing ${Activities.name}`;
+					Presence.details = `${Presence.details} | ${Presence.state} `;
+					Presence.state = `Playing ${Activities.name} `;
 				}
 			}
 			this.client.setActivity(Presence);
@@ -226,7 +252,7 @@ export default class Plugin {
 		} catch (error) {
 			if (!toast) return;
 			BdApi.showToast("RPC Pc Status Stopped Error", { type: "error" });
-			log(`${error}`, color.error);
+			log(`${error} `, color.error);
 		}
 	}
 	async stop() {
@@ -341,7 +367,7 @@ export default class Plugin {
 							value: 1000,
 						},
 						{
-							label: `2.5 Second ${this.settings.presenceUpdateInterval === 2500 || !this.settings.presenceUpdateInterval ? "" : "(Recommend)"}`,
+							label: `2.5 Second ${this.settings.presenceUpdateInterval === 2500 || !this.settings.presenceUpdateInterval ? "" : "(Recommend)"} `,
 							value: 2500,
 						},
 						{
