@@ -131,28 +131,29 @@ export default class Plugin {
 		return `${parseFloat((totalmem / k ** i - freemem / k ** i).toFixed(2))}/${ram}`;
 	}
 	async getStatic(text) {
-		// example this.getStatic("%cpu.brand% %cpu.brand% %baseboard.model%");
+		// example this.getStatic("%cpu.brand%  %baseboard.model%");
 		if (!text.includes("%")) return text;
 		if (!osinfo) {
-			get(valueObject).then((data) => (osinfo = data));
+			get({
+				cpu: "brand, manufacturer",
+				osInfo: "distro, release",
+			}).then((data) => (osinfo = data));
 		}
 		let output = "";
 		for (const key of text.split("%")) {
 			output += getObject(key) || key || "";
 			if (key !== undefined && key !== " " && key.includes(".") && !getObject(key)) {
-				get(valueObject).then((data) => (osinfo = data));
-				return (valueObject[key.split(".")[0]] += `,${key.split(".")[1]}`);
+				await get(valueObject).then((data) => (osinfo = data));
+				valueObject[key.split(".")[0]] += `,${key.split(".")[1]}`;
 			}
 		}
-		// console.warn(valueObject);
-		// console.warn(osinfo);
 		function getObject(object) {
 			if (object === " ") return;
 			function Object(os, object) {
 				try {
 					return object.length ? Object(os[object[0]], object.slice(1)) : os;
 				} catch (error) {
-					if (error) return;
+					get(valueObject).then((data) => (osinfo = data));
 				}
 			}
 			return Object(osinfo, object.split("."));
@@ -227,7 +228,6 @@ export default class Plugin {
 				buttons: this.buttons && (this.buttons[0] || this.buttons[1]) ? this.buttons : undefined,
 				timestamps: { start: this.startTimeStamps[this.settings.timestamps || 0] },
 			};
-			if (!osinfo || !valueObject) return;
 			if ((this.settings.show_game_playing || false) && BdApi) {
 				const Activities = BdApi.findModuleByProps("getActivities")
 					.getActivities()
@@ -243,6 +243,7 @@ export default class Plugin {
 					Presence.state = `Playing ${Activities.name} `;
 				}
 			}
+			if (!osinfo) return;
 			this.client.setActivity(Presence);
 		}, this.settings.presenceUpdateInterval ?? 2500);
 	}
