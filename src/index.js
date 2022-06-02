@@ -133,18 +133,16 @@ export default class Plugin {
 	async getStatic(text) {
 		// example this.getStatic("%cpu.brand%  %baseboard.model%");
 		if (!text.includes("%")) return text;
-		if (!osinfo) {
-			get({
-				cpu: "brand, manufacturer",
-				osInfo: "distro, release",
-			}).then((data) => (osinfo = data));
-		}
 		let output = "";
 		for (const key of text.split("%")) {
+			await addObject(key);
 			output += getObject(key) || key || "";
-			if (key !== undefined && key !== " " && key.includes(".") && !getObject(key)) {
-				await get(valueObject).then((data) => (osinfo = data));
-				valueObject[key.split(".")[0]] += `,${key.split(".")[1]}`;
+		}
+		async function addObject(key) {
+			if (key?.includes(".") || false) {
+				if (`${valueObject[key.split(".")[0]]}`.match(new RegExp(key.split(".")[1], "gi"))) return;
+				// if (`${valueObject[key.split(".")[0]]}`.includes(key.split(".")[1])) return;
+				return (valueObject[key.split(".")[0]] += `,${key.split(".")[1]}`);
 			}
 		}
 		function getObject(object) {
@@ -161,14 +159,14 @@ export default class Plugin {
 		return output;
 	}
 	async checkos() {
-		cpu().then((data) => (data.manufacturer ? (this.cpu = `${data.manufacturer} ${data.brand} `) : null));
-		await osInfo().then(
-			(data) => (
-				data.distro ? (this.osdistro = `${data.distro} `) : null,
-				data.release ? (this.osrelease = `${data.release} `) : null,
-				data.logofile ? (this.oslogo = `${data.logofile} `) : null
-			),
-		);
+		// cpu().then((data) => (data.manufacturer ? (this.cpu = `${data.manufacturer} ${data.brand} `) : null));
+		// await osInfo().then(
+		// 	(data) => (
+		// 		data.distro ? (this.osdistro = `${data.distro} `) : null,
+		// 		data.release ? (this.osrelease = `${data.release} `) : null,
+		// 		data.logofile ? (this.oslogo = `${data.logofile} `) : null
+		// 	),
+		// );
 		if (process.platform === "win32") {
 			log("Windows Platform");
 			this.SImageText = `${this.osdistro} ${this.osrelease} `;
