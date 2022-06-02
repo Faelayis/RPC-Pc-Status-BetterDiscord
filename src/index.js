@@ -1,4 +1,4 @@
-import { time, osInfo, cpu, currentLoad, get, getStaticData } from "systeminformation";
+import { time, osInfo, cpu, currentLoad, get } from "systeminformation";
 import { release, freemem, totalmem } from "os";
 
 const color = {
@@ -54,8 +54,11 @@ export default class Plugin {
 		if (this.settings.show_premid === undefined) {
 			this.settings.show_premid = true;
 		}
-		if (this.settings.largeImageText === undefined) {
+		if (this.settings.largeImageText === undefined || this.settings.smallImageText === "") {
 			this.settings.largeImageText = "%cpu.manufacturer% %cpu.brand%";
+		}
+		if (this.settings.smallImageText === undefined || this.settings.smallImageText === "") {
+			this.settings.smallImageText = "%osInfo.distro% %osInfo.release%";
 		}
 		this.updateSettings();
 	}
@@ -131,20 +134,18 @@ export default class Plugin {
 		// example this.getStatic("%cpu.brand% %cpu.brand% %baseboard.model%");
 		if (!text.includes("%")) return text;
 		if (!osinfo) {
-			osinfo = await getStaticData();
+			get(valueObject).then((data) => (osinfo = data));
 		}
 		let output = "";
-		get(valueObject).then((data) => console.log(data));
 		for (const key of text.split("%")) {
 			output += getObject(key) || key || "";
-		}
-		for (const key of text.split("%")) {
-			if (key.includes(".")) {
-				if (key === " ") return;
-				valueObject[key.replace(".", ",").split(",")[0]] += `${key.replace(".", ",").split(",")[1]}, `;
+			if (key !== undefined && key !== " " && key.includes(".") && !getObject(key)) {
+				get(valueObject).then((data) => (osinfo = data));
+				return (valueObject[key.split(".")[0]] += `,${key.split(".")[1]}`);
 			}
 		}
-		console.log(valueObject);
+		// console.warn(valueObject);
+		// console.warn(osinfo);
 		function getObject(object) {
 			if (object === " ") return;
 			function Object(os, object) {
@@ -226,6 +227,7 @@ export default class Plugin {
 				buttons: this.buttons && (this.buttons[0] || this.buttons[1]) ? this.buttons : undefined,
 				timestamps: { start: this.startTimeStamps[this.settings.timestamps || 0] },
 			};
+			if (!osinfo || !valueObject) return;
 			if ((this.settings.show_game_playing || false) && BdApi) {
 				const Activities = BdApi.findModuleByProps("getActivities")
 					.getActivities()
