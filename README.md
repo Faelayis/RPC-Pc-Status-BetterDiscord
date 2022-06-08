@@ -30,4 +30,13 @@ npm run npm-install
 # build plugin (file will be replaced RPCPcStatus.plugin.js)
 npm run dev
 ```
-[How to login github token](https://github.com/BetterDiscordBuilder/bdbuilder/tree/412267f733715796451526d5e78813d39496d40f#readme)
+#### Login Github Token
+[Create an access token](https://github.com/settings/tokens/new?description=Github%20NPM%20registry&scopes=repo%2Cread%3Apackages)
+```
+npm login --scope=@betterdiscordbuilder --registry=https://npm.pkg.github.com
+```
+**or**
+```
+npm install -g npm-cli-login
+npm-cli-login -u "user_name" -p "access_token" -e "user_email" -r "https://npm.pkg.github.com" -s "@betterdiscordbuilder"
+```
