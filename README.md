@@ -31,7 +31,7 @@ npm run npm-install
 npm run dev
 ```
 #### Login Github Token
-[Create an access token](https://github.com/settings/tokens/new?description=Github%20NPM%20registry&scopes=repo%2Cread%3Apackages)
+[Create token](https://github.com/settings/tokens/new?description=Github%20NPM%20registry&scopes=repo%2Cread%3Apackages)
 ```
 npm login --scope=@betterdiscordbuilder --registry=https://npm.pkg.github.com
 ```
