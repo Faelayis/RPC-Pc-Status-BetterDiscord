@@ -30,6 +30,8 @@ npm run npm-install
 # build plugin (file will be replaced RPCPcStatus.plugin.js)
 npm run dev
 ```
+⚠️ if you want pull requests discard changes or checkout `package.json` after install dependencies (not using github token)
+
 #### Login Github Token
 [Create token](https://github.com/settings/tokens/new?description=Github%20NPM%20registry&scopes=repo%2Cread%3Apackages)
 ```
