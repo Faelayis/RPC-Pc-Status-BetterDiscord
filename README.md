@@ -21,7 +21,7 @@ cd RPC-Pc-Status-BetterDiscord
 # install dependencies (login github is required)
 npm install
 
-# if you don't want to login github tokens can be used (delete @betterdiscordbuilder/bdbuilder in package.json)
+# if you don't want login github tokens (delete @betterdiscordbuilder/bdbuilder in package.json)
 npm install bdbuilder
 
 # install dependencies for plugin
