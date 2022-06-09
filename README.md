@@ -22,7 +22,7 @@ cd RPC-Pc-Status-BetterDiscord
 npm install
 
 # if you don't want login github tokens (delete @betterdiscordbuilder/bdbuilder in package.json)
-npm install bdbuilder
+npm install bdbuilder@latest
 
 # install dependencies for plugin
 npm run npm-install
