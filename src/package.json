@@ -33,7 +33,7 @@
 	},
 	"dependencies": {
 		"bufferutil": "^4.0.6",
-		"systeminformation": "^5.11.15",
+		"systeminformation": "^5.11.20",
 		"utf-8-validate": "^5.0.9"
 	}
 }
