@@ -34,15 +34,15 @@
 	},
 	"devDependencies": {
 		"version-bump-prompt": "^6.1.0",
-		"@actions/core": "^1.8.2",
+		"@actions/core": "^1.9.0",
 		"@babel/eslint-parser": "^7.18.2",
 		"@betterdiscordbuilder/bdbuilder": "^1.2.22",
 		"edit-json-file": "^1.7.0",
-		"eslint": "^8.16.0",
+		"eslint": "^8.17.0",
 		"eslint-plugin-json": "^3.1.0",
 		"eslint-plugin-no-one-time-vars": "^2.4.1",
 		"eslint-plugin-prettier": "^4.0.0",
-		"npm-check-updates": "^13.0.3",
-		"prettier": "^2.6.2"
+		"npm-check-updates": "^14.0.1",
+		"prettier": "^2.7.1"
 	}
 }
