@@ -104,10 +104,13 @@ export default class Plugin {
 			comparator,
 		);
 		function versioner(file) {
-			const semVer = new RegExp(
-				/(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?/,
+			return (
+				file.match(
+					new RegExp(
+						/(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?/,
+					),
+				)[0] || "0.0.0"
 			);
-			return file.match(semVer)[0] || "0.0.0";
 		}
 		function comparator(current, remote) {
 			switch (current !== remote) {
@@ -127,10 +130,10 @@ export default class Plugin {
 		if (freemem === 0) {
 			return "0 Bytes";
 		}
-		const k = 1024;
-		const i = Math.floor(Math.log(freemem) / Math.log(k));
-		const ram = `${parseFloat((totalmem / k ** i).toFixed(decimals < 0 ? 0 : decimals))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][i]}`;
-		return `${parseFloat((totalmem / k ** i - freemem / k ** i).toFixed(2))}/${ram}`;
+		const kilobyte = 1024,
+			i = Math.floor(Math.log(freemem) / Math.log(kilobyte)),
+			ram = `${parseFloat((totalmem / kilobyte ** i).toFixed(decimals < 0 ? 0 : decimals))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][i]}`;
+		return `${parseFloat((totalmem / kilobyte ** i - freemem / kilobyte ** i).toFixed(2))}/${ram}`;
 	}
 	async checkos() {
 		cpu().then((data) => (data.manufacturer ? (this.cpu = `${data.manufacturer} ${data.brand}`) : null));
@@ -188,7 +191,7 @@ export default class Plugin {
 					.find((data) => data.assets?.large_text?.match(/(PreMiD)/));
 				if (has) return this.client.setActivity(null);
 			}
-			const Presence = {
+			const presence = {
 				details: `CPU ${(await currentLoad().then((data) => data.currentLoad.toFixed(0))) || "0"}%`,
 				state: `RAM ${this.formatRAM(freemem(), totalmem())}`,
 				assets: {
@@ -201,7 +204,7 @@ export default class Plugin {
 				timestamps: { start: this.startTimeStamps[this.settings.timestamps || 0] },
 			};
 			if ((this.settings.show_game_playing || false) && BdApi) {
-				const Activities = BdApi.findModuleByProps("getActivities")
+				const activity = BdApi.findModuleByProps("getActivities")
 					.getActivities()
 					.find((data) => {
 						if (data?.name === "Custom Status") return;
@@ -210,12 +213,12 @@ export default class Plugin {
 						if (data?.application_id === this.settings.clientID) return;
 						return data;
 					});
-				if (Activities?.name) {
-					Presence.details = `${Presence.details} | ${Presence.state}`;
-					Presence.state = `Playing ${Activities.name}`;
+				if (activity?.name) {
+					presence.details = `${presence.details} | ${presence.state}`;
+					presence.state = `Playing ${activity.name}`;
 				}
 			}
-			this.client.setActivity(Presence);
+			this.client.setActivity(presence);
 		}, this.settings.presenceUpdateInterval ?? 2500);
 	}
 	async stopPresence(toast) {
